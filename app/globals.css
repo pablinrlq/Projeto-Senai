@@ -1,26 +1,101 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --color-border: hsl(210 20% 88%);
+  --color-input: hsl(210 20% 88%);
+  --color-ring: hsl(210 100% 24%);
+  --color-background: hsl(0 0% 98%);
+  --color-foreground: hsl(210 100% 15%);
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* SENAI Brand Colors */
+  --color-primary: hsl(210 100% 24%); /* SENAI Blue #003D7A */
+  --color-primary-foreground: hsl(0 0% 100%);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-secondary: hsl(18 100% 60%); /* SENAI Orange #FF6B35 */
+  --color-secondary-foreground: hsl(0 0% 100%);
+
+  --color-destructive: hsl(0 84% 60%);
+  --color-destructive-foreground: hsl(0 0% 100%);
+
+  --color-muted: hsl(210 20% 95%);
+  --color-muted-foreground: hsl(210 10% 45%);
+
+  --color-accent: hsl(18 100% 60%);
+  --color-accent-foreground: hsl(0 0% 100%);
+
+  --color-popover: hsl(0 0% 100%);
+  --color-popover-foreground: hsl(210 100% 15%);
+
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(210 100% 15%);
+
+  /* Sidebar Colors */
+  --color-sidebar: hsl(210 100% 24%);
+  --color-sidebar-foreground: hsl(0 0% 100%);
+  --color-sidebar-primary: hsl(18 100% 60%);
+  --color-sidebar-primary-foreground: hsl(0 0% 100%);
+  --color-sidebar-accent: hsl(210 100% 20%);
+  --color-sidebar-accent-foreground: hsl(0 0% 100%);
+  --color-sidebar-border: hsl(210 100% 20%);
+  --color-sidebar-ring: hsl(18 100% 60%);
+
+  /* SENAI Color Palette */
+  --color-senai-blue-50: hsl(210 100% 95%);
+  --color-senai-blue-100: hsl(210 100% 90%);
+  --color-senai-blue-200: hsl(210 100% 80%);
+  --color-senai-blue-300: hsl(210 100% 70%);
+  --color-senai-blue-400: hsl(210 100% 50%);
+  --color-senai-blue-500: hsl(210 100% 35%);
+  --color-senai-blue-600: hsl(210 100% 24%); /* Main SENAI Blue */
+  --color-senai-blue-700: hsl(210 100% 20%);
+  --color-senai-blue-800: hsl(210 100% 15%);
+  --color-senai-blue-900: hsl(210 100% 10%);
+
+  --color-senai-orange-50: hsl(18 100% 95%);
+  --color-senai-orange-100: hsl(18 100% 90%);
+  --color-senai-orange-200: hsl(18 100% 80%);
+  --color-senai-orange-300: hsl(18 100% 70%);
+  --color-senai-orange-400: hsl(18 100% 65%);
+  --color-senai-orange-500: hsl(18 100% 60%); /* Main SENAI Orange */
+  --color-senai-orange-600: hsl(18 100% 55%);
+  --color-senai-orange-700: hsl(18 100% 50%);
+  --color-senai-orange-800: hsl(18 100% 45%);
+  --color-senai-orange-900: hsl(18 100% 40%);
+
+  /* Border Radius */
+  --radius-lg: 0.75rem;
+  --radius-md: 0.5rem;
+  --radius-sm: 0.25rem;
+
+  /* Background Images */
+  --gradient-primary: linear-gradient(
+    135deg,
+    hsl(210 100% 24%),
+    hsl(210 100% 35%)
+  );
+  --gradient-secondary: linear-gradient(
+    135deg,
+    hsl(18 100% 60%),
+    hsl(18 100% 70%)
+  );
+  --gradient-hero: linear-gradient(
+    135deg,
+    hsl(210 100% 24%) 0%,
+    hsl(210 100% 35%) 50%,
+    hsl(18 100% 60%) 100%
+  );
+
+  /* Box Shadow */
+  --shadow-senai-sm: 0 2px 4px hsl(210 100% 24% / 0.1);
+  --shadow-senai-md: 0 4px 12px hsl(210 100% 24% / 0.15);
+  --shadow-senai-lg: 0 8px 24px hsl(210 100% 24% / 0.2);
+
+  /* Container */
+  --container-2xl: 1400px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }

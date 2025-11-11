@@ -1,22 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏥 Atestado Stock Hub
 
-## Getting Started
+A modern, secure medical certificate management system built with Next.js, Firebase, and TypeScript.
 
-First, run the development server:
+## ✨ **Features**
+
+- 🔐 **Secure Authentication** - Role-based access control (Admin, User, Employee)
+- 📋 **Medical Certificate Management** - Create, approve, and track medical certificates
+- ✅ **Input Validation** - Comprehensive Zod validation with Portuguese error messages
+- 🔥 **Firebase Integration** - Real-time database with secure server/client separation
+- 📱 **Responsive Design** - Modern UI with Tailwind CSS and Shadcn/ui
+- 🛡️ **Type Safety** - Full TypeScript coverage with inferred types
+
+## 🚀 **Quick Start**
+
+### Prerequisites
+- Node.js 18+ 
+- Firebase project setup
+- Environment variables configured
+
+### Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
+# Install dependencies
+bun install
+
+# Set up environment variables
+cp config/.env.example .env.local
+# Edit .env.local with your Firebase credentials
+
+# Run development server
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📚 **Documentation**
+
+Comprehensive documentation is available in the [`/docs`](./docs/) folder:
+
+- **[🏗️ Project Structure](./docs/PROJECT_STRUCTURE.md)** - Complete codebase organization
+- **[🔒 Firebase Security](./docs/FIREBASE_SECURITY.md)** - Security implementation guide
+- **[✅ Validation Guide](./docs/ZOD_VALIDATION_GUIDE.md)** - API validation examples
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
