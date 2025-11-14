@@ -5,6 +5,7 @@ import {
 } from "@/lib/firebase/middleware";
 import { CreateUserSchema } from "@/lib/validations/schemas";
 import { validateRequestBody } from "@/lib/validations/helpers";
+import { hashPassword } from "@/lib/firebase/admin";
 
 // POST /api/admin/create-user - Admin creates new user (admin or staff)
 export const POST = withFirebaseAdmin(async (req, db) => {
@@ -57,7 +58,7 @@ export const POST = withFirebaseAdmin(async (req, db) => {
         cargo: validatedData.cargo,
         ...(validatedData.telefone ? { telefone: validatedData.telefone } : {}),
         ra: validatedData.ra,
-        senha: validatedData.senha, // Note: In production, hash this password
+        senha: await hashPassword(validatedData.senha),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         // Store any additional metadata
