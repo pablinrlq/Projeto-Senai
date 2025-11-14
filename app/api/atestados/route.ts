@@ -10,6 +10,8 @@ import {
 } from "@/lib/validations/schemas";
 import { ZodError } from "zod";
 import { Timestamp } from "firebase-admin/firestore";
+import * as fs from "fs-extra";
+import * as path from "path";
 import { verifyAuth } from "@/lib/authMiddleware";
 import {
   uploadImageToStorage,
@@ -108,7 +110,7 @@ export const GET = withFirebaseAdmin(async (req, db) => {
       string,
       Pick<User, "id" | "nome" | "email" | "ra">
     >();
-    userDocs.forEach((doc) => {
+    userDocs.forEach((doc: any) => {
       if (doc.exists) {
         usuarios.set(doc.id, {
           id: doc.id,
@@ -119,39 +121,80 @@ export const GET = withFirebaseAdmin(async (req, db) => {
       }
     });
 
-    const atestados = atestadosSnapshot.docs.map((doc) => {
-      const data = doc.data();
-      const usuario = usuarios.get(data.id_usuario);
+    const atestados = await Promise.all(
+      atestadosSnapshot.docs.map(async (doc) => {
+        const data = doc.data();
+        const usuario = usuarios.get(data.id_usuario);
 
-      // Return date fields as strings when they are stored as strings (YYYY-MM-DD)
-      // to avoid timezone conversions on the client. If the stored value is a
-      // Firestore Timestamp/object, convert to ISO string so client can handle it.
-      const toDateOrString = (v: any) => {
-        if (!v) return null;
-        if (typeof v === "string" || v instanceof String) return String(v);
-        if (v?.toDate) return v.toDate().toISOString();
-        // fallback: try to construct a Date and return ISO string
+        // Normalize image URL and verify file exists when using public uploads
+        const rawImage =
+          data.imagemAtestado || data.imagem_atestado || data.imagem_url || "";
+        let imageUrl = "";
         try {
-          const dt = new Date(v as any);
-          if (isNaN(dt.getTime())) return null;
-          return dt.toISOString();
-        } catch {
-          return null;
-        }
-      };
+          if (rawImage && rawImage.startsWith("/uploads/")) {
+            const rel = rawImage.replace(/^\//, "");
+            const fullPath = path.join(process.cwd(), "public", rel);
+            const exists = await fs.pathExists(fullPath);
+            if (exists) imageUrl = rawImage;
+          } else {
+            // for external URLs or storage URLs, return as-is
+            imageUrl = rawImage;
+          }
 
-      return {
-        id: doc.id,
-        motivo: data.motivo,
-        imagem: data.imagemAtestado || "",
-        status: data.status || "pendente",
-        data_inicio: toDateOrString(data.dataInicio),
-        data_fim: toDateOrString(data.dataFim),
-        usuario: usuario ?? null,
-        // manter compatibilidade com frontend usando `createdAt`
-        createdAt: toDateOrString(data.created_at ?? data.createdAt),
-      };
-    });
+          // If image is stored directly in DB as raw base64 (no data: prefix),
+          // detect and convert to a data URL so Next/Image can handle it.
+          if (
+            !imageUrl &&
+            rawImage &&
+            !rawImage.startsWith("/") &&
+            !rawImage.startsWith("http") &&
+            !rawImage.startsWith("data:")
+          ) {
+            const base64Candidate = rawImage.replace(/\s+/g, "");
+            const base64Regex =
+              /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
+            if (
+              base64Candidate.length > 100 &&
+              base64Regex.test(base64Candidate)
+            ) {
+              // assume JPEG if mime not known
+              imageUrl = `data:image/jpeg;base64,${base64Candidate}`;
+            }
+          }
+        } catch (e) {
+          imageUrl = "";
+        }
+
+        // Return date fields as strings when they are stored as strings (YYYY-MM-DD)
+        // to avoid timezone conversions on the client. If the stored value is a
+        // Firestore Timestamp/object, convert to ISO string so client can handle it.
+        const toDateOrString = (v: any) => {
+          if (!v) return null;
+          if (typeof v === "string" || v instanceof String) return String(v);
+          if (v?.toDate) return v.toDate().toISOString();
+          // fallback: try to construct a Date and return ISO string
+          try {
+            const dt = new Date(v as any);
+            if (isNaN(dt.getTime())) return null;
+            return dt.toISOString();
+          } catch {
+            return null;
+          }
+        };
+
+        return {
+          id: doc.id,
+          motivo: data.motivo,
+          imagem: imageUrl,
+          status: data.status || "pendente",
+          data_inicio: toDateOrString(data.dataInicio),
+          data_fim: toDateOrString(data.dataFim),
+          usuario: usuario ?? null,
+          // manter compatibilidade com frontend usando `createdAt`
+          createdAt: toDateOrString(data.created_at ?? data.createdAt),
+        };
+      })
+    );
 
     const totalPages = Math.ceil(total / limit);
     return {

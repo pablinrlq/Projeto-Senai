@@ -1,17 +1,20 @@
-import { NextResponse } from 'next/server';
-import { withFirebaseAdmin, safeFirestoreOperation } from '@/lib/firebase/middleware';
-import { CreateUserSchema } from '@/lib/validations/schemas';
-import { validateRequestBody, handleZodError } from '@/lib/validations/helpers';
+import { NextResponse } from "next/server";
+import {
+  withFirebaseAdmin,
+  safeFirestoreOperation,
+} from "@/lib/firebase/middleware";
+import { CreateUserSchema } from "@/lib/validations/schemas";
+import { validateRequestBody, handleZodError } from "@/lib/validations/helpers";
 
 // GET /api/users - Fetch all users (server-side only)
 export const GET = withFirebaseAdmin(async (req, db) => {
   const { data, error } = await safeFirestoreOperation(async () => {
-    const snapshot = await db.collection('usuarios').get();
-    return snapshot.docs.map(doc => ({
+    const snapshot = await db.collection("usuarios").get();
+    return snapshot.docs.map((doc: any) => ({
       id: doc.id,
-      ...doc.data()
+      ...doc.data(),
     }));
-  }, 'Failed to fetch users');
+  }, "Failed to fetch users");
 
   if (error) {
     return NextResponse.json({ success: false, error }, { status: 500 });
@@ -34,20 +37,21 @@ export const POST = withFirebaseAdmin(async (req, db) => {
     const validatedData = validation.data;
 
     // Check if user already exists
-    const existingUserSnapshot = await db.collection('usuarios')
-      .where('email', '==', validatedData.email)
+    const existingUserSnapshot = await db
+      .collection("usuarios")
+      .where("email", "==", validatedData.email)
       .limit(1)
       .get();
 
     if (!existingUserSnapshot.empty) {
       return NextResponse.json(
-        { error: 'Usuário com este email já existe' },
+        { error: "Usuário com este email já existe" },
         { status: 409 }
       );
     }
 
     const { data, error } = await safeFirestoreOperation(async () => {
-      const docRef = await db.collection('usuarios').add({
+      const docRef = await db.collection("usuarios").add({
         nome: validatedData.nome,
         email: validatedData.email,
         cargo: validatedData.cargo,
@@ -57,17 +61,20 @@ export const POST = withFirebaseAdmin(async (req, db) => {
         createdAt: new Date().toISOString(),
       });
       return { id: docRef.id };
-    }, 'Failed to create user');
+    }, "Failed to create user");
 
     if (error) {
       return NextResponse.json({ error }, { status: 500 });
     }
 
-    return NextResponse.json({
-      success: true,
-      message: 'Usuário criado com sucesso',
-      data
-    }, { status: 201 });
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Usuário criado com sucesso",
+        data,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     return handleZodError(error);
   }

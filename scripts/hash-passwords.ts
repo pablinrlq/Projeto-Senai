@@ -4,17 +4,17 @@
  * Run with: bun run scripts/hash-passwords.ts
  */
 
-import { db, hashPassword } from '../lib/firebase/admin';
+import { db, hashPassword } from "../lib/firebase/admin";
 
 async function hashExistingPasswords() {
   try {
-    console.log('Starting password hashing process...');
+    console.log("Starting password hashing process...");
 
     // Get all users from the database
-    const usersSnapshot = await db.collection('users').get();
+    const usersSnapshot = await db.collection("users").get();
 
     if (usersSnapshot.empty) {
-      console.log('No users found in the database.');
+      console.log("No users found in the database.");
       return;
     }
 
@@ -30,22 +30,31 @@ async function hashExistingPasswords() {
         const plainPassword = userData.senha;
 
         // Skip if password is already hashed (check if it starts with $argon2)
-        if (plainPassword && typeof plainPassword === 'string' && !plainPassword.startsWith('$argon2')) {
+        if (
+          plainPassword &&
+          typeof plainPassword === "string" &&
+          !plainPassword.startsWith("$argon2")
+        ) {
           console.log(`Processing user: ${userData.email}`);
 
           // Hash the plain text password
           const hashedPassword = await hashPassword(plainPassword);
 
-          // Update the user document with the hashed password
-          await userDoc.ref.update({
-            senha: hashedPassword,
-            updatedAt: new Date().toISOString()
-          });
+          // Update the user document with the hashed password using our adapter
+          await db
+            .collection("users")
+            .doc(userDoc.id)
+            .update({
+              senha: hashedPassword,
+              updatedAt: new Date().toISOString(),
+            } as any);
 
           console.log(`✅ Updated password for: ${userData.email}`);
           processedCount++;
         } else {
-          console.log(`⏭️  Skipping user ${userData.email} (password already hashed or missing)`);
+          console.log(
+            `⏭️  Skipping user ${userData.email} (password already hashed or missing)`
+          );
         }
       } catch (error) {
         console.error(`❌ Error processing user ${userDoc.id}:`, error);
@@ -53,12 +62,11 @@ async function hashExistingPasswords() {
       }
     }
 
-    console.log('\n=== Password Hashing Complete ===');
+    console.log("\n=== Password Hashing Complete ===");
     console.log(`✅ Successfully processed: ${processedCount} users`);
     console.log(`❌ Errors encountered: ${errorCount} users`);
-
   } catch (error) {
-    console.error('Fatal error during password hashing:', error);
+    console.error("Fatal error during password hashing:", error);
     process.exit(1);
   }
 }
@@ -66,10 +74,10 @@ async function hashExistingPasswords() {
 // Run the script
 hashExistingPasswords()
   .then(() => {
-    console.log('Script completed successfully.');
+    console.log("Script completed successfully.");
     process.exit(0);
   })
   .catch((error) => {
-    console.error('Script failed:', error);
+    console.error("Script failed:", error);
     process.exit(1);
   });

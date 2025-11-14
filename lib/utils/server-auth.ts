@@ -1,4 +1,4 @@
-import { withFirebaseAdmin } from '@/lib/firebase/middleware';
+import { withFirebaseAdmin } from "@/lib/firebase/middleware";
 
 /**
  * Server-side authentication utilities for API routes
@@ -8,7 +8,7 @@ export interface AuthUser {
   id: string;
   nome: string;
   email: string;
-  cargo: 'ADMINISTRADOR' | 'USUARIO' | 'FUNCIONARIO';
+  cargo: "ADMINISTRADOR" | "USUARIO" | "FUNCIONARIO";
   ra: string;
   telefone?: string;
 }
@@ -27,7 +27,7 @@ export const verifyAuthToken = async (token: string): Promise<AuthResult> => {
   try {
     // Simple token format: "user_email" (in production, use proper JWT)
     if (!token) {
-      return { success: false, error: 'Token não fornecido' };
+      return { success: false, error: "Token não fornecido" };
     }
 
     // For this simple implementation, we'll extract email from token
@@ -37,13 +37,14 @@ export const verifyAuthToken = async (token: string): Promise<AuthResult> => {
     return new Promise((resolve) => {
       withFirebaseAdmin(async (req, db) => {
         try {
-          const userSnapshot = await db.collection('usuarios')
-            .where('email', '==', email)
+          const userSnapshot = await db
+            .collection("usuarios")
+            .where("email", "==", email)
             .limit(1)
             .get();
 
           if (userSnapshot.empty) {
-            resolve({ success: false, error: 'Usuário não encontrado' });
+            resolve({ success: false, error: "Usuário não encontrado" });
             return;
           }
 
@@ -61,14 +62,14 @@ export const verifyAuthToken = async (token: string): Promise<AuthResult> => {
 
           resolve({ success: true, user });
         } catch (error) {
-          console.error('Token verification error:', error);
-          resolve({ success: false, error: 'Erro ao verificar token' });
+          console.error("Token verification error:", error);
+          resolve({ success: false, error: "Erro ao verificar token" });
         }
-      })(new Request('http://localhost'), {});
+      })(new Request("http://localhost") as any);
     });
   } catch (error) {
-    console.error('Auth verification error:', error);
-    return { success: false, error: 'Erro de autenticação' };
+    console.error("Auth verification error:", error);
+    return { success: false, error: "Erro de autenticação" };
   }
 };
 
@@ -82,8 +83,8 @@ export const requireAdmin = async (token: string): Promise<AuthResult> => {
     return authResult;
   }
 
-  if (authResult.user?.cargo !== 'ADMINISTRADOR') {
-    return { success: false, error: 'Acesso negado. Apenas administradores.' };
+  if (authResult.user?.cargo !== "ADMINISTRADOR") {
+    return { success: false, error: "Acesso negado. Apenas administradores." };
   }
 
   return authResult;

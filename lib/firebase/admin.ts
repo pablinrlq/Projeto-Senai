@@ -238,7 +238,8 @@ export const storage = {
     return data;
   },
   getPublicUrl(bucket: string, path: string) {
-    return supabase.storage.from(bucket).getPublicUrl(path).publicURL;
+    const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+    return data?.publicUrl ?? "";
   },
   async removeFile(bucket: string, path: string) {
     const { error } = await supabase.storage.from(bucket).remove([path]);
