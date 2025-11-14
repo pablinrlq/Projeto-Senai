@@ -45,6 +45,10 @@ export async function PATCH(
       );
     }
 
+    // We'll attempt the update and handle PostgREST errors gracefully.
+    // If the update fails because the `observacoes_admin` column doesn't
+    // exist (PGRST204), return a helpful message with the SQL to add it.
+
     console.log("Atestado ID:", atestadoId);
 
     // Check if atestado exists
@@ -62,7 +66,7 @@ export async function PATCH(
     // - status
     // - observacoes_admin
     // - updated_at
-    const payload: any = {
+    const payload: Record<string, unknown> = {
       status,
       updated_at: new Date().toISOString(),
     };
@@ -71,7 +75,33 @@ export async function PATCH(
       payload.observacoes_admin = observacoes_admin.trim();
     }
 
-    await db.collection("atestados").doc(atestadoId).update(payload);
+    try {
+      await db.collection("atestados").doc(atestadoId).update(payload);
+    } catch (unknownErr) {
+      const err = unknownErr as { code?: string; message?: string };
+      console.error("Error updating atestado in review route:", err);
+      // Detect missing-column PostgREST error (PGRST204)
+      if (
+        err &&
+        err.code === "PGRST204" &&
+        /observacoes_admin/.test(err.message || "")
+      ) {
+        return NextResponse.json(
+          {
+            error:
+              "A coluna 'observacoes_admin' não existe na tabela 'atestados'. Por favor adicione-a antes de rejeitar um atestado.",
+            fix_sql:
+              "ALTER TABLE public.atestados ADD COLUMN observacoes_admin text;",
+          },
+          { status: 500 }
+        );
+      }
+
+      return NextResponse.json(
+        { error: "Falha ao atualizar atestado" },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
       success: true,
