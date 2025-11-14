@@ -541,7 +541,9 @@ export default function AdminDashboard() {
                                   </DialogHeader>
                                   <div className="flex justify-end gap-2 mt-4">
                                     <DialogClose asChild>
-                                      <Button variant="outline">Cancelar</Button>
+                                      <Button variant="outline">
+                                        Cancelar
+                                      </Button>
                                     </DialogClose>
                                     <Button
                                       onClick={() =>
