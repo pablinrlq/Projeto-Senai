@@ -92,11 +92,18 @@ export const GET = withFirebaseAdmin(async (req, db) => {
 
     // Buscar usuários relacionados
     const userIds = Array.from(
-      new Set(atestadosSnapshot.docs.map((doc) => doc.data().id_usuario))
+      new Set(atestadosSnapshot.docs.map((doc) => doc.data().idUsuario))
+    ).filter(Boolean);
+
+    // Filter out any undefined/null ids before querying the DB to avoid invalid UUID errors
+    const validUserIds = userIds.filter(
+      (id) => typeof id === "string" && id.length > 0
     );
-    const userDocs = await db.getAll(
-      ...userIds.map((id) => db.collection("usuarios").doc(id))
-    );
+    const userDocs = validUserIds.length
+      ? await db.getAll(
+          ...validUserIds.map((id) => db.collection("usuarios").doc(id))
+        )
+      : [];
     const usuarios = new Map<
       string,
       Pick<User, "id" | "nome" | "email" | "ra">
@@ -125,10 +132,10 @@ export const GET = withFirebaseAdmin(async (req, db) => {
       return {
         id: doc.id,
         motivo: data.motivo,
-        imagem: data.imagem_atestado || "",
+        imagem: data.imagemAtestado || "",
         status: data.status || "pendente",
-        data_inicio: toDateSafe(data.data_inicio),
-        data_fim: toDateSafe(data.data_fim),
+        data_inicio: toDateSafe(data.dataInicio),
+        data_fim: toDateSafe(data.dataFim),
         usuario: usuario ?? null,
         // manter compatibilidade com frontend usando `createdAt`
         createdAt: toDateSafe(data.created_at ?? data.createdAt),

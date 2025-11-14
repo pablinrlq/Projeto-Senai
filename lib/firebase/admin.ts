@@ -110,8 +110,9 @@ class CollectionRef {
 
     const docs = (data || []).map((row: any) => ({
       id: row.id || row.uid || row.uuid || String(row),
-      data: () => row,
-      get: (field: string) => row[field],
+      // return a camelCase view for application code
+      data: () => snakeToCamel(row),
+      get: (field: string) => row[camelToSnake(field)],
       exists: true,
     }));
 
@@ -119,9 +120,11 @@ class CollectionRef {
   }
 
   async add(payload: any) {
+    // convert payload keys to snake_case before inserting into Postgres
+    const snakePayload = toSnakeKeys(payload);
     const { data, error } = await supabase
       .from(this.table)
-      .insert([payload])
+      .insert([snakePayload])
       .select()
       .single();
     if (error) throw error;
@@ -142,14 +145,15 @@ class CollectionRef {
         return {
           exists: !!data,
           id: data?.id,
-          data: () => data,
-          get: (field: string) => data?.[field],
+          data: () => (data ? snakeToCamel(data) : data),
+          get: (field: string) => data?.[camelToSnake(field)],
         };
       },
       async update(payload: any) {
+        const snakePayload = toSnakeKeys(payload);
         const { error } = await supabase
           .from(table)
-          .update(payload)
+          .update(snakePayload)
           .eq("id", id);
         if (error) throw error;
         return true;
@@ -177,13 +181,48 @@ export const db = {
       results.push({
         exists: !!data,
         id: data?.id,
-        data: () => data,
-        get: (f: string) => data?.[f],
+        data: () => (data ? snakeToCamel(data) : data),
+        get: (f: string) => data?.[camelToSnake(f)],
       });
     }
     return results;
   },
 };
+
+// ----------------------
+// Helpers: camel <-> snake
+// ----------------------
+function camelToSnake(key: string) {
+  return key.replace(/([A-Z])/g, (m) => `_${m.toLowerCase()}`);
+}
+
+function snakeToCamelKey(key: string) {
+  return key.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+}
+
+function toSnakeKeys(obj: any): any {
+  if (obj === null || obj === undefined) return obj;
+  if (Array.isArray(obj)) return obj.map(toSnakeKeys);
+  if (typeof obj !== "object") return obj;
+  const out: any = {};
+  for (const k of Object.keys(obj)) {
+    const v = obj[k];
+    out[camelToSnake(k)] = toSnakeKeys(v);
+  }
+  return out;
+}
+
+function snakeToCamel(obj: any): any {
+  if (obj === null || obj === undefined) return obj;
+  if (Array.isArray(obj)) return obj.map(snakeToCamel);
+  if (typeof obj !== "object") return obj;
+  const out: any = {};
+  for (const k of Object.keys(obj)) {
+    const v = obj[k];
+    out[snakeToCamelKey(k)] = snakeToCamel(v);
+  }
+  return out;
+}
 
 export const storage = {
   async uploadFile(

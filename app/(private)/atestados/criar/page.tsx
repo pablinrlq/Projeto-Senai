@@ -1,19 +1,25 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import { z } from 'zod';
-import { toast } from 'sonner';
-import { ArrowLeft, Upload, X } from 'lucide-react';
+import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { z } from "zod";
+import { toast } from "sonner";
+import { ArrowLeft, Upload, X } from "lucide-react";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Logo } from '@/components/Logo';
-import { useCreateAtestado } from '@/hooks/use-create-atestado';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Logo } from "@/components/Logo";
+import { useCreateAtestado } from "@/hooks/use-create-atestado";
 
 interface Profile {
   nome: string;
@@ -25,7 +31,10 @@ interface Profile {
 const atestadoSchema = z.object({
   dataInicio: z.string().min(1, "Data de início é obrigatória"),
   dataFim: z.string().min(1, "Data de fim é obrigatória"),
-  motivo: z.string().max(500, "Motivo deve ter no máximo 500 caracteres").optional(),
+  motivo: z
+    .string()
+    .max(500, "Motivo deve ter no máximo 500 caracteres")
+    .optional(),
 });
 
 export default function CriarAtestadoPage() {
@@ -38,7 +47,7 @@ export default function CriarAtestadoPage() {
   const { createAtestado, loading: createLoading } = useCreateAtestado();
 
   const fetchProfile = useCallback(async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
 
     if (!token) {
       router.push("/auth/login");
@@ -46,30 +55,30 @@ export default function CriarAtestadoPage() {
     }
 
     try {
-      const response = await fetch('/api/profile', {
+      const response = await fetch("/api/profile", {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch profile');
+        throw new Error("Failed to fetch profile");
       }
 
       const data = await response.json();
 
       // Redirect admins to dashboard
-      if (data.user?.tipo_usuario === 'administrador') {
+      if (data.user?.tipo_usuario === "administrador") {
         router.push("/dashboard");
         return;
       }
 
       setProfile(data.user);
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      console.error("Error fetching profile:", error);
       toast.error("Erro ao carregar perfil");
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
       router.push("/auth/login");
     } finally {
       setLoading(false);
@@ -83,12 +92,13 @@ export default function CriarAtestadoPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 10 * 1024 * 1024) { // 10MB limit
+      if (file.size > 10 * 1024 * 1024) {
+        // 10MB limit
         toast.error("Arquivo muito grande. Máximo 10MB permitido.");
         return;
       }
 
-      if (!file.type.startsWith('image/')) {
+      if (!file.type.startsWith("image/")) {
         toast.error("Apenas imagens são permitidas.");
         return;
       }
@@ -132,7 +142,7 @@ export default function CriarAtestadoPage() {
     const data = {
       dataInicio: formData.get("dataInicio") as string,
       dataFim: formData.get("dataFim") as string,
-      motivo: formData.get("motivo") as string || "",
+      motivo: (formData.get("motivo") as string) || "",
     };
 
     try {
@@ -151,7 +161,7 @@ export default function CriarAtestadoPage() {
         data_inicio: validated.dataInicio,
         data_fim: validated.dataFim,
         motivo: validated.motivo || "",
-        status: 'pendente' as const,
+        status: "pendente" as const,
         imagem_atestado: uploadedFile,
       };
 
@@ -176,7 +186,7 @@ export default function CriarAtestadoPage() {
     );
   }
 
-  if (!profile || profile.tipo_usuario === 'administrador') {
+  if (!profile || profile.tipo_usuario === "administrador") {
     return null; // The redirect happens in fetchProfile
   }
 
@@ -184,13 +194,19 @@ export default function CriarAtestadoPage() {
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card shadow-sm">
         <div className="container mx-auto flex items-center gap-4 px-4 py-4">
-          <Button variant="ghost" size="icon" onClick={() => router.push("/atestados")}>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => router.push("/atestados")}
+          >
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <Logo />
           <div className="ml-auto">
             <p className="text-sm font-medium">{profile.nome}</p>
-            <p className="text-xs text-muted-foreground">RA: {profile.ra_aluno}</p>
+            <p className="text-xs text-muted-foreground">
+              RA: {profile.ra_aluno}
+            </p>
           </div>
         </div>
       </header>
@@ -198,8 +214,12 @@ export default function CriarAtestadoPage() {
       <main className="container mx-auto p-4 md:p-8">
         <div className="max-w-2xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-primary mb-2">Novo Atestado</h1>
-            <p className="text-muted-foreground">Envie um novo atestado médico para análise</p>
+            <h1 className="text-3xl font-bold text-primary mb-2">
+              Novo Atestado
+            </h1>
+            <p className="text-muted-foreground">
+              Envie um novo atestado médico para análise
+            </p>
           </div>
 
           <Card>
@@ -243,7 +263,9 @@ export default function CriarAtestadoPage() {
                     maxLength={500}
                     className="min-h-[100px]"
                   />
-                  <p className="text-xs text-muted-foreground">Máximo 500 caracteres</p>
+                  <p className="text-xs text-muted-foreground">
+                    Máximo 500 caracteres
+                  </p>
                 </div>
 
                 <div className="space-y-2">
@@ -253,8 +275,12 @@ export default function CriarAtestadoPage() {
                       <div className="text-center">
                         <Upload className="mx-auto h-12 w-12 text-muted-foreground/50 mb-4" />
                         <div className="space-y-2">
-                          <p className="text-sm font-medium">Clique para fazer upload ou arraste uma imagem</p>
-                          <p className="text-xs text-muted-foreground">PNG, JPG até 10MB</p>
+                          <p className="text-sm font-medium">
+                            Clique para fazer upload ou arraste uma imagem
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            PNG, JPG até 10MB
+                          </p>
                         </div>
                         <Input
                           id="imagem"
@@ -269,14 +295,27 @@ export default function CriarAtestadoPage() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2">
                             <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                              <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              <svg
+                                className="w-4 h-4 text-green-600"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M5 13l4 4L19 7"
+                                />
                               </svg>
                             </div>
                             <div>
-                              <p className="text-sm font-medium">{uploadedFile.name}</p>
+                              <p className="text-sm font-medium">
+                                {uploadedFile.name}
+                              </p>
                               <p className="text-xs text-muted-foreground">
-                                {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+                                {(uploadedFile.size / 1024 / 1024).toFixed(2)}{" "}
+                                MB
                               </p>
                             </div>
                           </div>
