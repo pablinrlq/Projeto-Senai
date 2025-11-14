@@ -24,6 +24,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Logo } from "@/components/Logo";
@@ -190,9 +191,10 @@ export default function AdminDashboard() {
     }
   };
 
-  
-
-  const performToggleUserStatus = async (usuarioId: string, currentStatus?: string) => {
+  const performToggleUserStatus = async (
+    usuarioId: string,
+    currentStatus?: string
+  ) => {
     const token = localStorage.getItem("token");
     if (!token) {
       toast.error("Não autorizado");
@@ -372,8 +374,6 @@ export default function AdminDashboard() {
     }
   };
 
-  
-
   // use shared date formatter (handles YYYY-MM-DD as local date)
 
   if (loading) {
@@ -519,17 +519,42 @@ export default function AdminDashboard() {
                               <Dialog>
                                 <DialogTrigger asChild>
                                   <Button size="sm" variant="outline">
-                                    {usuario.status === "inativo" ? "Ativar" : "Inativar"}
+                                    {usuario.status === "inativo"
+                                      ? "Ativar"
+                                      : "Inativar"}
                                   </Button>
                                 </DialogTrigger>
                                 <DialogContent>
                                   <DialogHeader>
-                                    <DialogTitle>{usuario.status === "inativo" ? "Ativar usuário" : "Inativar usuário"}</DialogTitle>
-                                    <DialogDescription>{`Confirma ${usuario.status === 'inativo' ? 'ativar' : 'inativar'} o usuário ${usuario.nome}?`}</DialogDescription>
+                                    <DialogTitle>
+                                      {usuario.status === "inativo"
+                                        ? "Ativar usuário"
+                                        : "Inativar usuário"}
+                                    </DialogTitle>
+                                    <DialogDescription>{`Confirma ${
+                                      usuario.status === "inativo"
+                                        ? "ativar"
+                                        : "inativar"
+                                    } o usuário ${
+                                      usuario.nome
+                                    }?`}</DialogDescription>
                                   </DialogHeader>
                                   <div className="flex justify-end gap-2 mt-4">
-                                    <Button variant="outline">Cancelar</Button>
-                                    <Button onClick={() => performToggleUserStatus(usuario.id, usuario.status)}>{usuario.status === "inativo" ? "Confirmar Ativação" : "Confirmar Inativação"}</Button>
+                                    <DialogClose asChild>
+                                      <Button variant="outline">Cancelar</Button>
+                                    </DialogClose>
+                                    <Button
+                                      onClick={() =>
+                                        performToggleUserStatus(
+                                          usuario.id,
+                                          usuario.status
+                                        )
+                                      }
+                                    >
+                                      {usuario.status === "inativo"
+                                        ? "Confirmar Ativação"
+                                        : "Confirmar Inativação"}
+                                    </Button>
                                   </div>
                                 </DialogContent>
                               </Dialog>
@@ -682,14 +707,16 @@ export default function AdminDashboard() {
                                     />
                                   </div>
                                   <div className="flex justify-end gap-2">
-                                    <Button
-                                      variant="outline"
-                                      onClick={() => {
-                                        setObservacoes("");
-                                      }}
-                                    >
-                                      Cancelar
-                                    </Button>
+                                    <DialogClose asChild>
+                                      <Button
+                                        variant="outline"
+                                        onClick={() => {
+                                          setObservacoes("");
+                                        }}
+                                      >
+                                        Cancelar
+                                      </Button>
+                                    </DialogClose>
                                     <Button
                                       className="bg-green-600 hover:bg-green-700"
                                       onClick={() =>
@@ -737,14 +764,16 @@ export default function AdminDashboard() {
                                     />
                                   </div>
                                   <div className="flex justify-end gap-2">
-                                    <Button
-                                      variant="outline"
-                                      onClick={() => {
-                                        setObservacoes("");
-                                      }}
-                                    >
-                                      Cancelar
-                                    </Button>
+                                    <DialogClose asChild>
+                                      <Button
+                                        variant="outline"
+                                        onClick={() => {
+                                          setObservacoes("");
+                                        }}
+                                      >
+                                        Cancelar
+                                      </Button>
+                                    </DialogClose>
                                     <Button
                                       variant="destructive"
                                       disabled={!observacoes.trim()}

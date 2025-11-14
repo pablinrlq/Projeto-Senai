@@ -23,6 +23,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogClose,
 } from "@/components/ui/dialog";
 
 interface Usuario {
@@ -182,40 +183,42 @@ export default function Usuarios() {
   const getTipoLabel = (tipo: string) => {
     const t = (tipo || "").toString().toLowerCase();
     if (t.includes("admin") || t === "administrador") return "Administrador";
-    if (t.includes("func") || t === "funcionario" || t === "funcionário") return "Funcionário";
+    if (t.includes("func") || t === "funcionario" || t === "funcionário")
+      return "Funcionário";
     if (t.includes("prof") || t === "professor") return "Professor";
     return "Aluno";
   };
 
-  
-
-  const performToggleUserStatus = async (usuarioId: string, currentStatus?: string) => {
-    const token = localStorage.getItem('token');
+  const performToggleUserStatus = async (
+    usuarioId: string,
+    currentStatus?: string
+  ) => {
+    const token = localStorage.getItem("token");
     if (!token) {
-      toast.error('Não autorizado');
+      toast.error("Não autorizado");
       return;
     }
 
-    const newStatus = currentStatus === 'inativo' ? 'ativo' : 'inativo';
+    const newStatus = currentStatus === "inativo" ? "ativo" : "inativo";
 
     try {
       const res = await fetch(`/api/admin/usuarios/${usuarioId}/status`, {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ status: newStatus }),
       });
 
       const body = await res.json();
-      if (!res.ok) throw new Error(body.error || 'Falha ao atualizar status');
-      toast.success(body.message || 'Status atualizado');
+      if (!res.ok) throw new Error(body.error || "Falha ao atualizar status");
+      toast.success(body.message || "Status atualizado");
       // refresh list
       fetchUsuarios();
     } catch (err) {
-      console.error('Error toggling user status:', err);
-      toast.error('Erro ao atualizar status do usuário');
+      console.error("Error toggling user status:", err);
+      toast.error("Erro ao atualizar status do usuário");
     }
   };
 
@@ -313,7 +316,9 @@ export default function Usuarios() {
               <div className="space-y-2 max-h-96 overflow-y-auto">
                 {filteredUsuarios.length === 0 ? (
                   <p className="text-center text-muted-foreground py-8">
-                    {searchTerm ? "Nenhum usuário encontrado" : "Nenhum usuário cadastrado"}
+                    {searchTerm
+                      ? "Nenhum usuário encontrado"
+                      : "Nenhum usuário cadastrado"}
                   </p>
                 ) : (
                   filteredUsuarios.map((usuario) => {
@@ -321,20 +326,36 @@ export default function Usuarios() {
                       <div
                         key={usuario.id}
                         className={`border rounded-lg p-3 cursor-pointer transition-colors hover:bg-muted/50 ${
-                          selectedUserId === usuario.id ? "bg-muted border-primary" : ""
+                          selectedUserId === usuario.id
+                            ? "bg-muted border-primary"
+                            : ""
                         }`}
                         onClick={() => fetchAtestadosUsuario(usuario.id)}
                       >
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="font-medium">{usuario.nome}</p>
-                            <p className="text-sm text-muted-foreground">{usuario.email}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {usuario.email}
+                            </p>
                             {usuario.ra_aluno && (
-                              <p className="text-xs text-muted-foreground">RA: {usuario.ra_aluno}</p>
+                              <p className="text-xs text-muted-foreground">
+                                RA: {usuario.ra_aluno}
+                              </p>
                             )}
-                            <p className="text-xs text-muted-foreground mt-1">Cargo: <span className="font-medium">{getTipoLabel(usuario.tipo_usuario)}</span></p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Cargo:{" "}
+                              <span className="font-medium">
+                                {getTipoLabel(usuario.tipo_usuario)}
+                              </span>
+                            </p>
                             {usuario.curso && (
-                              <p className="text-xs text-muted-foreground">Curso: <span className="font-medium">{usuario.curso}</span></p>
+                              <p className="text-xs text-muted-foreground">
+                                Curso:{" "}
+                                <span className="font-medium">
+                                  {usuario.curso}
+                                </span>
+                              </p>
                             )}
                           </div>
 
@@ -343,16 +364,45 @@ export default function Usuarios() {
                             <div>
                               <Dialog>
                                 <DialogTrigger asChild>
-                                  <Button size="sm" variant="outline">{usuario.status === 'inativo' ? 'Ativar' : 'Inativar'}</Button>
+                                  <Button size="sm" variant="outline">
+                                    {usuario.status === "inativo"
+                                      ? "Ativar"
+                                      : "Inativar"}
+                                  </Button>
                                 </DialogTrigger>
                                 <DialogContent>
                                   <DialogHeader>
-                                    <DialogTitle>{usuario.status === 'inativo' ? 'Ativar usuário' : 'Inativar usuário'}</DialogTitle>
-                                    <DialogDescription>{`Confirma ${usuario.status === 'inativo' ? 'ativar' : 'inativar'} o usuário ${usuario.nome}?`}</DialogDescription>
+                                    <DialogTitle>
+                                      {usuario.status === "inativo"
+                                        ? "Ativar usuário"
+                                        : "Inativar usuário"}
+                                    </DialogTitle>
+                                    <DialogDescription>{`Confirma ${
+                                      usuario.status === "inativo"
+                                        ? "ativar"
+                                        : "inativar"
+                                    } o usuário ${
+                                      usuario.nome
+                                    }?`}</DialogDescription>
                                   </DialogHeader>
                                   <div className="flex justify-end gap-2 mt-4">
-                                    <Button variant="outline">Cancelar</Button>
-                                    <Button onClick={() => performToggleUserStatus(usuario.id, usuario.status)}>{usuario.status === 'inativo' ? 'Confirmar Ativação' : 'Confirmar Inativação'}</Button>
+                                    <DialogClose asChild>
+                                      <Button variant="outline">
+                                        Cancelar
+                                      </Button>
+                                    </DialogClose>
+                                    <Button
+                                      onClick={() =>
+                                        performToggleUserStatus(
+                                          usuario.id,
+                                          usuario.status
+                                        )
+                                      }
+                                    >
+                                      {usuario.status === "inativo"
+                                        ? "Confirmar Ativação"
+                                        : "Confirmar Inativação"}
+                                    </Button>
                                   </div>
                                 </DialogContent>
                               </Dialog>

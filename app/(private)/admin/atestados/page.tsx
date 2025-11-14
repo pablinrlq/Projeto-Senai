@@ -34,6 +34,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from "@/components/ui/dialog";
 
 interface AtestadoData {
@@ -399,14 +400,16 @@ export default function AdminAtestadosPage() {
                                 />
                               </div>
                               <div className="flex justify-end gap-2">
-                                <Button
-                                  variant="outline"
-                                  onClick={() => {
-                                    setObservacoes("");
-                                  }}
-                                >
-                                  Cancelar
-                                </Button>
+                                <DialogClose asChild>
+                                  <Button
+                                    variant="outline"
+                                    onClick={() => {
+                                      setObservacoes("");
+                                    }}
+                                  >
+                                    Cancelar
+                                  </Button>
+                                </DialogClose>
                                 <Button
                                   className="bg-green-600 hover:bg-green-700"
                                   onClick={() =>
@@ -454,14 +457,16 @@ export default function AdminAtestadosPage() {
                                 />
                               </div>
                               <div className="flex justify-end gap-2">
-                                <Button
-                                  variant="outline"
-                                  onClick={() => {
-                                    setObservacoes("");
-                                  }}
-                                >
-                                  Cancelar
-                                </Button>
+                                <DialogClose asChild>
+                                  <Button
+                                    variant="outline"
+                                    onClick={() => {
+                                      setObservacoes("");
+                                    }}
+                                  >
+                                    Cancelar
+                                  </Button>
+                                </DialogClose>
                                 <Button
                                   variant="destructive"
                                   disabled={!observacoes.trim()}
