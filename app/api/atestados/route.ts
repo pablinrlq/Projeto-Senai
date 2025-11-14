@@ -187,6 +187,8 @@ export const GET = withFirebaseAdmin(async (req, db) => {
           motivo: data.motivo,
           imagem: imageUrl,
           status: data.status || "pendente",
+          observacoes_admin:
+            data.observacoes_admin || data.observacoesAdmin || null,
           data_inicio: toDateOrString(data.dataInicio),
           data_fim: toDateOrString(data.dataFim),
           usuario: usuario ?? null,
