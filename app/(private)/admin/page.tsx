@@ -269,16 +269,36 @@ export default function AdminDashboard() {
   }, [searchTerm, usuarios]);
 
   const getTipoBadge = (tipo: string) => {
+    const t = (tipo || "").toString().toLowerCase();
+
+    // Normalize possible incoming values to a small set of roles
+    let key = "aluno";
+    if (t.includes("admin") || t === "administrador" || t === "administrator") {
+      key = "administrador";
+    } else if (
+      t.includes("func") ||
+      t === "funcionario" ||
+      t === "funcionário" ||
+      t.includes("staff")
+    ) {
+      key = "funcionario";
+    } else if (t.includes("prof") || t === "professor") {
+      key = "professor";
+    } else if (t === "usuario" || t === "aluno") {
+      key = "aluno";
+    }
+
     const variants: Record<
       string,
       { variant: "default" | "secondary" | "destructive"; label: string }
     > = {
       aluno: { variant: "default", label: "Aluno" },
+      funcionario: { variant: "secondary", label: "Funcionário" },
       professor: { variant: "secondary", label: "Professor" },
       administrador: { variant: "destructive", label: "Administrador" },
     };
 
-    const { variant, label } = variants[tipo] || variants.aluno;
+    const { variant, label } = variants[key] || variants.aluno;
     return <Badge variant={variant}>{label}</Badge>;
   };
 
