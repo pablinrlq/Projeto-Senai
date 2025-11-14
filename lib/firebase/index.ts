@@ -1,4 +1,4 @@
-// Firebase configuration exports
-export { app, db, storage } from './client';
-export { getFirebaseAdmin, firebaseAdmin, db as adminDb } from './admin';
-export { withFirebaseAdmin, safeFirestoreOperation } from './middleware';
+// Supabase compatibility exports (keeps old import paths working)
+export { app, db as clientDb, storage as clientStorage } from "./client";
+export { supabase as firebaseAdmin, db, storage } from "./admin";
+export { withFirebaseAdmin, safeFirestoreOperation } from "./middleware";

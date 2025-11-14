@@ -1,41 +1,42 @@
-import { NextResponse } from 'next/server';
-import { collection, getDocs, limit, query } from 'firebase/firestore';
-import { db } from '@/lib/firebase/client';
+import { NextResponse } from "next/server";
+import { supabase } from "@/lib/firebase/admin";
 
 export async function GET() {
   try {
-    // Test connection by trying to read from users collection
-    const usersCollection = collection(db, 'usuarios');
-    const usersQuery = query(usersCollection, limit(1));
+    // Get counts using head=true + count=exact
+    const { count: usuariosCount, error: uErr } = await supabase
+      .from("usuarios")
+      .select("*", { head: true, count: "exact" });
 
-    const snapshot = await getDocs(usersQuery);
-    const userCount = snapshot.size;
+    if (uErr) throw uErr;
 
-    // Test atestados collection
-    const atestadosCollection = collection(db, 'atestados');
-    const atestadosQuery = query(atestadosCollection, limit(1));
+    const { count: atestadosCount, error: aErr } = await supabase
+      .from("atestados")
+      .select("*", { head: true, count: "exact" });
 
-    const atestadosSnapshot = await getDocs(atestadosQuery);
-    const atestadosCount = atestadosSnapshot.size;
+    if (aErr) throw aErr;
 
     return NextResponse.json({
       success: true,
-      message: 'Firebase connection successful',
+      message: "Supabase connection successful",
       data: {
         timestamp: new Date().toISOString(),
         collections: {
-          usuarios: userCount,
-          atestados: atestadosCount
-        }
-      }
+          usuarios: usuariosCount ?? 0,
+          atestados: atestadosCount ?? 0,
+        },
+      },
     });
   } catch (error: unknown) {
-    console.error('Firebase connection test failed:', error);
+    console.error("Supabase connection test failed:", error);
 
-    return NextResponse.json({
-      success: false,
-      message: 'Firebase connection failed',
-      error: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Supabase connection failed",
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 }
+    );
   }
 }

@@ -1,24 +1,19 @@
-import { initializeApp } from "firebase/app";
+import { createClient } from "@supabase/supabase-js";
 
-import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-const clientCredentials = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-};
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  // In browser builds the env vars should be present; throw in dev to help debugging
+  if (process.env.NODE_ENV === "development") {
+    console.warn(
+      "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY"
+    );
+  }
+}
 
-const app = initializeApp(clientCredentials);
+export const app = createClient(SUPABASE_URL || "", SUPABASE_ANON_KEY || "");
+export const db = app; // kept name for compatibility
+export const storage = app.storage;
 
-const db = getFirestore(app);
-const storage = getStorage(app);
-
-export {
-  app,
-  db,
-  storage,
-};
+export default app;

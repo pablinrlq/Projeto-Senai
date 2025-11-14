@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { authenticateUser, createSessionToken } from '@/lib/firebase/admin';
-import { LoginSchema } from '@/lib/validations/schemas';
-import { ZodError } from 'zod';
+import { NextRequest, NextResponse } from "next/server";
+import { createSessionToken, supabase } from "@/lib/firebase/admin";
+import { LoginSchema } from "@/lib/validations/schemas";
+import { ZodError } from "zod";
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,13 +12,13 @@ export async function POST(req: NextRequest) {
 
     if (!validationResult.success) {
       const errorMessages = validationResult.error.errors.map(
-        (error) => `${error.path.join('.')}: ${error.message}`
+        (error) => `${error.path.join(".")}: ${error.message}`
       );
 
       return NextResponse.json(
         {
-          error: 'Dados inválidos',
-          details: errorMessages
+          error: "Dados inválidos",
+          details: errorMessages,
         },
         { status: 400 }
       );
@@ -26,41 +26,74 @@ export async function POST(req: NextRequest) {
 
     const validatedData = validationResult.data;
 
-    console.table(validatedData)
+    console.table(validatedData);
 
-    // Authenticate user
-    const authResult = await authenticateUser(validatedData);
+    // Sign in with Supabase Auth
+    try {
+      const credentials: { email: string; password: string } = {
+        email: validatedData.email,
+        password: validatedData.senha,
+      };
 
-    if (!authResult.success) {
+      const { data: signInData, error: signInError } =
+        await supabase.auth.signInWithPassword(credentials as any);
+
+      if (signInError) {
+        return NextResponse.json(
+          { error: "Email ou senha incorretos" },
+          { status: 401 }
+        );
+      }
+
+      const userId = signInData?.user?.id;
+
+      // Fetch profile from usuarios table
+      const { data: profile, error: profileError } = await supabase
+        .from("usuarios")
+        .select("*")
+        .eq("id", userId)
+        .maybeSingle();
+
+      if (profileError) {
+        console.error("Error fetching profile after sign-in:", profileError);
+      }
+
+      // Create custom session token for application (optional, keeps existing flows)
+      const token = await createSessionToken(userId);
+
+      const safeProfile = profile
+        ? { ...profile }
+        : { id: userId, email: validatedData.email };
+      if ((safeProfile as any).senha) delete (safeProfile as any).senha;
+
+      return NextResponse.json({
+        success: true,
+        message: "Login realizado com sucesso",
+        user: safeProfile,
+        token,
+        supabaseSession: signInData?.session ?? null,
+      });
+    } catch (err) {
+      console.error("Error during Supabase signIn:", err);
       return NextResponse.json(
-        { error: authResult.error },
-        { status: 401 }
+        { error: "Erro interno do servidor" },
+        { status: 500 }
       );
     }
-
-    // Create session token
-    const token = await createSessionToken(authResult.user!.id);
-
-    return NextResponse.json({
-      success: true,
-      message: 'Login realizado com sucesso',
-      user: authResult.user,
-      token
-    });
   } catch (error) {
-    console.error('Error in login route:', error);
+    console.error("Error in login route:", error);
     if (error instanceof ZodError) {
       return NextResponse.json(
         {
-          error: 'Dados inválidos',
-          details: error.errors.map(e => `${e.path.join('.')}: ${e.message}`)
+          error: "Dados inválidos",
+          details: error.errors.map((e) => `${e.path.join(".")}: ${e.message}`),
         },
         { status: 400 }
       );
     }
 
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
+      { error: "Erro interno do servidor" },
       { status: 500 }
     );
   }

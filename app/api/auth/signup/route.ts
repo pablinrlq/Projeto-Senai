@@ -1,86 +1,235 @@
-import { NextResponse } from 'next/server';
-import { withFirebaseAdmin, safeFirestoreOperation } from '@/lib/firebase/middleware';
-import { CreateUserSchema } from '@/lib/validations/schemas';
-import { validateRequestBody } from '@/lib/validations/helpers';
-import * as argon2 from "argon2";
+import { NextResponse } from "next/server";
+import { CreateUserSchema } from "@/lib/validations/schemas";
+import { validateRequestBody } from "@/lib/validations/helpers";
+import { supabase } from "@/lib/firebase/admin";
+import fs from "fs";
+import path from "path";
+import argon2 from "argon2";
 
-// POST /api/auth/signup - Student registration
-export const POST = withFirebaseAdmin(async (req, db) => {
+// POST /api/auth/signup - create user via Supabase Auth and profile in `usuarios`
+export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    // valida a requisição de criar a tabela de um usuario noco
     const validation = validateRequestBody(CreateUserSchema, body);
-    if (!validation.success) {
-      return validation.response;
-    }
+    if (!validation.success) return validation.response;
 
     const validatedData = validation.data;
 
-    // ve se o usuario realmente existe
-    const existingUserSnapshot = await db.collection('usuarios')
-      .where('email', '==', validatedData.email)
+    // Check RA uniqueness
+    const { data: raRow, error: raErr } = await supabase
+      .from("usuarios")
+      .select("id")
+      .eq("ra", validatedData.ra)
       .limit(1)
-      .get();
+      .maybeSingle();
 
-    if (!existingUserSnapshot.empty) {
+    if (raErr) {
+      console.error("Error checking RA uniqueness:", raErr?.message ?? raErr);
+      if (raErr && (raErr as any).stack) console.error((raErr as any).stack);
       return NextResponse.json(
-        { error: 'Usuário com este email já existe' },
+        { error: "Erro interno do servidor" },
+        { status: 500 }
+      );
+    }
+
+    if (raRow) {
+      return NextResponse.json(
+        { error: "RA já está sendo usado por outro usuário" },
         { status: 409 }
       );
     }
 
-    // Ve se o RA existe
-    const existingRASnapshot = await db.collection('usuarios')
-      .where('ra', '==', validatedData.ra)
-      .limit(1)
-      .get();
-
-    if (!existingRASnapshot.empty) {
-      return NextResponse.json(
-        { error: 'RA já está sendo usado por outro usuário' },
-        { status: 409 }
-      );
-    }
-
-    const { data, error } = await safeFirestoreOperation(async () => {
-      const userData = {
-        nome: validatedData.nome,
+    // Create user in Supabase Auth (server-side - service role key)
+    console.log(
+      "Creating Supabase auth user for email:",
+      validatedData.email,
+      "ra:",
+      validatedData.ra
+    );
+    const { data: createdUser, error: createUserError } =
+      await supabase.auth.admin.createUser({
         email: validatedData.email,
-        cargo: validatedData.cargo || 'USUARIO', // Default to USUARIO for student registration
-        telefone: validatedData.telefone || '',
-        ra: validatedData.ra,
-        senha: await argon2.hash(validatedData.senha), // Botei "argon2.hash" pra concertar o erro
-        // de que quando uma pessoa ia se cadastrar, ela tivesse o hask na senha
-        
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      
-        ...(body.metadata && { metadata: body.metadata })
-      };
+        password: validatedData.senha,
+        email_confirm: true,
+      } as any);
 
-      const docRef = await db.collection('usuarios').add(userData);
-      return { id: docRef.id, ...userData };
-    }, 'Failed to create user');
+    if (createUserError) {
+      console.error(
+        "Supabase createUser error:",
+        createUserError?.message ?? createUserError
+      );
+      if ((createUserError as any).stack)
+        console.error((createUserError as any).stack);
+      // handle duplicate email: re-check RA with fallback
+      let raExists = false;
+      try {
+        const { data: raRow2, error: raErr2 } = await supabase
+          .from("usuarios")
+          .select("id")
+          .eq("ra", validatedData.ra)
+          .limit(1)
+          .maybeSingle();
 
-    if (error) {
-      return NextResponse.json({ error }, { status: 500 });
+        if (raErr2) throw raErr2;
+        if (raRow2) raExists = true;
+      } catch (err) {
+        console.error(
+          "Error checking RA uniqueness (supabase client):",
+          (err as any)?.message ?? err
+        );
+        if (err && (err as any).stack) console.error((err as any).stack);
+        // fallback to REST API call using service role key
+        try {
+          const restUrl = `${
+            process.env.SUPABASE_URL
+          }/rest/v1/usuarios?select=id&ra=eq.${encodeURIComponent(
+            validatedData.ra
+          )}&limit=1`;
+          console.log("RA uniqueness: using REST fallback to", restUrl);
+          const res = await fetch(restUrl, {
+            headers: {
+              apikey: process.env.SUPABASE_SERVICE_ROLE_KEY || "",
+              Authorization: `Bearer ${
+                process.env.SUPABASE_SERVICE_ROLE_KEY || ""
+              }`,
+              Accept: "application/json",
+            },
+          });
+          if (!res.ok) throw new Error(`REST fallback failed: ${res.status}`);
+          const json = await res.json();
+          if (Array.isArray(json) && json.length > 0) raExists = true;
+        } catch (restErr) {
+          console.error(
+            "Error checking RA uniqueness (REST fallback):",
+            (restErr as any)?.message ?? restErr
+          );
+          if (restErr && (restErr as any).stack)
+            console.error((restErr as any).stack);
+          return NextResponse.json(
+            { error: "Erro interno do servidor" },
+            { status: 500 }
+          );
+        }
+      }
+
+      if (raExists) {
+        return NextResponse.json(
+          { error: "RA já está sendo usado por outro usuário" },
+          { status: 409 }
+        );
+      }
+
+      return NextResponse.json(
+        { error: createUserError.message || "Erro ao criar usuário" },
+        { status: 400 }
+      );
     }
 
-    // remove a responsabilidade da senha
-    
-    const { senha, ...userWithoutPassword } = data;
+    // Insert profile in usuarios table
+    const profile: any = {
+      id: createdUser.user.id,
+      nome: validatedData.nome,
+      email: validatedData.email,
+      cargo: validatedData.cargo || "USUARIO",
+      ra: validatedData.ra,
+      ...(body.metadata && { metadata: body.metadata }),
+    };
 
-    return NextResponse.json({
-      success: true,
-      message: 'Conta criada com sucesso',
-      data: userWithoutPassword
-    }, { status: 201 });
-  } catch (error) {
-    console.error('Signup error:', error);
+    // Only include telefone if provided to avoid inserting non-existent column
+    if (validatedData.telefone) {
+      profile.telefone = validatedData.telefone;
+    }
+
+    // Hash senha to store in usuarios table if schema requires it
+    try {
+      const hashed = await argon2.hash(validatedData.senha);
+      profile.senha = hashed;
+    } catch (hashErr) {
+      console.error("Failed to hash password:", hashErr);
+      return NextResponse.json(
+        { error: "Erro interno do servidor" },
+        { status: 500 }
+      );
+    }
+
+    // Only keep columns that are expected to exist in the `usuarios` table
+    const allowedCols = new Set([
+      "id",
+      "nome",
+      "email",
+      "cargo",
+      "ra",
+      "senha",
+      "metadata",
+    ]);
+
+    const insertPayload: Record<string, any> = {};
+    Object.entries(profile).forEach(([k, v]) => {
+      if (allowedCols.has(k)) insertPayload[k] = v;
+    });
+
+    const removed = Object.keys(profile).filter((k) => !allowedCols.has(k));
+    if (removed.length > 0) {
+      console.log("Removed unknown columns before insert:", removed);
+    }
+
+    const { error: insertErr } = await supabase
+      .from("usuarios")
+      .insert([insertPayload]);
+    if (insertErr) {
+      console.error("Error inserting profile:", insertErr);
+      // persist detailed error to file for debugging
+      try {
+        const logDir = path.join(process.cwd(), "logs");
+        if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
+        const logFile = path.join(logDir, "signup-errors.log");
+        const payload = {
+          time: new Date().toISOString(),
+          insertErr: insertErr,
+          profile,
+        };
+        fs.appendFileSync(logFile, JSON.stringify(payload, null, 2) + "\n\n");
+      } catch (fileErr) {
+        console.error("Failed to write signup error log:", fileErr);
+      }
+      // Rollback auth user if needed
+      try {
+        await supabase.auth.admin.deleteUser(createdUser.user.id);
+      } catch (delErr) {
+        console.error("Failed to rollback created auth user:", delErr);
+      }
+      return NextResponse.json(
+        { error: "Erro ao criar perfil do usuário" },
+        { status: 500 }
+      );
+    }
+
+    const userWithoutPassword = { ...profile } as any;
+    if (userWithoutPassword.senha) delete userWithoutPassword.senha;
+
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
+      {
+        success: true,
+        message: "Conta criada com sucesso",
+        data: userWithoutPassword,
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("Signup error:", error);
+    try {
+      const logDir = path.join(process.cwd(), "logs");
+      if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
+      const logFile = path.join(logDir, "signup-errors.log");
+      const payload = { time: new Date().toISOString(), error };
+      fs.appendFileSync(logFile, JSON.stringify(payload, null, 2) + "\n\n");
+    } catch (fileErr) {
+      console.error("Failed to write signup error log (catch):", fileErr);
+    }
+    return NextResponse.json(
+      { error: "Erro interno do servidor" },
       { status: 500 }
     );
   }
-});
+}
