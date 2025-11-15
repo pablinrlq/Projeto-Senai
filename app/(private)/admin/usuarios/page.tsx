@@ -419,18 +419,20 @@ export default function Usuarios() {
                                         Cancelar
                                       </Button>
                                     </DialogClose>
-                                    <Button
-                                      onClick={() =>
-                                        performToggleUserStatus(
-                                          usuario.id,
-                                          usuario.status
-                                        )
-                                      }
-                                    >
-                                      {usuario.status === "inativo"
-                                        ? "Confirmar Ativação"
-                                        : "Confirmar Inativação"}
-                                    </Button>
+                                    <DialogClose asChild>
+                                      <Button
+                                        onClick={() =>
+                                          performToggleUserStatus(
+                                            usuario.id,
+                                            usuario.status
+                                          )
+                                        }
+                                      >
+                                        {usuario.status === "inativo"
+                                          ? "Confirmar Ativação"
+                                          : "Confirmar Inativação"}
+                                      </Button>
+                                    </DialogClose>
                                   </div>
                                 </DialogContent>
                               </Dialog>
