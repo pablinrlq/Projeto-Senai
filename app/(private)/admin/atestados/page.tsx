@@ -67,6 +67,7 @@ export default function AdminAtestadosPage() {
   const [atestados, setAtestados] = useState<AtestadoData[]>([]);
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [accessChecked, setAccessChecked] = useState(false);
 
   const [observacoes, setObservacoes] = useState("");
 
@@ -74,6 +75,7 @@ export default function AdminAtestadosPage() {
     const token = localStorage.getItem("token");
     if (!token) {
       router.push("/auth/login");
+      setAccessChecked(true);
       return;
     }
 
@@ -93,14 +95,17 @@ export default function AdminAtestadosPage() {
       if (data.user?.tipo_usuario !== "administrador") {
         toast.error("Acesso negado");
         router.push("/atestados");
+        setAccessChecked(true);
         return;
       }
 
       setProfile(data.user);
+      setAccessChecked(true);
     } catch (error) {
       console.error("Error checking admin access:", error);
       toast.error("Erro ao verificar permissões");
       router.push("/auth/login");
+      setAccessChecked(true);
     }
   }, [router]);
 
@@ -259,6 +264,14 @@ export default function AdminAtestadosPage() {
   };
 
   // using shared formatDate util to ensure consistent local-date parsing
+
+  if (!accessChecked) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
+  }
 
   if (!profile || profile.tipo_usuario !== "administrador") {
     return (
