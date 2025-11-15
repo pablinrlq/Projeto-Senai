@@ -1,9 +1,5 @@
 import { withFirebaseAdmin } from "@/lib/firebase/middleware";
 
-/**
- * Server-side authentication utilities for API routes
- */
-
 export interface AuthUser {
   id: string;
   nome: string;
@@ -19,19 +15,12 @@ export interface AuthResult {
   error?: string;
 }
 
-/**
- * Verify a JWT token and return user information
- * For now, this is a simple token verification - in production, use proper JWT
- */
 export const verifyAuthToken = async (token: string): Promise<AuthResult> => {
   try {
-    // Simple token format: "user_email" (in production, use proper JWT)
     if (!token) {
       return { success: false, error: "Token não fornecido" };
     }
 
-    // For this simple implementation, we'll extract email from token
-    // In production, decode and verify a proper JWT
     const email = token;
 
     return new Promise((resolve) => {
@@ -73,9 +62,6 @@ export const verifyAuthToken = async (token: string): Promise<AuthResult> => {
   }
 };
 
-/**
- * Middleware to verify admin access
- */
 export const requireAdmin = async (token: string): Promise<AuthResult> => {
   const authResult = await verifyAuthToken(token);
 

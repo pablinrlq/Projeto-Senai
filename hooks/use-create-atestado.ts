@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { CreateAtestadoData } from "@/lib/validations/schemas";
 
-// API function for creating atestado with FormData
 const createAtestadoWithFormData = async (
   data: CreateAtestadoData
 ): Promise<{ id: string }> => {
@@ -11,14 +10,12 @@ const createAtestadoWithFormData = async (
   formData.append("motivo", data.motivo);
   formData.append("status", data.status);
 
-  // Handle file upload
   if (data.imagem_atestado instanceof File) {
     formData.append("imagem_atestado", data.imagem_atestado);
   }
 
   const response = await fetch("/api/atestados", {
     method: "POST",
-    // include authorization header from localStorage token
     headers: {
       Authorization: `Bearer ${
         typeof window !== "undefined" ? localStorage.getItem("token") : ""
@@ -50,9 +47,7 @@ export function useCreateAtestado(): UseCreateAtestadoResult {
   const mutation = useMutation({
     mutationFn: createAtestadoWithFormData,
     onSuccess: () => {
-      // Invalidate and refetch atestados queries
       queryClient.invalidateQueries({ queryKey: ["atestados"] });
-      // Also invalidate users query in case stats change
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
   });

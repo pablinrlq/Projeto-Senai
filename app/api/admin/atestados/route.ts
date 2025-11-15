@@ -18,13 +18,11 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Token inválido" }, { status: 401 });
     }
 
-    // Check if user is admin
     const userDoc = await db.collection("usuarios").doc(decodedToken.uid).get();
     if (!userDoc.exists || userDoc.data()?.cargo !== "ADMINISTRADOR") {
       return NextResponse.json({ error: "Acesso negado" }, { status: 403 });
     }
 
-    // Get all atestados for admin review (order by DB column created_at)
     const atestadosSnapshot = await db
       .collection("atestados")
       .orderBy("created_at", "desc")
@@ -34,7 +32,6 @@ export async function GET(req: NextRequest) {
       atestadosSnapshot.docs.map(async (doc) => {
         const atestadoData = doc.data();
 
-        // Get user info (adapter returns camelCase keys)
         let usuario = null;
         const ownerId = atestadoData.idUsuario || atestadoData.userId || null;
         if (ownerId) {

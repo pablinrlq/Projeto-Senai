@@ -1,4 +1,3 @@
-// Validation schemas and helpers exports
 export {
   UserSchema,
   CreateUserSchema,
@@ -8,8 +7,8 @@ export {
   UpdateAtestadoStatusSchema,
   LoginSchema,
   BrazilianDateSchema,
-  AtestadoDateRangeSchema
-} from './schemas';
+  AtestadoDateRangeSchema,
+} from "./schemas";
 
 export type {
   User,
@@ -18,11 +17,11 @@ export type {
   Atestado,
   CreateAtestadoData,
   UpdateAtestadoStatus,
-  LoginData
-} from './schemas';
+  LoginData,
+} from "./schemas";
 
 export {
   validateRequestBody,
   handleZodError,
-  formatValidationErrors
-} from './helpers';
+  formatValidationErrors,
+} from "./helpers";

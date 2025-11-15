@@ -7,7 +7,6 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    // Validate request body with Zod
     const validationResult = LoginSchema.safeParse(body);
 
     if (!validationResult.success) {
@@ -28,7 +27,6 @@ export async function POST(req: NextRequest) {
 
     console.table(validatedData);
 
-    // Sign in with Supabase Auth
     try {
       const credentials: { email: string; password: string } = {
         email: validatedData.email,
@@ -47,7 +45,6 @@ export async function POST(req: NextRequest) {
 
       const userId = signInData?.user?.id;
 
-      // Fetch profile from usuarios table
       const { data: profile, error: profileError } = await supabase
         .from("usuarios")
         .select("*")
@@ -58,7 +55,6 @@ export async function POST(req: NextRequest) {
         console.error("Error fetching profile after sign-in:", profileError);
       }
 
-      // Create custom session token for application (optional, keeps existing flows)
       const token = await createSessionToken(userId);
 
       const safeProfile = profile

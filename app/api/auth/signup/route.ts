@@ -6,7 +6,6 @@ import fs from "fs";
 import path from "path";
 import argon2 from "argon2";
 
-// POST /api/auth/signup - create user via Supabase Auth and profile in `usuarios`
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -16,7 +15,6 @@ export async function POST(req: Request) {
 
     const validatedData = validation.data;
 
-    // Check RA uniqueness
     const { data: raRow, error: raErr } = await supabase
       .from("usuarios")
       .select("id")
@@ -40,7 +38,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Create user in Supabase Auth (server-side - service role key)
     console.log(
       "Creating Supabase auth user for email:",
       validatedData.email,
@@ -61,7 +58,6 @@ export async function POST(req: Request) {
       );
       if ((createUserError as any).stack)
         console.error((createUserError as any).stack);
-      // handle duplicate email: re-check RA with fallback
       let raExists = false;
       try {
         const { data: raRow2, error: raErr2 } = await supabase
@@ -79,7 +75,6 @@ export async function POST(req: Request) {
           (err as any)?.message ?? err
         );
         if (err && (err as any).stack) console.error((err as any).stack);
-        // fallback to REST API call using service role key
         try {
           const restUrl = `${
             process.env.SUPABASE_URL
@@ -126,7 +121,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Insert profile in usuarios table
     const profile: any = {
       id: createdUser.user.id,
       nome: validatedData.nome,
@@ -136,12 +130,10 @@ export async function POST(req: Request) {
       ...(body.metadata && { metadata: body.metadata }),
     };
 
-    // Only include telefone if provided to avoid inserting non-existent column
     if (validatedData.telefone) {
       profile.telefone = validatedData.telefone;
     }
 
-    // Hash senha to store in usuarios table if schema requires it
     try {
       const hashed = await argon2.hash(validatedData.senha);
       profile.senha = hashed;
@@ -153,7 +145,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Only keep columns that are expected to exist in the `usuarios` table
     const allowedCols = new Set([
       "id",
       "nome",
@@ -179,7 +170,6 @@ export async function POST(req: Request) {
       .insert([insertPayload]);
     if (insertErr) {
       console.error("Error inserting profile:", insertErr);
-      // persist detailed error to file for debugging
       try {
         const logDir = path.join(process.cwd(), "logs");
         if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
@@ -193,7 +183,6 @@ export async function POST(req: Request) {
       } catch (fileErr) {
         console.error("Failed to write signup error log:", fileErr);
       }
-      // Rollback auth user if needed
       try {
         await supabase.auth.admin.deleteUser(createdUser.user.id);
       } catch (delErr) {

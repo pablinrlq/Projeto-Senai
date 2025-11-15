@@ -1,10 +1,5 @@
-// Main lib exports - organized Firebase project structure
+export * from "./firebase";
 
-// Firebase exports
-export * from './firebase';
+export * from "./validations";
 
-// Validation exports  
-export * from './validations';
-
-// Utility exports
-export * from './utils';
+export * from "./utils";

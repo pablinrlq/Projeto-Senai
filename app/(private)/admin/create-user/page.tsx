@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-// checkbox import removed (not used on this page)
 import {
   Card,
   CardContent,
@@ -89,7 +88,6 @@ const CreateAdmin = () => {
   ];
 
   useEffect(() => {
-    // Clear curso when role is not aluno
     if (cargo !== "USUARIO") setCurso("");
   }, [cargo]);
 
@@ -143,13 +141,10 @@ const CreateAdmin = () => {
         return;
       }
 
-      // Create user data for API
       const createUserData: Record<string, unknown> = {
         ...validationResult.data,
       };
-      // If curso is empty string or null, omit it so DB will keep NULL
       if (!createUserData.curso) delete createUserData.curso;
-      // Ensure status is explicit
       createUserData.status = createUserData.status || "ativo";
 
       const response = await fetch("/api/admin/create-user", {
@@ -168,9 +163,7 @@ const CreateAdmin = () => {
 
       toast.success("Usuário criado com sucesso!");
 
-      // Reset form
       (e.target as HTMLFormElement).reset();
-      // Redirect back to admin panel after a short delay so toast is visible
       setTimeout(() => {
         router.push("/admin");
       }, 600);
@@ -192,7 +185,6 @@ const CreateAdmin = () => {
   if (isCheckingAuth) {
     return (
       <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4 relative overflow-hidden">
-        {/* Decorative orbs */}
         <div className="absolute top-0 left-0 w-96 h-96 bg-linear-to-br from-blue-200/30 to-indigo-200/30 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-linear-to-br from-purple-200/30 to-pink-200/30 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
 
@@ -226,7 +218,6 @@ const CreateAdmin = () => {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4 py-8 relative overflow-hidden">
-      {/* Decorative background orbs */}
       <div className="absolute top-0 left-0 w-96 h-96 bg-linear-to-br from-blue-200/30 to-indigo-200/30 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-linear-to-br from-purple-200/30 to-pink-200/30 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
       <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-linear-to-br from-indigo-200/20 to-purple-200/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
@@ -506,7 +497,6 @@ const CreateAdmin = () => {
               </div>
             </div>
 
-            {/* Password Requirements */}
             <div className="bg-linear-to-br from-blue-50 to-indigo-50 p-5 rounded-xl space-y-3 border-2 border-blue-100 shadow-sm">
               <div className="flex items-center gap-2">
                 <div className="w-1 h-5 bg-linear-to-b from-blue-500 to-indigo-500 rounded-full"></div>

@@ -6,7 +6,7 @@ import * as path from "path";
 const STORAGE_BUCKET =
   process.env.SUPABASE_STORAGE_BUCKET ||
   process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ||
-  "atestados"; // default bucket name
+  "atestados";
 
 export async function uploadImageToStorage(
   file: File,
@@ -14,18 +14,14 @@ export async function uploadImageToStorage(
   folder: string = "atestados"
 ): Promise<{ url: string; path: string }> {
   try {
-    // Generate unique filename
     const fileExtension = file.name.split(".").pop() || "jpg";
     const fileName = `${folder}/${userId}/${uuidv4()}.${fileExtension}`;
 
-    // Convert File to Buffer
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Upload to Supabase Storage
     await storage.uploadFile(STORAGE_BUCKET, fileName, buffer, file.type);
 
-    // Get public URL (bucket must be public or use signed URLs)
     const publicUrl = storage.getPublicUrl(STORAGE_BUCKET, fileName);
 
     return { url: publicUrl, path: fileName };
@@ -41,24 +37,19 @@ export async function uploadImageToPublicFolder(
   folder: string = "atestados"
 ): Promise<{ url: string; path: string }> {
   try {
-    // Generate unique filename
     const fileExtension = file.name.split(".").pop() || "jpg";
     const fileName = `${uuidv4()}.${fileExtension}`;
     const relativePath = `uploads/${folder}/${userId}`;
     const fullPath = path.join(process.cwd(), "public", relativePath);
     const filePath = path.join(fullPath, fileName);
 
-    // Ensure directory exists
     await fs.ensureDir(fullPath);
 
-    // Convert File to Buffer
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Write file to public folder
     await fs.writeFile(filePath, buffer);
 
-    // Return public URL (accessible via /uploads/...)
     const publicUrl = `/${relativePath}/${fileName}`;
     const storagePath = `${relativePath}/${fileName}`;
 

@@ -8,10 +8,10 @@
   --color-foreground: hsl(210 100% 15%);
 
   /* SENAI Brand Colors */
-  --color-primary: hsl(210 100% 24%); /* SENAI Blue #003D7A */
+  --color-primary: hsl(210 100% 24%);
   --color-primary-foreground: hsl(0 0% 100%);
 
-  --color-secondary: hsl(18 100% 60%); /* SENAI Orange #FF6B35 */
+  --color-secondary: hsl(18 100% 60%);
   --color-secondary-foreground: hsl(0 0% 100%);
 
   --color-destructive: hsl(0 84% 60%);
@@ -46,7 +46,7 @@
   --color-senai-blue-300: hsl(210 100% 70%);
   --color-senai-blue-400: hsl(210 100% 50%);
   --color-senai-blue-500: hsl(210 100% 35%);
-  --color-senai-blue-600: hsl(210 100% 24%); /* Main SENAI Blue */
+  --color-senai-blue-600: hsl(210 100% 24%);
   --color-senai-blue-700: hsl(210 100% 20%);
   --color-senai-blue-800: hsl(210 100% 15%);
   --color-senai-blue-900: hsl(210 100% 10%);
@@ -56,7 +56,7 @@
   --color-senai-orange-200: hsl(18 100% 80%);
   --color-senai-orange-300: hsl(18 100% 70%);
   --color-senai-orange-400: hsl(18 100% 65%);
-  --color-senai-orange-500: hsl(18 100% 60%); /* Main SENAI Orange */
+  --color-senai-orange-500: hsl(18 100% 60%);
   --color-senai-orange-600: hsl(18 100% 55%);
   --color-senai-orange-700: hsl(18 100% 50%);
   --color-senai-orange-800: hsl(18 100% 45%);
@@ -100,7 +100,6 @@ body {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Hide profile name and role on very small screens (<=425px) */
 @media (max-width: 425px) {
   .profilepill-hide-text {
     display: none;

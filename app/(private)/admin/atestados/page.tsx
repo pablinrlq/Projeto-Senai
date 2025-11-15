@@ -263,8 +263,6 @@ export default function AdminAtestadosPage() {
     }
   };
 
-  // using shared formatDate util to ensure consistent local-date parsing
-
   if (!accessChecked) {
     return (
       <div className="flex min-h-screen items-center justify-center">

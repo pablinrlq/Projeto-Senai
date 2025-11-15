@@ -80,7 +80,6 @@ export default function AtestadosPage() {
 
       const data = await response.json();
 
-      // Redirect admins to dashboard
       if (data.user?.tipo_usuario === "administrador") {
         router.push("/dashboard");
         return;
@@ -186,12 +185,10 @@ export default function AtestadosPage() {
     }
 
     try {
-      // fetch the image as blob (works for data: URLs and normal URLs)
       const res = await fetch(atestado.imagem);
       if (!res.ok) throw new Error("Falha ao baixar imagem");
       const blob = await res.blob();
 
-      // build filename: data-inicial_data-final_nome
       const inicio = toYMD(atestado.data_inicio);
       const fim = toYMD(atestado.data_fim);
       const nomeOrig = (profile?.nome || "atestado")
@@ -222,15 +219,12 @@ export default function AtestadosPage() {
     }
   };
 
-  // use shared date formatter to avoid timezone shifts for YYYY-MM-DD
-
   if (!profile || profile.tipo_usuario === "administrador") {
-    return null; // The redirect happens in fetchProfile
+    return null;
   }
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 relative overflow-hidden">
-      {/* Decorative background orbs */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-400/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
 
@@ -411,7 +405,6 @@ export default function AtestadosPage() {
           </div>
         )}
 
-        {/* Summary cards */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card className="bg-linear-to-br from-yellow-50 to-orange-50 border-yellow-200 hover:shadow-lg transition-all duration-300">
             <CardContent className="p-4">

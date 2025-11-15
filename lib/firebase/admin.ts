@@ -2,24 +2,12 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import * as argon2 from "argon2";
 import * as jwt from "jsonwebtoken";
 
-/**
- * 🚨 GARANTIA DE EXECUÇÃO APENAS NO SERVER-SIDE
- *
- * Este arquivo deve ser usado apenas em rotas server-side (API ou middleware).
- * Evita que o Firebase Admin seja importado no cliente, o que quebraria o build.
- */
 if (typeof window !== "undefined") {
   throw new Error(
     "⚠️ Este módulo (supabase server) não pode ser importado no client-side."
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* 🧩 1. Validação das variáveis de ambiente                                   */
-/* -------------------------------------------------------------------------- */
-/* -------------------------------------------------------------------------- */
-/* Supabase server initialization                                             */
-/* -------------------------------------------------------------------------- */
 const requiredEnvVars = {
   supabaseUrl: process.env.SUPABASE_URL,
   supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
@@ -40,10 +28,6 @@ export const supabase = createClient(
   { auth: { persistSession: false } }
 );
 
-/* -------------------------------------------------------------------------- */
-/* Simple Firestore-like adapter over Supabase for server-side routes          */
-/* This implements only the subset of Firestore API that the project uses.    */
-/* -------------------------------------------------------------------------- */
 type DocResult = {
   id: string;
   data: any;
@@ -110,7 +94,6 @@ class CollectionRef {
 
     const docs = (data || []).map((row: any) => ({
       id: row.id || row.uid || row.uuid || String(row),
-      // return a camelCase view for application code
       data: () => snakeToCamel(row),
       get: (field: string) => row[camelToSnake(field)],
       exists: true,
@@ -120,7 +103,6 @@ class CollectionRef {
   }
 
   async add(payload: any) {
-    // convert payload keys to snake_case before inserting into Postgres
     const snakePayload = toSnakeKeys(payload);
     const { data, error } = await supabase
       .from(this.table)
@@ -167,9 +149,7 @@ export const db = {
     return new CollectionRef(name);
   },
   async getAll(...docRefs: Array<{ id: string }>) {
-    // Assumes all docRefs are from same table and have an 'id' property
     if (!docRefs.length) return [];
-    // fallback: fetch each individually
     const results = [] as any[];
     for (const r of docRefs) {
       const { data, error } = await supabase
@@ -189,9 +169,6 @@ export const db = {
   },
 };
 
-// ----------------------
-// Helpers: camel <-> snake
-// ----------------------
 function camelToSnake(key: string) {
   return key.replace(/([A-Z])/g, (m) => `_${m.toLowerCase()}`);
 }
@@ -248,9 +225,6 @@ export const storage = {
   },
 };
 
-/* -------------------------------------------------------------------------- */
-/* 🔐 3. Tipos auxiliares                                                      */
-/* -------------------------------------------------------------------------- */
 export interface AuthResult {
   success: boolean;
   error?: string;
@@ -268,15 +242,11 @@ export interface LoginData {
   senha: string;
 }
 
-/* -------------------------------------------------------------------------- */
-/* 👤 4. Autenticação com Firestore e Argon2                                   */
-/* -------------------------------------------------------------------------- */
 export async function authenticateUser(
   loginData: LoginData
 ): Promise<AuthResult> {
   try {
     const { email, senha } = loginData;
-    // Try to sign in with Supabase Auth (server-side)
     try {
       const { data: signInData, error: signInError } =
         await supabase.auth.signInWithPassword({
@@ -285,13 +255,11 @@ export async function authenticateUser(
         } as any);
 
       if (signInError) {
-        // Authentication failed at Supabase level
         return { success: false, error: "Email ou senha incorretos" };
       }
 
       const userId = signInData?.user?.id;
 
-      // Fetch profile from usuarios table
       const { data: profile, error: profileError } = await supabase
         .from("usuarios")
         .select("*")
@@ -307,7 +275,6 @@ export async function authenticateUser(
       }
 
       if (!profile) {
-        // If there's no profile row, return minimal user info
         return {
           success: true,
           user: {
@@ -342,9 +309,6 @@ export async function authenticateUser(
   }
 }
 
-/* -------------------------------------------------------------------------- */
-/* 🔑 5. Funções utilitárias de segurança (senha e token)                      */
-/* -------------------------------------------------------------------------- */
 export async function hashPassword(password: string): Promise<string> {
   try {
     return await argon2.hash(password, {
@@ -404,7 +368,4 @@ export async function verifySessionToken(
   }
 }
 
-/* -------------------------------------------------------------------------- */
-/* ✅ 6. Exportações                                                          */
-/* -------------------------------------------------------------------------- */
 export { supabase as firebaseAdmin };

@@ -1,16 +1,9 @@
-#!/usr/bin/env bun
-/**
- * Utility script to hash existing plain text passwords in the database
- * Run with: bun run scripts/hash-passwords.ts
- */
-
 import { db, hashPassword } from "../lib/firebase/admin";
 
 async function hashExistingPasswords() {
   try {
     console.log("Starting password hashing process...");
 
-    // Get all users from the database
     const usersSnapshot = await db.collection("users").get();
 
     if (usersSnapshot.empty) {
@@ -29,7 +22,6 @@ async function hashExistingPasswords() {
         const userData = userDoc.data();
         const plainPassword = userData.senha;
 
-        // Skip if password is already hashed (check if it starts with $argon2)
         if (
           plainPassword &&
           typeof plainPassword === "string" &&
@@ -37,10 +29,8 @@ async function hashExistingPasswords() {
         ) {
           console.log(`Processing user: ${userData.email}`);
 
-          // Hash the plain text password
           const hashedPassword = await hashPassword(plainPassword);
 
-          // Update the user document with the hashed password using our adapter
           await db
             .collection("users")
             .doc(userDoc.id)
@@ -71,7 +61,6 @@ async function hashExistingPasswords() {
   }
 }
 
-// Run the script
 hashExistingPasswords()
   .then(() => {
     console.log("Script completed successfully.");

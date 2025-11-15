@@ -18,7 +18,6 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Token inválido" }, { status: 401 });
     }
 
-    // Check if user is admin
     const userDoc = await db.collection("usuarios").doc(decodedToken.uid).get();
     if (!userDoc.exists) {
       return NextResponse.json(
@@ -38,7 +37,6 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Get all users
     const usuariosSnapshot = await db
       .collection("usuarios")
       .orderBy("nome")

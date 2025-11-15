@@ -1,30 +1,48 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { CreateAtestadoSchema, type CreateAtestadoData } from '@/lib/validations/schemas';
-import { useCreateAtestado } from '@/hooks/use-create-atestado';
+import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  CreateAtestadoSchema,
+  type CreateAtestadoData,
+} from "@/lib/validations/schemas";
+import { useCreateAtestado } from "@/hooks/use-create-atestado";
 
 interface CreateAtestadoFormProps {
   onSuccess?: () => void;
 }
 
 export function CreateAtestadoForm({ onSuccess }: CreateAtestadoFormProps) {
-  const { createAtestado, loading, error, success, reset } = useCreateAtestado();
+  const { createAtestado, loading, error, success, reset } =
+    useCreateAtestado();
 
   const form = useForm<CreateAtestadoData>({
     resolver: zodResolver(CreateAtestadoSchema),
     defaultValues: {
-      data_inicio: '',
-      data_fim: '',
-      motivo: '',
-      status: 'pendente',
+      data_inicio: "",
+      data_fim: "",
+      motivo: "",
+      status: "pendente",
     },
   });
 
@@ -32,8 +50,7 @@ export function CreateAtestadoForm({ onSuccess }: CreateAtestadoFormProps) {
     try {
       await createAtestado(data);
       form.reset();
-      // Reset mutation state after successful submission
-      setTimeout(() => reset(), 3000); // Clear success message after 3 seconds
+      setTimeout(() => reset(), 3000);
       onSuccess?.();
     } catch {
       // Error is handled by TanStack Query
@@ -99,7 +116,10 @@ export function CreateAtestadoForm({ onSuccess }: CreateAtestadoFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Status</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecione o status" />
@@ -151,12 +171,14 @@ export function CreateAtestadoForm({ onSuccess }: CreateAtestadoFormProps) {
 
             {success && (
               <Alert>
-                <AlertDescription>Atestado criado com sucesso!</AlertDescription>
+                <AlertDescription>
+                  Atestado criado com sucesso!
+                </AlertDescription>
               </Alert>
             )}
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Criando...' : 'Criar Atestado'}
+              {loading ? "Criando..." : "Criar Atestado"}
             </Button>
           </form>
         </Form>

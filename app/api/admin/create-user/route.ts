@@ -8,15 +8,10 @@ import { validateRequestBody } from "@/lib/validations/helpers";
 import { hashPassword, supabase } from "@/lib/firebase/admin";
 import argon2 from "argon2";
 
-// POST /api/admin/create-user - Admin creates new user (admin or staff)
 export const POST = withFirebaseAdmin(async (req, db) => {
   try {
-    // Note: In production, implement proper JWT authentication here
-    // For now, we'll rely on client-side checks
-
     const body = await req.json();
 
-    // Validate request body with Zod
     const validation = validateRequestBody(CreateUserSchema, body);
     if (!validation.success) {
       return validation.response;
@@ -24,7 +19,6 @@ export const POST = withFirebaseAdmin(async (req, db) => {
 
     const validatedData = validation.data;
 
-    // Check if user already exists
     const existingUserSnapshot = await db
       .collection("usuarios")
       .where("email", "==", validatedData.email)
@@ -38,7 +32,6 @@ export const POST = withFirebaseAdmin(async (req, db) => {
       );
     }
 
-    // Check if RA already exists
     const existingRASnapshot = await db
       .collection("usuarios")
       .where("ra", "==", validatedData.ra)
@@ -52,7 +45,6 @@ export const POST = withFirebaseAdmin(async (req, db) => {
       );
     }
 
-    // Create Supabase Auth user so the new account can authenticate via Supabase
     console.log("Admin creating Supabase auth user for:", validatedData.email);
     const { data: createdUser, error: createUserError } =
       await supabase.auth.admin.createUser({
@@ -83,12 +75,10 @@ export const POST = withFirebaseAdmin(async (req, db) => {
         ...(validatedData.telefone ? { telefone: validatedData.telefone } : {}),
         ra: validatedData.ra,
         senha: await hashPassword(validatedData.senha),
-        // set status explicitly (defaulted by schema to 'ativo' if not provided)
         status: validatedData.status || "ativo",
         ...(validatedData.curso ? { curso: validatedData.curso } : {}),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        // Store any additional metadata
         ...(body.metadata && { metadata: body.metadata }),
       };
 
@@ -97,7 +87,6 @@ export const POST = withFirebaseAdmin(async (req, db) => {
     }, "Failed to create user");
 
     if (error) {
-      // Rollback created Supabase auth user if profile insertion failed
       try {
         if (uid) await supabase.auth.admin.deleteUser(uid);
       } catch (delErr) {
@@ -110,7 +99,6 @@ export const POST = withFirebaseAdmin(async (req, db) => {
       return NextResponse.json({ error }, { status: 500 });
     }
 
-    // Remove password from response
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { senha, ...userWithoutPassword } = data;
 

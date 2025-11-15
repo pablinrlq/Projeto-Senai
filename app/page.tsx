@@ -1,36 +1,34 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    // Check if user is already logged in
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
-      // Check if user is admin and redirect appropriately
-      fetch('/api/profile', {
+      fetch("/api/profile", {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       })
-        .then(response => response.json())
-        .then(data => {
-          if (data.user?.tipo_usuario === 'administrador') {
-            router.push('/admin');
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.user?.tipo_usuario === "administrador") {
+            router.push("/admin");
           } else {
-            router.push('/dashboard');
+            router.push("/dashboard");
           }
         })
         .catch(() => {
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          router.push('/auth/login');
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          router.push("/auth/login");
         });
     } else {
-      router.push('/auth/login');
+      router.push("/auth/login");
     }
   }, [router]);
 

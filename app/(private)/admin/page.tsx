@@ -96,14 +96,12 @@ export default function AdminDashboard() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Users management state
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [filteredUsuarios, setFilteredUsuarios] = useState<Usuario[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [userAtestados, setUserAtestados] = useState<Atestado[]>([]);
 
-  // Atestados review state
   const [atestados, setAtestados] = useState<AtestadoData[]>([]);
   const [observacoes, setObservacoes] = useState("");
 
@@ -158,7 +156,6 @@ export default function AdminDashboard() {
       }
 
       setProfile(data.user);
-      // Load initial data
       fetchUsuarios();
       fetchAtestados();
     } catch (error) {
@@ -309,7 +306,6 @@ export default function AdminDashboard() {
   const getTipoBadge = (tipo: string) => {
     const t = (tipo || "").toString().toLowerCase();
 
-    // Normalize possible incoming values to a small set of roles
     let key = "aluno";
     if (t.includes("admin") || t === "administrador" || t === "administrator") {
       key = "administrador";
@@ -425,8 +421,6 @@ export default function AdminDashboard() {
       toast.error("Erro ao baixar atestado");
     }
   };
-
-  // use shared date formatter (handles YYYY-MM-DD as local date)
 
   if (loading) {
     return (
@@ -631,7 +625,6 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          {/* Atestados Review Tab */}
           <TabsContent value="atestados" className="space-y-6">
             {atestados.length === 0 ? (
               <Card>
@@ -873,7 +866,6 @@ export default function AdminDashboard() {
             )}
           </TabsContent>
 
-          {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               <Card className="hover:shadow-lg transition-shadow cursor-pointer opacity-50">

@@ -56,7 +56,6 @@ const Auth = () => {
         throw new Error(result.error || "Erro ao fazer login");
       }
 
-      // Store token if provided
       if (result.token) {
         setAuthToken(result.token);
       }
@@ -83,7 +82,6 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left Panel - Welcome Section */}
       <div className="hidden lg:flex lg:w-1/2 bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 p-12 flex-col justify-between relative overflow-hidden">
         <div className="flex-1 flex flex-col justify-center max-w-md mx-auto">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">
@@ -95,12 +93,10 @@ const Auth = () => {
           </p>
         </div>
 
-        {/* Decorative gradient orbs */}
         <div className="absolute top-0 left-0 w-64 h-64 bg-linear-to-br from-blue-200/40 to-purple-200/40 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-linear-to-br from-pink-200/40 to-purple-200/40 rounded-full blur-3xl translate-x-1/3 translate-y-1/3"></div>
       </div>
 
-      {/* Right Panel - Login Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white relative">
         <div className="w-full max-w-md">
           <div className="absolute top-8 right-8">

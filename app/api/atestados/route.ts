@@ -18,12 +18,6 @@ import {
   uploadImageToPublicFolder,
 } from "@/lib/firebase/storage";
 
-/**
- * ===============================
- * 🔹 GET /api/atestados
- * ===============================
- * Lista todos os atestados (com paginação e filtros)
- */
 export const GET = withFirebaseAdmin(async (req, db) => {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
@@ -55,10 +49,8 @@ export const GET = withFirebaseAdmin(async (req, db) => {
     );
   }
 
-  // Determine o userId efetivo (se não informado, usar o id do usuário atual)
   const requestedUserId = userId ?? currUser.id;
 
-  // Se for usuário comum, só pode listar seus próprios atestados
   if (currUser.get("cargo") === "USUARIO" && requestedUserId !== currUser.id) {
     return NextResponse.json(
       { error: "Usuário não autorizado a acessar esses atestados" },
@@ -69,8 +61,6 @@ export const GET = withFirebaseAdmin(async (req, db) => {
   const { data, error } = await safeFirestoreOperation(async () => {
     let atestadosQuery: FirebaseFirestore.Query = db.collection("atestados");
 
-    // Se o cliente solicitou explicitamente um userId aplique o filtro;
-    // além disso, para usuários comuns sempre filtrar pelos próprios atestados.
     if (userId || currUser.get("cargo") === "USUARIO") {
       atestadosQuery = atestadosQuery.where(
         "id_usuario",
@@ -85,19 +75,16 @@ export const GET = withFirebaseAdmin(async (req, db) => {
     const totalSnapshot = await atestadosQuery.get();
     const total = totalSnapshot.size;
 
-    // Paginação e ordenação (use o nome de coluna do Postgres: created_at)
     const paginatedQuery = atestadosQuery
       .orderBy("created_at", "desc")
       .offset(offset)
       .limit(limit);
     const atestadosSnapshot = await paginatedQuery.get();
 
-    // Buscar usuários relacionados
     const userIds = Array.from(
       new Set(atestadosSnapshot.docs.map((doc) => doc.data().idUsuario))
     ).filter(Boolean);
 
-    // Filter out any undefined/null ids before querying the DB to avoid invalid UUID errors
     const validUserIds = userIds.filter(
       (id) => typeof id === "string" && id.length > 0
     );
@@ -126,7 +113,6 @@ export const GET = withFirebaseAdmin(async (req, db) => {
         const data = doc.data();
         const usuario = usuarios.get(data.id_usuario);
 
-        // Normalize image URL and verify file exists when using public uploads
         const rawImage =
           data.imagemAtestado || data.imagem_atestado || data.imagem_url || "";
         let imageUrl = "";
@@ -137,12 +123,9 @@ export const GET = withFirebaseAdmin(async (req, db) => {
             const exists = await fs.pathExists(fullPath);
             if (exists) imageUrl = rawImage;
           } else {
-            // for external URLs or storage URLs, return as-is
             imageUrl = rawImage;
           }
 
-          // If image is stored directly in DB as raw base64 (no data: prefix),
-          // detect and convert to a data URL so Next/Image can handle it.
           if (
             !imageUrl &&
             rawImage &&
@@ -157,7 +140,6 @@ export const GET = withFirebaseAdmin(async (req, db) => {
               base64Candidate.length > 100 &&
               base64Regex.test(base64Candidate)
             ) {
-              // assume JPEG if mime not known
               imageUrl = `data:image/jpeg;base64,${base64Candidate}`;
             }
           }
@@ -165,14 +147,10 @@ export const GET = withFirebaseAdmin(async (req, db) => {
           imageUrl = "";
         }
 
-        // Return date fields as strings when they are stored as strings (YYYY-MM-DD)
-        // to avoid timezone conversions on the client. If the stored value is a
-        // Firestore Timestamp/object, convert to ISO string so client can handle it.
         const toDateOrString = (v: any) => {
           if (!v) return null;
           if (typeof v === "string" || v instanceof String) return String(v);
           if (v?.toDate) return v.toDate().toISOString();
-          // fallback: try to construct a Date and return ISO string
           try {
             const dt = new Date(v as any);
             if (isNaN(dt.getTime())) return null;
@@ -192,7 +170,6 @@ export const GET = withFirebaseAdmin(async (req, db) => {
           data_inicio: toDateOrString(data.dataInicio),
           data_fim: toDateOrString(data.dataFim),
           usuario: usuario ?? null,
-          // manter compatibilidade com frontend usando `createdAt`
           createdAt: toDateOrString(data.created_at ?? data.createdAt),
         };
       })
@@ -217,12 +194,6 @@ export const GET = withFirebaseAdmin(async (req, db) => {
   return NextResponse.json({ success: true, ...data });
 });
 
-/**
- * ===============================
- * 🔹 POST /api/atestados
- * ===============================
- * Cria um novo atestado
- */
 export const POST = withFirebaseAdmin(async (req, db) => {
   try {
     const authResult = await verifyAuth(req);
@@ -258,7 +229,6 @@ export const POST = withFirebaseAdmin(async (req, db) => {
 
     const validatedData = validationResult.data;
 
-    // Verifica se o usuário existe
     const userDoc = await db.collection("usuarios").doc(authResult.uid).get();
     if (!userDoc.exists) {
       return NextResponse.json(
@@ -270,11 +240,9 @@ export const POST = withFirebaseAdmin(async (req, db) => {
     let imageUrl = "";
     let imagePath = "";
 
-    // Upload da imagem (caso exista)
     const imageFile = formData.get("imagem_atestado");
     if (imageFile && imageFile instanceof File) {
       try {
-        // Try uploading to Supabase Storage first (bucket defaults to 'atestados')
         const uploadResult = await uploadImageToStorage(
           imageFile,
           authResult.uid,
@@ -287,7 +255,6 @@ export const POST = withFirebaseAdmin(async (req, db) => {
           "Erro ao enviar imagem para Supabase Storage:",
           uploadError
         );
-        // Fallback: write to public/uploads folder so the app still works offline
         try {
           const fallback = await uploadImageToPublicFolder(
             imageFile,
@@ -311,11 +278,8 @@ export const POST = withFirebaseAdmin(async (req, db) => {
 
     const { data: createdData, error } = await safeFirestoreOperation(
       async () => {
-        // insert using snake_case column names expected by Postgres/Supabase
         const payload = {
           id_usuario: authResult.uid,
-          // store the original YYYY-MM-DD string when available so clients can
-          // render the exact saved day without timezone shifting
           data_inicio: validatedData.data_inicio,
           data_fim: validatedData.data_fim,
           motivo: validatedData.motivo,
@@ -360,12 +324,6 @@ export const POST = withFirebaseAdmin(async (req, db) => {
   }
 });
 
-/**
- * ===============================
- * 🔹 PATCH /api/atestados?id=...
- * ===============================
- * Atualiza o status de um atestado (para admin)
- */
 export const PATCH = withFirebaseAdmin(async (req, db) => {
   try {
     const { searchParams } = new URL(req.url);
@@ -400,7 +358,6 @@ export const PATCH = withFirebaseAdmin(async (req, db) => {
     }
 
     const { error } = await safeFirestoreOperation(async () => {
-      // update using snake_case column name
       await db
         .collection("atestados")
         .doc(atestadoId)

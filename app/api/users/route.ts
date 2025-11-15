@@ -6,7 +6,6 @@ import {
 import { CreateUserSchema } from "@/lib/validations/schemas";
 import { validateRequestBody, handleZodError } from "@/lib/validations/helpers";
 
-// GET /api/users - Fetch all users (server-side only)
 export const GET = withFirebaseAdmin(async (req, db) => {
   const { data, error } = await safeFirestoreOperation(async () => {
     const snapshot = await db.collection("usuarios").get();
@@ -23,12 +22,10 @@ export const GET = withFirebaseAdmin(async (req, db) => {
   return NextResponse.json({ success: true, data });
 });
 
-// POST /api/users - Create a new user (server-side only)
 export const POST = withFirebaseAdmin(async (req, db) => {
   try {
     const body = await req.json();
 
-    // Validate request body with Zod
     const validation = validateRequestBody(CreateUserSchema, body);
     if (!validation.success) {
       return validation.response;
@@ -36,7 +33,6 @@ export const POST = withFirebaseAdmin(async (req, db) => {
 
     const validatedData = validation.data;
 
-    // Check if user already exists
     const existingUserSnapshot = await db
       .collection("usuarios")
       .where("email", "==", validatedData.email)
@@ -57,7 +53,7 @@ export const POST = withFirebaseAdmin(async (req, db) => {
         cargo: validatedData.cargo,
         telefone: validatedData.telefone,
         ra: validatedData.ra,
-        senha: validatedData.senha, // Note: In production, hash this password
+        senha: validatedData.senha,
         createdAt: new Date().toISOString(),
       });
       return { id: docRef.id };

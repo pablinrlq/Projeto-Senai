@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-// Zod schemas for Firebase data validation
-
 export const UserSchema = z.object({
   id: z.string(),
   nome: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
@@ -29,7 +27,7 @@ export const CreateUserSchema = UserSchema.omit({
     .optional()
     .default("USUARIO"),
   telefone: z.string().optional().default(""),
-  metadata: z.record(z.any()).optional(), // For additional user information
+  metadata: z.record(z.any()).optional(),
   curso: z.string().optional().nullable(),
   status: z
     .enum(["ativo", "inativo"], {
@@ -61,7 +59,7 @@ export const AtestadoSchema = z.object({
   updatedAt: z.string().optional(),
 });
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
   "image/jpg",
@@ -93,7 +91,6 @@ export const CreateAtestadoSchema = z.object({
     .optional(),
 });
 
-// For admin dashboard usage
 export const CreateAtestadoWithUserSchema = CreateAtestadoSchema.extend({
   id_usuario: z.string().min(1, "ID do usuário é obrigatório"),
 });
@@ -111,10 +108,8 @@ export const LoginSchema = z.object({
   senha: z.string().min(1, "Senha é obrigatória"),
 });
 
-// Custom date validation for Brazilian format
 export const BrazilianDateSchema = z.string().refine(
   (date) => {
-    // Check if it matches the pattern "3 de novembro de 2025 às 00:00:00 UTC-3"
     const regex = /^\d{1,2} de \w+ de \d{4} às \d{2}:\d{2}:\d{2} UTC[+-]\d$/;
     return regex.test(date);
   },
@@ -146,7 +141,6 @@ export const AtestadoDateRangeSchema = z
     }
   );
 
-// Types inferred from Zod schemas
 export type User = z.infer<typeof UserSchema>;
 export type CreateUserData = z.infer<typeof CreateUserSchema>;
 export type UpdateUserData = z.infer<typeof UpdateUserSchema>;

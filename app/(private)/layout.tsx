@@ -38,7 +38,6 @@ export default function PrivateLayout({
           },
         });
         if (!response.ok) {
-          // Try to read the error message from the API to give better feedback
           let body: any = null;
           try {
             body = await response.json();
@@ -48,7 +47,6 @@ export default function PrivateLayout({
 
           const apiMessage = body?.error || body?.message || "Token inválido";
 
-          // Handle common auth-related statuses explicitly
           if (response.status === 401) {
             console.warn("Unauthorized:", apiMessage);
             localStorage.removeItem("token");
@@ -77,7 +75,6 @@ export default function PrivateLayout({
         const data = await response.json();
         setUser(data.user);
 
-        // Check admin access for admin routes
         if (
           pathname.startsWith("/admin") &&
           data.user?.tipo_usuario !== "administrador"
@@ -112,7 +109,7 @@ export default function PrivateLayout({
   }
 
   if (!user) {
-    return null; // Will redirect to auth
+    return null;
   }
 
   return <>{children}</>;

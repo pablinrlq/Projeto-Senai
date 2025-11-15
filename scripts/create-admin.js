@@ -63,7 +63,6 @@ async function main() {
     const userId = createdUser.user.id;
     console.log("Auth user created with id:", userId);
 
-    // hash password for usuarios table (if schema expects senha)
     let hashed;
     try {
       hashed = await argon2.hash(password);

@@ -49,7 +49,6 @@ export default function ProfilePill({
 
   const circleClasses = `${sizeMap[size]} flex items-center justify-center rounded-full font-medium text-white`;
 
-  // create an inline SVG data URL for accessibility and consistent rendering
   const svg = encodeURIComponent(
     `<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><rect width='100%' height='100%' fill='${bg}' rx='20' ry='20'/><text x='50%' y='55%' font-family='Arial, Helvetica, sans-serif' font-size='56' fill='white' text-anchor='middle' alignment-baseline='middle'>${initials}</text></svg>`
   );

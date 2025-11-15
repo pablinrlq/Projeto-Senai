@@ -22,7 +22,6 @@ export async function PATCH(
       return NextResponse.json({ error: "Token inválido" }, { status: 401 });
     }
 
-    // Check if user is admin
     const userDoc = await db.collection("usuarios").doc(decodedToken.uid).get();
     if (!userDoc.exists || userDoc.data()?.cargo !== "ADMINISTRADOR") {
       return NextResponse.json({ error: "Acesso negado" }, { status: 403 });
@@ -34,7 +33,6 @@ export async function PATCH(
       return NextResponse.json({ error: "Status inválido" }, { status: 400 });
     }
 
-    // Reject without observations is not allowed
     if (
       status === "rejeitado" &&
       (!observacoes_admin || !observacoes_admin.trim())
@@ -45,13 +43,8 @@ export async function PATCH(
       );
     }
 
-    // We'll attempt the update and handle PostgREST errors gracefully.
-    // If the update fails because the `observacoes_admin` column doesn't
-    // exist (PGRST204), return a helpful message with the SQL to add it.
-
     console.log("Atestado ID:", atestadoId);
 
-    // Check if atestado exists
     const atestadoDoc = await db.collection("atestados").doc(atestadoId).get();
     if (!atestadoDoc.exists) {
       return NextResponse.json(
@@ -60,12 +53,6 @@ export async function PATCH(
       );
     }
 
-    // Update atestado with admin review using known DB columns only
-    // We avoid adding unknown columns (like reviewedAt/reviewedBy) to prevent
-    // PostgREST errors when the column doesn't exist. Known columns:
-    // - status
-    // - observacoes_admin
-    // - updated_at
     const payload: Record<string, unknown> = {
       status,
       updated_at: new Date().toISOString(),
@@ -80,7 +67,6 @@ export async function PATCH(
     } catch (unknownErr) {
       const err = unknownErr as { code?: string; message?: string };
       console.error("Error updating atestado in review route:", err);
-      // Detect missing-column PostgREST error (PGRST204)
       if (
         err &&
         err.code === "PGRST204" &&

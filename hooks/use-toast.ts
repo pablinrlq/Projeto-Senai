@@ -30,21 +30,21 @@ type ActionType = ActionTypes;
 
 type Action =
   | {
-    type: ActionType["ADD_TOAST"];
-    toast: ToasterToast;
-  }
+      type: ActionType["ADD_TOAST"];
+      toast: ToasterToast;
+    }
   | {
-    type: ActionType["UPDATE_TOAST"];
-    toast: Partial<ToasterToast>;
-  }
+      type: ActionType["UPDATE_TOAST"];
+      toast: Partial<ToasterToast>;
+    }
   | {
-    type: ActionType["DISMISS_TOAST"];
-    toastId?: ToasterToast["id"];
-  }
+      type: ActionType["DISMISS_TOAST"];
+      toastId?: ToasterToast["id"];
+    }
   | {
-    type: ActionType["REMOVE_TOAST"];
-    toastId?: ToasterToast["id"];
-  };
+      type: ActionType["REMOVE_TOAST"];
+      toastId?: ToasterToast["id"];
+    };
 
 type State = ToasterToast[];
 
@@ -72,13 +72,13 @@ export const reducer = (state: State, action: Action): State => {
       return [action.toast, ...state].slice(0, TOAST_LIMIT);
 
     case "UPDATE_TOAST":
-      return state.map((t) => (t.id === action.toast.id ? { ...t, ...action.toast } : t));
+      return state.map((t) =>
+        t.id === action.toast.id ? { ...t, ...action.toast } : t
+      );
 
     case "DISMISS_TOAST": {
       const { toastId } = action;
 
-      // ! Side effects ! - This could be extracted into a dismissToast() action,
-      // but I'll keep it here for simplicity
       if (toastId) {
         addToRemoveQueue(toastId);
       } else {
@@ -90,10 +90,10 @@ export const reducer = (state: State, action: Action): State => {
       return state.map((t) =>
         t.id === toastId || toastId === undefined
           ? {
-            ...t,
-            open: false,
-          }
-          : t,
+              ...t,
+              open: false,
+            }
+          : t
       );
     }
     case "REMOVE_TOAST":

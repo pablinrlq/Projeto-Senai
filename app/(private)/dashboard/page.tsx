@@ -48,7 +48,6 @@ export default function Dashboard() {
 
       const data = await response.json();
 
-      // Redirect students to atestados page
       if (data.user?.tipo_usuario !== "administrador") {
         router.push("/atestados");
         return;
@@ -85,14 +84,12 @@ export default function Dashboard() {
     );
   }
 
-  // Only admins should see this dashboard
   if (!profile || profile.tipo_usuario !== "administrador") {
-    return null; // The redirect happens in fetchProfile
+    return null;
   }
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 to-white relative overflow-hidden">
-      {/* Decorative orbs */}
       <div className="pointer-events-none absolute -top-12 left-4 w-56 h-56 rounded-full bg-blue-200/20 blur-3xl transform -rotate-6"></div>
       <div className="pointer-events-none absolute -bottom-16 right-8 w-72 h-72 rounded-full bg-indigo-200/20 blur-3xl transform rotate-6"></div>
 

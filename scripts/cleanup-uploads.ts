@@ -1,28 +1,30 @@
-#!/usr/bin/env bun
-/**
- * Cleanup script to remove old uploaded files from public folder
- * Run with: bun run scripts/cleanup-uploads.ts
- */
-
-import * as fs from 'fs-extra';
-import * as path from 'path';
+import * as fs from "fs-extra";
+import * as path from "path";
 
 interface CleanupOptions {
   daysOld: number;
   dryRun: boolean;
 }
 
-async function cleanupOldUploads(options: CleanupOptions = { daysOld: 30, dryRun: true }) {
-  console.log('🧹 Starting cleanup of old uploaded files...\n');
+async function cleanupOldUploads(
+  options: CleanupOptions = { daysOld: 30, dryRun: true }
+) {
+  console.log("🧹 Starting cleanup of old uploaded files...\n");
   console.log(`📊 Configuration:`);
   console.log(`   - Files older than: ${options.daysOld} days`);
-  console.log(`   - Dry run mode: ${options.dryRun ? 'ON (no files will be deleted)' : 'OFF (files will be deleted)'}\n`);
+  console.log(
+    `   - Dry run mode: ${
+      options.dryRun
+        ? "ON (no files will be deleted)"
+        : "OFF (files will be deleted)"
+    }\n`
+  );
 
   try {
-    const uploadsPath = path.join(process.cwd(), 'public', 'uploads');
+    const uploadsPath = path.join(process.cwd(), "public", "uploads");
 
     if (!(await fs.pathExists(uploadsPath))) {
-      console.log('📁 No uploads directory found. Nothing to clean up.');
+      console.log("📁 No uploads directory found. Nothing to clean up.");
       return;
     }
 
@@ -43,7 +45,7 @@ async function cleanupOldUploads(options: CleanupOptions = { daysOld: 30, dryRun
 
         if (entry.isDirectory()) {
           await processDirectory(fullPath);
-        } else if (entry.isFile() && entry.name !== '.gitkeep') {
+        } else if (entry.isFile() && entry.name !== ".gitkeep") {
           totalFiles++;
           const stats = await fs.stat(fullPath);
           totalSize += stats.size;
@@ -52,7 +54,13 @@ async function cleanupOldUploads(options: CleanupOptions = { daysOld: 30, dryRun
             oldFiles++;
             deletedSize += stats.size;
 
-            console.log(`🗑️  ${options.dryRun ? '[DRY RUN] Would delete:' : 'Deleting:'} ${path.relative(uploadsPath, fullPath)} (${formatFileSize(stats.size)}, modified: ${stats.mtime.toLocaleDateString()})`);
+            console.log(
+              `🗑️  ${
+                options.dryRun ? "[DRY RUN] Would delete:" : "Deleting:"
+              } ${path.relative(uploadsPath, fullPath)} (${formatFileSize(
+                stats.size
+              )}, modified: ${stats.mtime.toLocaleDateString()})`
+            );
 
             if (!options.dryRun) {
               await fs.remove(fullPath);
@@ -65,9 +73,13 @@ async function cleanupOldUploads(options: CleanupOptions = { daysOld: 30, dryRun
 
     await processDirectory(uploadsPath);
 
-    console.log('\n📈 Cleanup Summary:');
-    console.log(`   - Total files found: ${totalFiles} (${formatFileSize(totalSize)})`);
-    console.log(`   - Old files identified: ${oldFiles} (${formatFileSize(deletedSize)})`);
+    console.log("\n📈 Cleanup Summary:");
+    console.log(
+      `   - Total files found: ${totalFiles} (${formatFileSize(totalSize)})`
+    );
+    console.log(
+      `   - Old files identified: ${oldFiles} (${formatFileSize(deletedSize)})`
+    );
 
     if (options.dryRun) {
       console.log(`   - Files that would be deleted: ${oldFiles}`);
@@ -76,35 +88,34 @@ async function cleanupOldUploads(options: CleanupOptions = { daysOld: 30, dryRun
       console.log(`   - Files actually deleted: ${deletedFiles}`);
       console.log(`   - Space freed: ${formatFileSize(deletedSize)}`);
     }
-
   } catch (error) {
-    console.error('❌ Cleanup failed:', error);
+    console.error("❌ Cleanup failed:", error);
     process.exit(1);
   }
 }
 
 function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) return "0 Bytes";
 
   const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const sizes = ["Bytes", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 }
 
-// Parse command line arguments
 const args = process.argv.slice(2);
-const daysOld = parseInt(args.find(arg => arg.startsWith('--days='))?.split('=')[1] || '30');
-const dryRun = !args.includes('--no-dry-run');
+const daysOld = parseInt(
+  args.find((arg) => arg.startsWith("--days="))?.split("=")[1] || "30"
+);
+const dryRun = !args.includes("--no-dry-run");
 
-// Run the cleanup
 cleanupOldUploads({ daysOld, dryRun })
   .then(() => {
-    console.log('\n✅ Cleanup script completed!');
+    console.log("\n✅ Cleanup script completed!");
     process.exit(0);
   })
   .catch((error) => {
-    console.error('Cleanup script failed:', error);
+    console.error("Cleanup script failed:", error);
     process.exit(1);
   });

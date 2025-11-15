@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 
 type ProviderProps = {
   children: React.ReactNode;
@@ -15,14 +15,14 @@ interface CombinedProviderProps {
 
 /**
  * CombinedProvider - A component that combines multiple providers into a single wrapper
- * 
+ *
  * @param providers - An array of provider components to be nested
  * @param children - The child components to be wrapped by all providers
- * 
+ *
  * Example usage:
  * ```tsx
  * const providers = [QueryProvider, ThemeProvider, AuthProvider];
- * 
+ *
  * <CombinedProvider providers={providers}>
  *   <App />
  * </CombinedProvider>
@@ -30,7 +30,7 @@ interface CombinedProviderProps {
  */
 export default function ProviderReducer({
   providers,
-  children
+  children,
 }: CombinedProviderProps) {
   return providers.reduceRight(
     (acc, Provider) => <Provider>{acc}</Provider>,

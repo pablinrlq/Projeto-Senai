@@ -21,7 +21,6 @@ export async function PATCH(
       return NextResponse.json({ error: "Token inválido" }, { status: 401 });
     }
 
-    // Only admins can change status
     const userDoc = await db.collection("usuarios").doc(decodedToken.uid).get();
     if (!userDoc.exists || userDoc.data()?.cargo !== "ADMINISTRADOR") {
       return NextResponse.json({ error: "Acesso negado" }, { status: 403 });
@@ -33,7 +32,6 @@ export async function PATCH(
       return NextResponse.json({ error: "Status inválido" }, { status: 400 });
     }
 
-    // Check target user exists
     const targetDoc = await db.collection("usuarios").doc(userId).get();
     if (!targetDoc.exists) {
       return NextResponse.json(
@@ -42,7 +40,6 @@ export async function PATCH(
       );
     }
 
-    // Update only known columns
     const payload: Record<string, unknown> = {
       status,
       updated_at: new Date().toISOString(),

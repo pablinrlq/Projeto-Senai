@@ -77,7 +77,6 @@ const StudentSignup = () => {
         return;
       }
 
-      // Create user data for API
       const createUserData = {
         ...validationResult.data,
         cargo: "USUARIO" as const,
@@ -116,7 +115,6 @@ const StudentSignup = () => {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left Panel - Signup Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white relative overflow-y-auto">
         <div className="w-full max-w-md">
           <button
@@ -329,7 +327,6 @@ const StudentSignup = () => {
               </div>
             </div>
 
-            {/* Password Requirements */}
             <div className="bg-gray-50 p-4 rounded-lg space-y-2">
               <p className="text-sm font-medium text-gray-700">
                 A <span className="font-bold">senha</span> deve conter
@@ -374,7 +371,6 @@ const StudentSignup = () => {
         </div>
       </div>
 
-      {/* Right Panel - Already Have Account Section */}
       <div className="hidden lg:flex lg:w-1/2 bg-linear-to-br from-purple-50 via-pink-50 to-blue-50 p-12 flex-col justify-center relative overflow-hidden">
         <div className="flex-1 flex flex-col justify-center max-w-md mx-auto">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">
@@ -394,7 +390,6 @@ const StudentSignup = () => {
           </Link>
         </div>
 
-        {/* Decorative gradient orbs */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-linear-to-br from-purple-200/40 to-pink-200/40 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-linear-to-br from-blue-200/40 to-purple-200/40 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3"></div>
       </div>
