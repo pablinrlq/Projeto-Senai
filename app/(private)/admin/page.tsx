@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Logo } from "@/components/Logo";
+import ProfilePill from "@/components/ProfilePill";
 import {
   ArrowLeft,
   Users,
@@ -462,8 +463,12 @@ export default function AdminDashboard() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <Logo />
-          <div className="ml-auto">
-            <p className="text-sm font-medium">Admin: {profile.nome}</p>
+          <div className="ml-auto flex items-center gap-4">
+            <ProfilePill
+              name={profile.nome}
+              role={profile.tipo_usuario}
+              size="sm"
+            />
           </div>
         </div>
       </header>
