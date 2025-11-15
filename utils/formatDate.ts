@@ -26,7 +26,7 @@ export function parseToDate(v: unknown): Date | null {
   }
 
   try {
-    const dt = new Date(v as any);
+    const dt = new Date(v as string | number | Date);
     return isNaN(dt.getTime()) ? null : dt;
   } catch {
     return null;

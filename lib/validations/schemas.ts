@@ -14,6 +14,8 @@ export const UserSchema = z.object({
   senha: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
+  curso: z.string().optional(),
+  periodo: z.string().optional(),
 });
 
 export const CreateUserSchema = UserSchema.omit({
@@ -29,6 +31,7 @@ export const CreateUserSchema = UserSchema.omit({
   telefone: z.string().optional().default(""),
   metadata: z.record(z.any()).optional(),
   curso: z.string().optional().nullable(),
+  periodo: z.string().optional().nullable(),
   status: z
     .enum(["ativo", "inativo"], {
       errorMap: () => ({ message: "Status deve ser 'ativo' ou 'inativo'" }),

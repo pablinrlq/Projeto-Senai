@@ -19,31 +19,35 @@ async function hashExistingPasswords() {
     // Process each user
     for (const userDoc of usersSnapshot.docs) {
       try {
-        const userData = userDoc.data();
-        const plainPassword = userData.senha;
+        type UserRecord = { senha?: unknown; email?: unknown } & Record<
+          string,
+          unknown
+        >;
+        const userData = userDoc.data() as UserRecord;
+        const plainPassword =
+          typeof userData.senha === "string" ? userData.senha : undefined;
+        const userEmail =
+          typeof userData.email === "string" ? userData.email : userDoc.id;
 
         if (
           plainPassword &&
           typeof plainPassword === "string" &&
           !plainPassword.startsWith("$argon2")
         ) {
-          console.log(`Processing user: ${userData.email}`);
+          console.log(`Processing user: ${userEmail}`);
 
           const hashedPassword = await hashPassword(plainPassword);
 
-          await db
-            .collection("users")
-            .doc(userDoc.id)
-            .update({
-              senha: hashedPassword,
-              updatedAt: new Date().toISOString(),
-            } as any);
+          await db.collection("users").doc(userDoc.id).update({
+            senha: hashedPassword,
+            updatedAt: new Date().toISOString(),
+          });
 
-          console.log(`✅ Updated password for: ${userData.email}`);
+          console.log(`✅ Updated password for: ${userEmail}`);
           processedCount++;
         } else {
           console.log(
-            `⏭️  Skipping user ${userData.email} (password already hashed or missing)`
+            `⏭️  Skipping user ${userEmail} (password already hashed or missing)`
           );
         }
       } catch (error) {

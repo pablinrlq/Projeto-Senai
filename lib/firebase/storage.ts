@@ -1,4 +1,4 @@
-import { storage, supabase } from "./admin";
+import { storage } from "./admin";
 import { v4 as uuidv4 } from "uuid";
 import * as fs from "fs-extra";
 import * as path from "path";

@@ -9,9 +9,9 @@ import { validateRequestBody, handleZodError } from "@/lib/validations/helpers";
 export const GET = withFirebaseAdmin(async (req, db) => {
   const { data, error } = await safeFirestoreOperation(async () => {
     const snapshot = await db.collection("usuarios").get();
-    return snapshot.docs.map((doc: any) => ({
+    return snapshot.docs.map((doc: { id: string; data: () => unknown }) => ({
       id: doc.id,
-      ...doc.data(),
+      ...(doc.data() as Record<string, unknown>),
     }));
   }, "Failed to fetch users");
 

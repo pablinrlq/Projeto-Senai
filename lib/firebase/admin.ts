@@ -1,4 +1,4 @@
-import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 import * as argon2 from "argon2";
 import * as jwt from "jsonwebtoken";
 
@@ -28,14 +28,11 @@ export const supabase = createClient(
   { auth: { persistSession: false } }
 );
 
-type DocResult = {
-  id: string;
-  data: any;
-};
+type Row = Record<string, unknown>;
 
 class CollectionRef {
   table: string;
-  filters: Array<{ field: string; op: string; value: any }> = [];
+  filters: Array<{ field: string; op: string; value: unknown }> = [];
   _limit?: number;
   _order?: { field: string; asc: boolean };
   _offset?: number;
@@ -44,7 +41,7 @@ class CollectionRef {
     this.table = table;
   }
 
-  where(field: string, op: string, value: any) {
+  where(field: string, op: string, value: unknown) {
     this.filters.push({ field, op, value });
     return this;
   }
@@ -69,8 +66,11 @@ class CollectionRef {
 
     for (const f of this.filters) {
       if (f.op === "==") query = query.eq(f.field, f.value);
-      else if (f.op === "in") query = query.in(f.field, f.value);
-      else if (f.op === ">") query = query.gt(f.field, f.value);
+      else if (f.op === "in") {
+        if (Array.isArray(f.value))
+          query = query.in(f.field, f.value as readonly unknown[]);
+        else query = query.in(f.field, [f.value] as readonly unknown[]);
+      } else if (f.op === ">") query = query.gt(f.field, f.value);
       else if (f.op === "<") query = query.lt(f.field, f.value);
       else query = query.eq(f.field, f.value);
     }
@@ -92,17 +92,22 @@ class CollectionRef {
     const { data, error } = await query;
     if (error) throw error;
 
-    const docs = (data || []).map((row: any) => ({
-      id: row.id || row.uid || row.uuid || String(row),
-      data: () => snakeToCamel(row),
-      get: (field: string) => row[camelToSnake(field)],
-      exists: true,
-    }));
+    const rows = (data || []) as Row[];
+    const docs = rows.map((row) => {
+      const rec = row as Record<string, unknown>;
+      const possibleId = rec["id"] ?? rec["uid"] ?? rec["uuid"];
+      return {
+        id: possibleId ? String(possibleId) : String(row),
+        data: () => snakeToCamel(row),
+        get: (field: string) => rec[camelToSnake(field)],
+        exists: true,
+      };
+    });
 
     return { docs, size: docs.length, empty: docs.length === 0 };
   }
 
-  async add(payload: any) {
+  async add(payload: Record<string, unknown>) {
     const snakePayload = toSnakeKeys(payload);
     const { data, error } = await supabase
       .from(this.table)
@@ -131,7 +136,7 @@ class CollectionRef {
           get: (field: string) => data?.[camelToSnake(field)],
         };
       },
-      async update(payload: any) {
+      async update(payload: Record<string, unknown>) {
         const snakePayload = toSnakeKeys(payload);
         const { error } = await supabase
           .from(table)
@@ -148,26 +153,35 @@ export const db = {
   collection(name: string) {
     return new CollectionRef(name);
   },
-  async getAll(...docRefs: Array<{ id: string }>) {
+  async getAll(...docRefs: Array<{ id: string; __table?: string }>) {
     if (!docRefs.length) return [];
-    const results = [] as any[];
+    const results: Array<{
+      exists: boolean;
+      id?: string;
+      data: () => unknown;
+      get: (f: string) => unknown;
+    }> = [];
     for (const r of docRefs) {
+      const tableName = r.__table || "usuarios";
       const { data, error } = await supabase
-        .from((r as any).__table || "usuarios")
+        .from(tableName)
         .select("*")
         .eq("id", r.id)
         .maybeSingle();
       if (error) throw error;
       results.push({
         exists: !!data,
-        id: data?.id,
+        id: data?.id as string | undefined,
         data: () => (data ? snakeToCamel(data) : data),
-        get: (f: string) => data?.[camelToSnake(f)],
+        get: (f: string) =>
+          data ? data[camelToSnake(f) as string] : undefined,
       });
     }
     return results;
   },
 };
+
+export type DB = typeof db;
 
 function camelToSnake(key: string) {
   return key.replace(/([A-Z])/g, (m) => `_${m.toLowerCase()}`);
@@ -177,26 +191,26 @@ function snakeToCamelKey(key: string) {
   return key.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
 }
 
-function toSnakeKeys(obj: any): any {
+function toSnakeKeys(obj: unknown): unknown {
   if (obj === null || obj === undefined) return obj;
-  if (Array.isArray(obj)) return obj.map(toSnakeKeys);
+  if (Array.isArray(obj)) return (obj as unknown[]).map(toSnakeKeys);
   if (typeof obj !== "object") return obj;
-  const out: any = {};
-  for (const k of Object.keys(obj)) {
-    const v = obj[k];
-    out[camelToSnake(k)] = toSnakeKeys(v);
+  const out: Record<string, unknown> = {};
+  for (const k of Object.keys(obj as Record<string, unknown>)) {
+    const v = (obj as Record<string, unknown>)[k];
+    out[camelToSnake(k)] = toSnakeKeys(v) as unknown;
   }
   return out;
 }
 
-function snakeToCamel(obj: any): any {
+function snakeToCamel(obj: unknown): unknown {
   if (obj === null || obj === undefined) return obj;
-  if (Array.isArray(obj)) return obj.map(snakeToCamel);
+  if (Array.isArray(obj)) return (obj as unknown[]).map(snakeToCamel);
   if (typeof obj !== "object") return obj;
-  const out: any = {};
-  for (const k of Object.keys(obj)) {
-    const v = obj[k];
-    out[snakeToCamelKey(k)] = snakeToCamel(v);
+  const out: Record<string, unknown> = {};
+  for (const k of Object.keys(obj as Record<string, unknown>)) {
+    const v = (obj as Record<string, unknown>)[k];
+    out[snakeToCamelKey(k)] = snakeToCamel(v) as unknown;
   }
   return out;
 }
@@ -252,7 +266,7 @@ export async function authenticateUser(
         await supabase.auth.signInWithPassword({
           email,
           password: senha,
-        } as any);
+        });
 
       if (signInError) {
         return { success: false, error: "Email ou senha incorretos" };

@@ -100,7 +100,7 @@ export default function AdminDashboard() {
   const [filteredUsuarios, setFilteredUsuarios] = useState<Usuario[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [userAtestados, setUserAtestados] = useState<Atestado[]>([]);
+  const [, setUserAtestados] = useState<Atestado[]>([]);
 
   const [atestados, setAtestados] = useState<AtestadoData[]>([]);
   const [observacoes, setObservacoes] = useState("");

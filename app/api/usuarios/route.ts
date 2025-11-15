@@ -42,16 +42,20 @@ export async function GET(req: NextRequest) {
       .orderBy("nome")
       .get();
     const usuarios = usuariosSnapshot.docs.map((doc) => {
-      const data = doc.data();
+      const data = doc.data() as Record<string, unknown>;
+
+      const getString = (v: unknown): string | null =>
+        typeof v === "string" ? v : null;
+
       return {
         id: doc.id,
-        nome: data.nome,
-        email: data.email,
-        tipo_usuario: data.cargo,
-        ra_aluno: data.ra,
-        created_at: data.created_at || new Date().toISOString(),
-        status: data.status || "ativo",
-        curso: data.curso || null,
+        nome: getString(data.nome) || "",
+        email: getString(data.email) || "",
+        tipo_usuario: getString(data.cargo) || "",
+        ra_aluno: getString(data.ra) || null,
+        created_at: getString(data.created_at) || new Date().toISOString(),
+        status: getString(data.status) || "ativo",
+        curso: getString(data.curso) || null,
       };
     });
 

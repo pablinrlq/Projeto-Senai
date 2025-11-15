@@ -1,4 +1,3 @@
-import { NextRequest } from "next/server";
 import * as jwt from "jsonwebtoken";
 
 type AuthResult =
@@ -13,7 +12,7 @@ type AuthResult =
       status: number;
     };
 
-export async function verifyAuth(request: NextRequest): Promise<AuthResult> {
+export async function verifyAuth(request: Request): Promise<AuthResult> {
   const authHeader = request.headers.get("authorization");
 
   console.log("Authorization Header:", authHeader);

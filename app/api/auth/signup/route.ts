@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { CreateUserSchema } from "@/lib/validations/schemas";
 import { validateRequestBody } from "@/lib/validations/helpers";
@@ -23,8 +24,11 @@ export async function POST(req: Request) {
       .maybeSingle();
 
     if (raErr) {
-      console.error("Error checking RA uniqueness:", raErr?.message ?? raErr);
-      if (raErr && (raErr as any).stack) console.error((raErr as any).stack);
+      console.error(
+        "Error checking RA uniqueness:",
+        raErr instanceof Error ? raErr.message : raErr
+      );
+      if (raErr instanceof Error && raErr.stack) console.error(raErr.stack);
       return NextResponse.json(
         { error: "Erro interno do servidor" },
         { status: 500 }
@@ -49,15 +53,17 @@ export async function POST(req: Request) {
         email: validatedData.email,
         password: validatedData.senha,
         email_confirm: true,
-      } as any);
+      });
 
     if (createUserError) {
       console.error(
         "Supabase createUser error:",
-        createUserError?.message ?? createUserError
+        createUserError instanceof Error
+          ? createUserError.message
+          : createUserError
       );
-      if ((createUserError as any).stack)
-        console.error((createUserError as any).stack);
+      if (createUserError instanceof Error && createUserError.stack)
+        console.error(createUserError.stack);
       let raExists = false;
       try {
         const { data: raRow2, error: raErr2 } = await supabase
@@ -72,9 +78,9 @@ export async function POST(req: Request) {
       } catch (err) {
         console.error(
           "Error checking RA uniqueness (supabase client):",
-          (err as any)?.message ?? err
+          err instanceof Error ? err.message : String(err)
         );
-        if (err && (err as any).stack) console.error((err as any).stack);
+        if (err instanceof Error && err.stack) console.error(err.stack);
         try {
           const restUrl = `${
             process.env.SUPABASE_URL
@@ -97,10 +103,10 @@ export async function POST(req: Request) {
         } catch (restErr) {
           console.error(
             "Error checking RA uniqueness (REST fallback):",
-            (restErr as any)?.message ?? restErr
+            restErr instanceof Error ? restErr.message : String(restErr)
           );
-          if (restErr && (restErr as any).stack)
-            console.error((restErr as any).stack);
+          if (restErr instanceof Error && restErr.stack)
+            console.error(restErr.stack);
           return NextResponse.json(
             { error: "Erro interno do servidor" },
             { status: 500 }
@@ -121,7 +127,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const profile: any = {
+    const profile: Record<string, unknown> = {
       id: createdUser.user.id,
       nome: validatedData.nome,
       email: validatedData.email,
@@ -134,11 +140,22 @@ export async function POST(req: Request) {
       profile.telefone = validatedData.telefone;
     }
 
+    if ((validatedData as any).curso) {
+      profile.curso = (validatedData as any).curso;
+    }
+
+    if ((validatedData as any).periodo) {
+      profile.periodo = (validatedData as any).periodo;
+    }
+
     try {
       const hashed = await argon2.hash(validatedData.senha);
       profile.senha = hashed;
     } catch (hashErr) {
-      console.error("Failed to hash password:", hashErr);
+      console.error(
+        "Failed to hash password:",
+        hashErr instanceof Error ? hashErr.message : String(hashErr)
+      );
       return NextResponse.json(
         { error: "Erro interno do servidor" },
         { status: 500 }
@@ -153,9 +170,12 @@ export async function POST(req: Request) {
       "ra",
       "senha",
       "metadata",
+      "telefone",
+      "curso",
+      "periodo",
     ]);
 
-    const insertPayload: Record<string, any> = {};
+    const insertPayload: Record<string, unknown> = {};
     Object.entries(profile).forEach(([k, v]) => {
       if (allowedCols.has(k)) insertPayload[k] = v;
     });
@@ -194,8 +214,9 @@ export async function POST(req: Request) {
       );
     }
 
-    const userWithoutPassword = { ...profile } as any;
-    if (userWithoutPassword.senha) delete userWithoutPassword.senha;
+    const userWithoutPassword = { ...profile } as Record<string, unknown>;
+    if (typeof userWithoutPassword.senha !== "undefined")
+      delete userWithoutPassword.senha;
 
     return NextResponse.json(
       {

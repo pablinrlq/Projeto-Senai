@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import {
   withFirebaseAdmin,
   safeFirestoreOperation,
@@ -9,7 +9,6 @@ import {
   User,
 } from "@/lib/validations/schemas";
 import { ZodError } from "zod";
-import { Timestamp } from "firebase-admin/firestore";
 import * as fs from "fs-extra";
 import * as path from "path";
 import { verifyAuth } from "@/lib/authMiddleware";
@@ -59,7 +58,7 @@ export const GET = withFirebaseAdmin(async (req, db) => {
   }
 
   const { data, error } = await safeFirestoreOperation(async () => {
-    let atestadosQuery: FirebaseFirestore.Query = db.collection("atestados");
+    let atestadosQuery = db.collection("atestados");
 
     if (userId || currUser.get("cargo") === "USUARIO") {
       atestadosQuery = atestadosQuery.where(
@@ -82,8 +81,15 @@ export const GET = withFirebaseAdmin(async (req, db) => {
     const atestadosSnapshot = await paginatedQuery.get();
 
     const userIds = Array.from(
-      new Set(atestadosSnapshot.docs.map((doc) => doc.data().idUsuario))
-    ).filter(Boolean);
+      new Set(
+        atestadosSnapshot.docs
+          .map((doc) => {
+            const d = doc.data() as Record<string, unknown>;
+            return (d["id_usuario"] ?? d["idUsuario"]) as string | undefined;
+          })
+          .filter(Boolean)
+      )
+    ).filter(Boolean) as string[];
 
     const validUserIds = userIds.filter(
       (id) => typeof id === "string" && id.length > 0
@@ -97,82 +103,100 @@ export const GET = withFirebaseAdmin(async (req, db) => {
       string,
       Pick<User, "id" | "nome" | "email" | "ra">
     >();
-    userDocs.forEach((doc: any) => {
-      if (doc.exists) {
-        usuarios.set(doc.id, {
-          id: doc.id,
-          nome: doc.get("nome"),
-          email: doc.get("email"),
-          ra: doc.get("ra"),
-        });
+    userDocs.forEach(
+      (doc: { exists: boolean; id?: string; get: (f: string) => unknown }) => {
+        if (doc.exists && doc.id) {
+          usuarios.set(doc.id, {
+            id: doc.id,
+            nome: String(doc.get("nome") ?? ""),
+            email: String(doc.get("email") ?? ""),
+            ra: String(doc.get("ra") ?? ""),
+          });
+        }
       }
-    });
+    );
 
     const atestados = await Promise.all(
-      atestadosSnapshot.docs.map(async (doc) => {
-        const data = doc.data();
-        const usuario = usuarios.get(data.id_usuario);
+      atestadosSnapshot.docs.map(
+        async (doc: {
+          id: string;
+          data: () => unknown;
+          get: (f: string) => unknown;
+          exists: boolean;
+        }) => {
+          const data = doc.data() as Record<string, unknown>;
+          const usuario = usuarios.get(
+            (data["id_usuario"] ?? data["idUsuario"]) as string
+          );
 
-        const rawImage =
-          data.imagemAtestado || data.imagem_atestado || data.imagem_url || "";
-        let imageUrl = "";
-        try {
-          if (rawImage && rawImage.startsWith("/uploads/")) {
-            const rel = rawImage.replace(/^\//, "");
-            const fullPath = path.join(process.cwd(), "public", rel);
-            const exists = await fs.pathExists(fullPath);
-            if (exists) imageUrl = rawImage;
-          } else {
-            imageUrl = rawImage;
-          }
-
-          if (
-            !imageUrl &&
-            rawImage &&
-            !rawImage.startsWith("/") &&
-            !rawImage.startsWith("http") &&
-            !rawImage.startsWith("data:")
-          ) {
-            const base64Candidate = rawImage.replace(/\s+/g, "");
-            const base64Regex =
-              /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
-            if (
-              base64Candidate.length > 100 &&
-              base64Regex.test(base64Candidate)
-            ) {
-              imageUrl = `data:image/jpeg;base64,${base64Candidate}`;
-            }
-          }
-        } catch (e) {
-          imageUrl = "";
-        }
-
-        const toDateOrString = (v: any) => {
-          if (!v) return null;
-          if (typeof v === "string" || v instanceof String) return String(v);
-          if (v?.toDate) return v.toDate().toISOString();
+          const rawImageValue =
+            data["imagemAtestado"] ??
+            data["imagem_atestado"] ??
+            data["imagem_url"] ??
+            "";
+          const rawImage =
+            typeof rawImageValue === "string" ? rawImageValue : "";
+          let imageUrl = "";
           try {
-            const dt = new Date(v as any);
-            if (isNaN(dt.getTime())) return null;
-            return dt.toISOString();
-          } catch {
-            return null;
-          }
-        };
+            if (rawImage && rawImage.startsWith("/uploads/")) {
+              const rel = rawImage.replace(/^\//, "");
+              const fullPath = path.join(process.cwd(), "public", rel);
+              const exists = await fs.pathExists(fullPath);
+              if (exists) imageUrl = rawImage;
+            } else {
+              imageUrl = rawImage;
+            }
 
-        return {
-          id: doc.id,
-          motivo: data.motivo,
-          imagem: imageUrl,
-          status: data.status || "pendente",
-          observacoes_admin:
-            data.observacoes_admin || data.observacoesAdmin || null,
-          data_inicio: toDateOrString(data.dataInicio),
-          data_fim: toDateOrString(data.dataFim),
-          usuario: usuario ?? null,
-          createdAt: toDateOrString(data.created_at ?? data.createdAt),
-        };
-      })
+            if (
+              !imageUrl &&
+              rawImage &&
+              !rawImage.startsWith("/") &&
+              !rawImage.startsWith("http") &&
+              !rawImage.startsWith("data:")
+            ) {
+              const base64Candidate = rawImage.replace(/\s+/g, "");
+              const base64Regex =
+                /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
+              if (
+                base64Candidate.length > 100 &&
+                base64Regex.test(base64Candidate)
+              ) {
+                imageUrl = `data:image/jpeg;base64,${base64Candidate}`;
+              }
+            }
+          } catch {
+            imageUrl = "";
+          }
+
+          const toDateOrString = (v: unknown): string | null => {
+            if (!v) return null;
+            if (typeof v === "string") return v;
+            const maybeWithToDate = v as { toDate?: () => Date } | undefined;
+            if (maybeWithToDate && typeof maybeWithToDate.toDate === "function")
+              return maybeWithToDate.toDate().toISOString();
+            try {
+              const dt = new Date(v as string | number | Date);
+              if (isNaN(dt.getTime())) return null;
+              return dt.toISOString();
+            } catch {
+              return null;
+            }
+          };
+
+          return {
+            id: doc.id,
+            motivo: data.motivo,
+            imagem: imageUrl,
+            status: data.status || "pendente",
+            observacoes_admin:
+              data.observacoes_admin || data.observacoesAdmin || null,
+            data_inicio: toDateOrString(data.data_inicio ?? data.dataInicio),
+            data_fim: toDateOrString(data.data_fim ?? data.dataFim),
+            usuario: usuario ?? null,
+            createdAt: toDateOrString(data.created_at ?? data.createdAt),
+          };
+        }
+      )
     );
 
     const totalPages = Math.ceil(total / limit);
@@ -278,7 +302,7 @@ export const POST = withFirebaseAdmin(async (req, db) => {
 
     const { data: createdData, error } = await safeFirestoreOperation(
       async () => {
-        const payload = {
+        const payload: Record<string, unknown> = {
           id_usuario: authResult.uid,
           data_inicio: validatedData.data_inicio,
           data_fim: validatedData.data_fim,
@@ -287,7 +311,7 @@ export const POST = withFirebaseAdmin(async (req, db) => {
           imagem_path: imagePath,
           status: validatedData.status,
           created_at: new Date().toISOString(),
-        } as any;
+        };
 
         const docRef = await db.collection("atestados").add(payload);
         return { id: docRef.id };
@@ -358,13 +382,10 @@ export const PATCH = withFirebaseAdmin(async (req, db) => {
     }
 
     const { error } = await safeFirestoreOperation(async () => {
-      await db
-        .collection("atestados")
-        .doc(atestadoId)
-        .update({
-          status: validationResult.data.status,
-          updated_at: new Date().toISOString(),
-        } as any);
+      await db.collection("atestados").doc(atestadoId).update({
+        status: validationResult.data.status,
+        updated_at: new Date().toISOString(),
+      });
     }, "Falha ao atualizar status do atestado");
 
     if (error) return NextResponse.json({ error }, { status: 500 });

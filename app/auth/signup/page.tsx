@@ -36,6 +36,8 @@ const studentSignupSchema = z
         "Senha deve conter pelo menos um caractere especial"
       ),
     confirmarSenha: z.string(),
+    curso: z.string().min(1, "Curso é obrigatório"),
+    periodo: z.string().min(1, "Período é obrigatório"),
   })
   .refine((data) => data.senha === data.confirmarSenha, {
     message: "Senhas não coincidem",
@@ -76,6 +78,8 @@ const StudentSignup = () => {
       telefone: formData.get("telefone") as string,
       senha: formData.get("senha") as string,
       confirmarSenha: formData.get("confirmarSenha") as string,
+      curso,
+      periodo,
     };
 
     try {

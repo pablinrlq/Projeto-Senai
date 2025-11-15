@@ -1,12 +1,14 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { db } from "@/lib/firebase/admin";
+import type { DB } from "@/lib/firebase/admin";
 
 export function withFirebaseAdmin(
-  handler: (req: NextRequest, db: any) => Promise<any>
-): (req: NextRequest) => Promise<NextResponse> {
-  return async (req: NextRequest) => {
+  handler: (req: Request, db: DB) => Promise<unknown>
+): (req: Request) => Promise<NextResponse> {
+  return async (req: Request) => {
     try {
-      return await handler(req, db);
+      const result = await handler(req, db);
+      return result as unknown as NextResponse;
     } catch (error) {
       console.error("🔥 Firebase Admin Error:", error);
 

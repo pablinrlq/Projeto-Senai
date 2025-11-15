@@ -38,15 +38,41 @@ export const verifyAuthToken = async (token: string): Promise<AuthResult> => {
           }
 
           const userDoc = userSnapshot.docs[0];
-          const userData = userDoc.data();
+          type U = Record<string, unknown> & {
+            nome?: unknown;
+            email?: unknown;
+            cargo?: unknown;
+            ra?: unknown;
+            telefone?: unknown;
+          };
+          const userData = userDoc.data() as U;
+
+          const userNome =
+            typeof userData.nome === "string" ? userData.nome : "";
+          const userEmail =
+            typeof userData.email === "string" ? userData.email : "";
+          const userRa = typeof userData.ra === "string" ? userData.ra : "";
+          const userTelefone =
+            typeof userData.telefone === "string"
+              ? userData.telefone
+              : undefined;
+
+          const cargoRaw =
+            typeof userData.cargo === "string" ? userData.cargo : "USUARIO";
+          const userCargo =
+            cargoRaw.toUpperCase() === "ADMINISTRADOR"
+              ? "ADMINISTRADOR"
+              : cargoRaw.toUpperCase() === "FUNCIONARIO"
+              ? "FUNCIONARIO"
+              : "USUARIO";
 
           const user: AuthUser = {
             id: userDoc.id,
-            nome: userData.nome,
-            email: userData.email,
-            cargo: userData.cargo,
-            ra: userData.ra,
-            telefone: userData.telefone,
+            nome: userNome,
+            email: userEmail,
+            cargo: userCargo,
+            ra: userRa,
+            telefone: userTelefone,
           };
 
           resolve({ success: true, user });
@@ -54,7 +80,7 @@ export const verifyAuthToken = async (token: string): Promise<AuthResult> => {
           console.error("Token verification error:", error);
           resolve({ success: false, error: "Erro ao verificar token" });
         }
-      })(new Request("http://localhost") as any);
+      })(new Request("http://localhost"));
     });
   } catch (error) {
     console.error("Auth verification error:", error);

@@ -30,45 +30,68 @@ export async function GET(req: NextRequest) {
 
     const atestados = await Promise.all(
       atestadosSnapshot.docs.map(async (doc) => {
-        const atestadoData = doc.data();
+        const atestadoData = doc.data() as Record<string, unknown>;
 
         let usuario = null;
-        const ownerId = atestadoData.idUsuario || atestadoData.userId || null;
+        const ownerId =
+          typeof atestadoData.idUsuario === "string"
+            ? atestadoData.idUsuario
+            : typeof atestadoData.userId === "string"
+            ? atestadoData.userId
+            : null;
         if (ownerId) {
           const userDoc = await db.collection("usuarios").doc(ownerId).get();
           if (userDoc.exists) {
-            const userData = userDoc.data();
+            const userData = userDoc.data() as
+              | Record<string, unknown>
+              | undefined;
             usuario = {
               id: userDoc.id,
-              nome: userData?.nome || "N/A",
-              email: userData?.email || "N/A",
-              ra: userData?.ra || "N/A",
+              nome: typeof userData?.nome === "string" ? userData!.nome : "N/A",
+              email:
+                typeof userData?.email === "string" ? userData!.email : "N/A",
+              ra: typeof userData?.ra === "string" ? userData!.ra : "N/A",
             };
           }
         }
 
+        const getString = (v: unknown): string | null =>
+          typeof v === "string" ? v : null;
+
+        const dataInicio =
+          getString(atestadoData.dataInicio) ||
+          getString(atestadoData.data_inicio);
+        const dataFim =
+          getString(atestadoData.dataFim) || getString(atestadoData.data_fim);
+        const motivo = getString(atestadoData.motivo) || "";
+        const status = getString(atestadoData.status) || "pendente";
+        const imagem =
+          getString(atestadoData.imagemAtestado) ||
+          getString(atestadoData.imagem_atestado) ||
+          getString(atestadoData.imagem_url) ||
+          "";
+
+        const createdRaw = atestadoData.createdAt ?? atestadoData.created_at;
+        let createdAt = new Date().toISOString();
+        try {
+          if (createdRaw)
+            createdAt = new Date(createdRaw as string | number).toISOString();
+        } catch {}
+
+        const observacoes_admin =
+          getString(atestadoData.observacoesAdmin) ||
+          getString(atestadoData.observacoes_admin) ||
+          "";
+
         return {
           id: doc.id,
-          data_inicio:
-            atestadoData.dataInicio || atestadoData.data_inicio || null,
-          data_fim: atestadoData.dataFim || atestadoData.data_fim || null,
-          motivo: atestadoData.motivo || "",
-          status: atestadoData.status || "pendente",
-          imagem:
-            atestadoData.imagemAtestado ||
-            atestadoData.imagem_atestado ||
-            atestadoData.imagem_url ||
-            "",
-          createdAt:
-            atestadoData.createdAt || atestadoData.created_at
-              ? new Date(
-                  atestadoData.createdAt || atestadoData.created_at
-                ).toISOString()
-              : new Date().toISOString(),
-          observacoes_admin:
-            atestadoData.observacoesAdmin ||
-            atestadoData.observacoes_admin ||
-            "",
+          data_inicio: dataInicio,
+          data_fim: dataFim,
+          motivo,
+          status,
+          imagem,
+          createdAt,
+          observacoes_admin,
           usuario,
         };
       })

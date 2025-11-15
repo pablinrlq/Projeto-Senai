@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require("fs");
 const path = require("path");
 
@@ -30,11 +31,6 @@ async function main() {
 
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const BUCKET =
-    process.env.SUPABASE_STORAGE_BUCKET ||
-    process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ||
-    "";
-
   if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
     console.error(
       "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in environment"
@@ -80,7 +76,7 @@ async function main() {
       created_at: new Date().toISOString(),
     };
 
-    const { data, error: insertErr } = await supabase
+    const { error: insertErr } = await supabase
       .from("usuarios")
       .insert([profile])
       .select();

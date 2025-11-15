@@ -38,14 +38,22 @@ export default function PrivateLayout({
           },
         });
         if (!response.ok) {
-          let body: any = null;
+          let body: unknown = null;
           try {
             body = await response.json();
-          } catch (e) {
+          } catch {
             /* ignore JSON parse errors */
           }
 
-          const apiMessage = body?.error || body?.message || "Token inválido";
+          const getMessageFromBody = (b: unknown): string | undefined => {
+            if (!b || typeof b !== "object") return undefined;
+            const rec = b as Record<string, unknown>;
+            if (typeof rec.error === "string") return rec.error;
+            if (typeof rec.message === "string") return rec.message;
+            return undefined;
+          };
+
+          const apiMessage = getMessageFromBody(body) ?? "Token inválido";
 
           if (response.status === 401) {
             console.warn("Unauthorized:", apiMessage);

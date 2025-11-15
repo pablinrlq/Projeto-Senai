@@ -6,7 +6,6 @@ import {
 import { CreateUserSchema } from "@/lib/validations/schemas";
 import { validateRequestBody } from "@/lib/validations/helpers";
 import { hashPassword, supabase } from "@/lib/firebase/admin";
-import argon2 from "argon2";
 
 export const POST = withFirebaseAdmin(async (req, db) => {
   try {
@@ -51,7 +50,7 @@ export const POST = withFirebaseAdmin(async (req, db) => {
         email: validatedData.email,
         password: validatedData.senha,
         email_confirm: true,
-      } as any);
+      });
 
     if (createUserError) {
       console.error(
@@ -67,7 +66,8 @@ export const POST = withFirebaseAdmin(async (req, db) => {
     const uid = createdUser?.user?.id;
 
     const { data, error } = await safeFirestoreOperation(async () => {
-      const userData: any = {
+      const bodyUnknown = body as Record<string, unknown> | null;
+      const userData: Record<string, unknown> = {
         id: uid,
         nome: validatedData.nome,
         email: validatedData.email,
@@ -79,7 +79,7 @@ export const POST = withFirebaseAdmin(async (req, db) => {
         ...(validatedData.curso ? { curso: validatedData.curso } : {}),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        ...(body.metadata && { metadata: body.metadata }),
+        ...(bodyUnknown?.metadata ? { metadata: bodyUnknown.metadata } : {}),
       };
 
       const docRef = await db.collection("usuarios").add(userData);
@@ -99,8 +99,10 @@ export const POST = withFirebaseAdmin(async (req, db) => {
       return NextResponse.json({ error }, { status: 500 });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { senha, ...userWithoutPassword } = data;
+    const created = data as Record<string, unknown>;
+    const userWithoutPassword = { ...created } as Record<string, unknown>;
+    if (typeof userWithoutPassword.senha !== "undefined")
+      delete userWithoutPassword.senha;
 
     return NextResponse.json(
       {

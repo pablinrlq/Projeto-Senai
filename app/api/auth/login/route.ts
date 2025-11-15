@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
       };
 
       const { data: signInData, error: signInError } =
-        await supabase.auth.signInWithPassword(credentials as any);
+        await supabase.auth.signInWithPassword(credentials);
 
       if (signInError) {
         return NextResponse.json(
@@ -57,15 +57,19 @@ export async function POST(req: NextRequest) {
 
       const token = await createSessionToken(userId);
 
-      const safeProfile = profile
-        ? { ...profile }
-        : { id: userId, email: validatedData.email };
-      if ((safeProfile as any).senha) delete (safeProfile as any).senha;
+      const safeProfileObj = profile
+        ? ({ ...profile } as Record<string, unknown>)
+        : ({ id: userId, email: validatedData.email } as Record<
+            string,
+            unknown
+          >);
+      if (typeof safeProfileObj.senha !== "undefined")
+        delete safeProfileObj.senha;
 
       return NextResponse.json({
         success: true,
         message: "Login realizado com sucesso",
-        user: safeProfile,
+        user: safeProfileObj,
         token,
         supabaseSession: signInData?.session ?? null,
       });

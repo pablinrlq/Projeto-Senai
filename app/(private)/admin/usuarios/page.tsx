@@ -194,15 +194,6 @@ export default function Usuarios() {
     return <Badge variant="default">Aluno</Badge>;
   };
 
-  const getTipoLabel = (tipo: string) => {
-    const t = (tipo || "").toString().toLowerCase();
-    if (t.includes("admin") || t === "administrador") return "Administrador";
-    if (t.includes("func") || t === "funcionario" || t === "funcionário")
-      return "Funcionário";
-    if (t.includes("prof") || t === "professor") return "Professor";
-    return "Aluno";
-  };
-
   const performToggleUserStatus = async (
     usuarioId: string,
     currentStatus?: string
