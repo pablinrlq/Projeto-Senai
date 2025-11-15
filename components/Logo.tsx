@@ -1,8 +1,15 @@
+import Image from "next/image";
+
 export const Logo = ({ className = "" }: { className?: string }) => {
   return (
-    <div className={`font-bold text-2xl ${className}`}>
-      <span className="text-primary">SENAI</span>
-      <span className="text-secondary ml-1">Gestão</span>
+    <div className={className}>
+      <Image
+        src="/logo-senai.png"
+        alt="SENAI Gestão"
+        width={140}
+        height={36}
+        className="object-contain"
+      />
     </div>
   );
 };

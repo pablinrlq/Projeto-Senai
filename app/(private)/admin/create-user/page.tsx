@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+// checkbox import removed (not used on this page)
 import {
   Card,
   CardContent,
@@ -21,10 +21,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Logo } from "@/components/Logo";
 import { z } from "zod";
 import { UserCog, ArrowLeft, Shield, User, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { checkAuthStatus } from "@/lib/utils/auth";
 
 const adminCreationSchema = z
@@ -144,7 +144,9 @@ const CreateAdmin = () => {
       }
 
       // Create user data for API
-      const createUserData: any = { ...validationResult.data };
+      const createUserData: Record<string, unknown> = {
+        ...validationResult.data,
+      };
       // If curso is empty string or null, omit it so DB will keep NULL
       if (!createUserData.curso) delete createUserData.curso;
       // Ensure status is explicit
@@ -238,7 +240,13 @@ const CreateAdmin = () => {
                 Voltar
               </Button>
             </Link>
-            <Logo />
+            <Image
+              src="/logo-senai.png"
+              alt="SENAI Gestão"
+              width={140}
+              height={36}
+              className="object-contain"
+            />
           </div>
 
           <div className="mx-auto w-20 h-20 bg-linear-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg rotate-3 hover:rotate-0 transition-transform">
