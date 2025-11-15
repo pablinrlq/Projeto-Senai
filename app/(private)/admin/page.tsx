@@ -38,6 +38,8 @@ import {
   User,
   CheckCircle,
   XCircle,
+  Trash,
+  UserPlus,
   Clock,
   Eye,
   Download,
@@ -562,11 +564,23 @@ export default function AdminDashboard() {
                             <div>
                               <Dialog>
                                 <DialogTrigger asChild>
-                                  <Button size="sm" variant="outline">
-                                    {usuario.status === "inativo"
-                                      ? "Ativar"
-                                      : "Inativar"}
-                                  </Button>
+                                  {usuario.status === "inativo" ? (
+                                    <Button
+                                      size="icon"
+                                      variant="outline"
+                                      className="text-green-600 hover:cursor-pointer"
+                                    >
+                                      <UserPlus className="h-4 w-4" />
+                                    </Button>
+                                  ) : (
+                                    <Button
+                                      size="icon"
+                                      variant="outline"
+                                      className="text-red-600 hover:cursor-pointer"
+                                    >
+                                      <Trash className="h-4 w-4" />
+                                    </Button>
+                                  )}
                                 </DialogTrigger>
                                 <DialogContent>
                                   <DialogHeader>

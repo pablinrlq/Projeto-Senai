@@ -13,7 +13,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Logo } from "@/components/Logo";
-import { ArrowLeft, Search, User, FileText } from "lucide-react";
+import {
+  ArrowLeft,
+  Search,
+  User,
+  FileText,
+  Trash,
+  UserPlus,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { formatDateForDisplay } from "@/utils/formatDate";
 import {
@@ -358,11 +365,23 @@ export default function Usuarios() {
                             <div>
                               <Dialog>
                                 <DialogTrigger asChild>
-                                  <Button size="sm" variant="outline">
-                                    {usuario.status === "inativo"
-                                      ? "Ativar"
-                                      : "Inativar"}
-                                  </Button>
+                                  {usuario.status === "inativo" ? (
+                                    <Button
+                                      size="icon"
+                                      variant="outline"
+                                      className="text-green-600 hover:cursor-pointer"
+                                    >
+                                      <UserPlus className="h-4 w-4" />
+                                    </Button>
+                                  ) : (
+                                    <Button
+                                      size="icon"
+                                      variant="outline"
+                                      className="text-red-600 hover:cursor-pointer"
+                                    >
+                                      <Trash className="h-4 w-4" />
+                                    </Button>
+                                  )}
                                 </DialogTrigger>
                                 <DialogContent>
                                   <DialogHeader>
@@ -441,9 +460,6 @@ export default function Usuarios() {
                       className="border rounded-lg p-4 space-y-2"
                     >
                       <div className="flex items-center justify-between">
-                        <p className="font-medium">
-                          Falta: {formatDateForDisplay(atestado.data_falta)}
-                        </p>
                         {getStatusBadge(atestado.status)}
                       </div>
                       <p className="text-sm text-muted-foreground">
