@@ -1,9 +1,15 @@
-'use client';
+"use client";
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { toast } from "sonner";
 import { Logo } from "@/components/Logo";
 import { FileText, LogOut, UserCircle, User, UserPlus } from "lucide-react";
@@ -20,8 +26,15 @@ export default function Dashboard() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const initials = (() => {
+    if (!profile?.nome) return "";
+    const parts = profile.nome.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  })();
+
   const fetchProfile = useCallback(async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
 
     if (!token) {
       router.push("/auth/login");
@@ -29,30 +42,30 @@ export default function Dashboard() {
     }
 
     try {
-      const response = await fetch('/api/profile', {
+      const response = await fetch("/api/profile", {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch profile');
+        throw new Error("Failed to fetch profile");
       }
 
       const data = await response.json();
 
       // Redirect students to atestados page
-      if (data.user?.tipo_usuario !== 'administrador') {
+      if (data.user?.tipo_usuario !== "administrador") {
         router.push("/atestados");
         return;
       }
 
       setProfile(data.user);
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      console.error("Error fetching profile:", error);
       toast.error("Erro ao carregar perfil");
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
       router.push("/auth/login");
     } finally {
       setLoading(false);
@@ -64,8 +77,8 @@ export default function Dashboard() {
   }, [fetchProfile]);
 
   const handleLogout = async () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     toast.success("Logout realizado");
     router.push("/auth/login");
   };
@@ -84,30 +97,57 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b bg-card shadow-sm">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 to-white relative overflow-hidden">
+      {/* Decorative orbs */}
+      <div className="pointer-events-none absolute -top-12 left-4 w-56 h-56 rounded-full bg-blue-200/20 blur-3xl transform -rotate-6"></div>
+      <div className="pointer-events-none absolute -bottom-16 right-8 w-72 h-72 rounded-full bg-indigo-200/20 blur-3xl transform rotate-6"></div>
+
+      <header className="border-b bg-white/75 backdrop-blur-md shadow-sm sticky top-0 z-50">
         <div className="container mx-auto flex items-center justify-between px-4 py-4">
-          <Logo />
           <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="font-medium text-sm">{profile?.nome}</p>
-              <p className="text-xs text-muted-foreground capitalize">Administrador</p>
+            <Logo />
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 bg-white/60 backdrop-blur-sm rounded-full px-3 py-1">
+              <div className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-600 text-white font-medium">
+                {initials}
+              </div>
+              <div className="hidden sm:block text-right">
+                <p className="font-medium text-sm">{profile?.nome}</p>
+                <p className="text-xs text-muted-foreground capitalize">
+                  Administrador
+                </p>
+              </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={handleLogout}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleLogout}
+              className="hover:bg-red-50 hover:text-red-600 transition-colors"
+            >
               <LogOut className="h-5 w-5" />
             </Button>
           </div>
         </div>
+        <div className="h-px bg-linear-to-r from-blue-50 to-indigo-50" />
       </header>
 
-      <main className="container mx-auto p-4 md:p-8">
+      <main className="container mx-auto p-4 md:p-8 relative z-10">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-primary mb-2">Painel Administrativo</h1>
-          <p className="text-muted-foreground">Gerencie atestados médicos e usuários do sistema</p>
+          <h1 className="text-3xl md:text-4xl font-bold mb-2 bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            Painel Administrativo
+          </h1>
+          <p className="text-muted-foreground max-w-2xl">
+            Gerencie atestados médicos e usuários do sistema
+          </p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => router.push("/admin/atestados")}>
+          <Card
+            className="transform-gpu hover:scale-[1.02] hover:shadow-xl transition-all duration-300 cursor-pointer bg-white/80 backdrop-blur-sm border border-slate-200"
+            onClick={() => router.push("/admin/atestados")}
+          >
             <CardHeader>
               <FileText className="h-10 w-10 text-primary mb-2" />
               <CardTitle>Revisar Atestados</CardTitle>
@@ -116,44 +156,65 @@ export default function Dashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full">Revisar</Button>
+              <Button className="w-full cursor-pointer bg-linear-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-md">
+                Revisar
+              </Button>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => router.push("/admin/usuarios")}>
+          <Card
+            className="transform-gpu hover:scale-[1.02] hover:shadow-xl transition-all duration-300 cursor-pointer bg-white/80 backdrop-blur-sm border border-slate-200"
+            onClick={() => router.push("/admin/usuarios")}
+          >
             <CardHeader>
               <User className="h-10 w-10 text-secondary mb-2" />
               <CardTitle>Gerenciar Usuários</CardTitle>
-              <CardDescription>Visualize e gerencie usuários existentes</CardDescription>
+              <CardDescription>
+                Visualize e gerencie usuários existentes
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full" variant="secondary">Gerenciar</Button>
+              <Button className="w-full cursor-pointer bg-linear-to-r from-orange-400 to-orange-500 text-white hover:from-orange-500 hover:to-orange-600 shadow-md">
+                Gerenciar
+              </Button>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => router.push("/admin/create-user")}>
+          <Card
+            className="transform-gpu hover:scale-[1.02] hover:shadow-xl transition-all duration-300 cursor-pointer bg-white/80 backdrop-blur-sm border border-slate-200"
+            onClick={() => router.push("/admin/create-user")}
+          >
             <CardHeader>
               <UserPlus className="h-10 w-10 text-green-600 mb-2" />
               <CardTitle>Criar Usuário</CardTitle>
-              <CardDescription>Adicione novos administradores e funcionários</CardDescription>
+              <CardDescription>
+                Adicione novos administradores e funcionários
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full" variant="outline">Criar</Button>
+              <Button className="w-full bg-white/60 border cursor-pointer border-slate-200 bg-linear-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-sm">
+                Criar
+              </Button>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => router.push("/perfil")}>
+          <Card
+            className="transform-gpu hover:scale-[1.02] hover:shadow-xl transition-all duration-300 cursor-pointer bg-white/80 backdrop-blur-sm border border-slate-200"
+            onClick={() => router.push("/perfil")}
+          >
             <CardHeader>
               <UserCircle className="h-10 w-10 text-accent mb-2" />
               <CardTitle>Meu Perfil</CardTitle>
               <CardDescription>Visualize suas informações</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" className="w-full">Ver Perfil</Button>
+              <Button className="w-full border cursor-pointer border-slate-200 bg-blue-500 shadow-sm">
+                Ver Perfil
+              </Button>
             </CardContent>
           </Card>
         </div>
       </main>
     </div>
   );
-};
+}

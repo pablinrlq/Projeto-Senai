@@ -32,7 +32,7 @@ export default function AtestadosWithTanStackQuery() {
   return (
     <div className="container mx-auto py-8 space-y-8">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-8">
+        <h1 className="text-3xl md:text-4xl font-bold text-center mb-8 bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
           Gestão de Atestados
         </h1>
 
@@ -50,12 +50,14 @@ export default function AtestadosWithTanStackQuery() {
       {/* Atestados List */}
       <div className="max-w-4xl mx-auto">
         <div className="flex flex-col items-center text-center gap-3 mb-6 md:flex-row md:items-center md:justify-between md:text-left">
-          <h2 className="text-2xl font-semibold">Meus Atestados</h2>
+          <h2 className="text-2xl md:text-3xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            Meus Atestados
+          </h2>
           <Button
             variant="outline"
             onClick={() => router.refresh()}
             disabled={loading}
-            className="w-full md:w-auto"
+            className="w-full md:w-auto border-blue-300 hover:bg-blue-50 hover:border-blue-500 transition-all duration-300 shadow-sm hover:shadow-md"
           >
             {loading ? "Carregando..." : "Atualizar"}
           </Button>
@@ -63,19 +65,25 @@ export default function AtestadosWithTanStackQuery() {
 
         {loading ? (
           <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-2 text-gray-600">Carregando atestados...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-200 border-t-blue-600 mx-auto"></div>
+            <p className="mt-4 text-sm font-medium text-muted-foreground">
+              Carregando atestados...
+            </p>
           </div>
         ) : atestados.length === 0 ? (
-          <Card>
-            <CardContent className="py-8 text-center text-gray-500">
-              Nenhum atestado encontrado. Crie seu primeiro atestado acima.
+          <Card className="bg-white/80 backdrop-blur-sm border-2 shadow-lg">
+            <CardContent className="py-12 text-center text-muted-foreground">
+              <p className="text-lg">Nenhum atestado encontrado.</p>
+              <p className="text-sm mt-2">Crie seu primeiro atestado acima.</p>
             </CardContent>
           </Card>
         ) : (
           <div className="grid gap-4">
             {atestados.map((atestado) => (
-              <Card key={atestado.id}>
+              <Card
+                key={atestado.id}
+                className="hover:shadow-xl transition-all duration-300 hover:scale-[1.02] bg-white/80 backdrop-blur-sm border-l-4 border-l-blue-500"
+              >
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <CardTitle className="text-lg">{atestado.motivo}</CardTitle>
