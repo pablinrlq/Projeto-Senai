@@ -49,12 +49,13 @@ export default function AtestadosWithTanStackQuery() {
 
       {/* Atestados List */}
       <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col items-center text-center gap-3 mb-6 md:flex-row md:items-center md:justify-between md:text-left">
           <h2 className="text-2xl font-semibold">Meus Atestados</h2>
           <Button
             variant="outline"
             onClick={() => router.refresh()}
             disabled={loading}
+            className="w-full md:w-auto"
           >
             {loading ? "Carregando..." : "Atualizar"}
           </Button>

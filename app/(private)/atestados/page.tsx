@@ -228,8 +228,12 @@ export default function AtestadosPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b bg-card shadow-sm">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 relative overflow-hidden">
+      {/* Decorative background orbs */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-400/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+
+      <header className="border-b bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
         <div className="container mx-auto flex items-center justify-between px-4 py-4">
           <Logo />
           <div className="flex items-center gap-4">
@@ -239,27 +243,32 @@ export default function AtestadosPage() {
                 RA: {profile?.ra_aluno}
               </p>
             </div>
-            <Button variant="ghost" size="icon" onClick={handleLogout}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleLogout}
+              className="hover:bg-red-50 hover:text-red-600 transition-colors"
+            >
               <LogOut className="h-5 w-5" />
             </Button>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto p-4 md:p-8">
+      <main className="container mx-auto p-4 md:p-8 relative z-10">
         <div className="mb-8">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col items-center text-center gap-3 md:flex-row md:items-center md:justify-between md:text-left">
             <div>
-              <h1 className="text-3xl font-bold text-primary mb-2">
+              <h1 className="text-3xl md:text-4xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">
                 Meus Atestados
               </h1>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground text-sm md:text-base">
                 Gerencie seus atestados médicos
               </p>
             </div>
             <Button
               onClick={() => router.push("/atestados/criar")}
-              className="gap-2"
+              className="gap-2 w-full md:w-auto bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all duration-300"
             >
               <Plus className="h-4 w-4" />
               Novo Atestado
@@ -273,7 +282,7 @@ export default function AtestadosPage() {
           </div>
         ) : atestados.length === 0 ? (
           <div className="text-center py-12">
-            <Card className="max-w-md mx-auto">
+            <Card className="max-w-md mx-auto bg-white/80 backdrop-blur-sm border-2 shadow-xl">
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <div className="mb-4 p-3 bg-primary/10 rounded-full">
                   <Plus className="h-8 w-8 text-primary" />
@@ -299,7 +308,7 @@ export default function AtestadosPage() {
             {atestados.map((atestado) => (
               <Card
                 key={atestado.id}
-                className="hover:shadow-lg transition-shadow"
+                className="hover:shadow-xl transition-all duration-300 hover:scale-[1.02] bg-white/80 backdrop-blur-sm border-l-4 border-l-blue-500"
               >
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between">
@@ -408,7 +417,7 @@ export default function AtestadosPage() {
 
         {/* Summary cards */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card>
+          <Card className="bg-linear-to-br from-yellow-50 to-orange-50 border-yellow-200 hover:shadow-lg transition-all duration-300">
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4 text-yellow-600" />
@@ -421,7 +430,7 @@ export default function AtestadosPage() {
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-linear-to-br from-green-50 to-emerald-50 border-green-200 hover:shadow-lg transition-all duration-300">
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-4 w-4 text-green-600" />
@@ -434,7 +443,7 @@ export default function AtestadosPage() {
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-linear-to-br from-red-50 to-rose-50 border-red-200 hover:shadow-lg transition-all duration-300">
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
                 <XCircle className="h-4 w-4 text-red-600" />
