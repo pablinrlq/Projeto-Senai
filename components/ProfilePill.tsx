@@ -58,7 +58,7 @@ export default function ProfilePill({
   return (
     <div className={`flex items-center gap-3 ${className}`}>
       <img src={dataUrl} alt={name || "Avatar"} className={circleClasses} />
-      <div className="flex flex-col leading-tight">
+      <div className="flex flex-col leading-tight profilepill-hide-text">
         <span className="font-medium text-sm text-slate-800">{name}</span>
         {role && <span className="text-xs text-muted-foreground">{role}</span>}
       </div>

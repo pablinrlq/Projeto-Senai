@@ -33,6 +33,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import ProfilePill from "@/components/ProfilePill";
 
 interface AtestadoData {
   id: string;
@@ -237,12 +238,7 @@ export default function AtestadosPage() {
         <div className="container mx-auto flex items-center justify-between px-4 py-4">
           <Logo />
           <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="font-medium text-sm">{profile?.nome}</p>
-              <p className="text-xs text-muted-foreground">
-                RA: {profile?.ra_aluno}
-              </p>
-            </div>
+            <ProfilePill name={profile?.nome} role="Aluno" size="md" />
             <Button
               variant="ghost"
               size="icon"

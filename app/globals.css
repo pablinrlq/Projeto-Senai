@@ -99,3 +99,10 @@ body {
     sans-serif;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Hide profile name and role on very small screens (<=425px) */
+@media (max-width: 425px) {
+  .profilepill-hide-text {
+    display: none;
+  }
+}
