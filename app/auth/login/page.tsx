@@ -121,13 +121,13 @@ const Auth = () => {
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="login-email" className="text-gray-700">
-                E-mail ou CPF (apenas números) *
+                E-mail*
               </Label>
               <Input
                 id="login-email"
                 name="email"
                 type="text"
-                placeholder="Digite seu e-mail ou CPF"
+                placeholder="Digite seu e-mail"
                 required
                 disabled={loading}
                 className="h-12"
