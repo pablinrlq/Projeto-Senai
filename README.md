@@ -1,60 +1,80 @@
 # 🏥 Atestado Stock Hub
 
-A modern, secure medical certificate management system built with Next.js, Firebase, and TypeScript.
+Um sistema moderno, seguro e completo para **gestão e revisão de atestados**, desenvolvido com **Next.js, TypeScript e Supabase**.
 
-## ✨ **Features**
+Projetado para escolas e instituições que precisam aprovar, rejeitar e organizar atestados com **segurança quase profissional**, gerenciamento de usuários e controle total sobre permissões.
 
-- 🔐 **Secure Authentication** - Role-based access control (Admin, User, Employee)
-- 📋 **Medical Certificate Management** - Create, approve, and track medical certificates
-- ✅ **Input Validation** - Comprehensive Zod validation with Portuguese error messages
-- 🔥 **Firebase Integration** - Real-time database with secure server/client separation
-- 📱 **Responsive Design** - Modern UI with Tailwind CSS and Shadcn/ui
-- 🛡️ **Type Safety** - Full TypeScript coverage with inferred types
+---
 
-## 🚀 **Quick Start**
+## ✨ *Features*
 
-### Prerequisites
-- Node.js 18+ 
-- Firebase project setup
-- Environment variables configured
+- 🔐 **Autenticação Segura** — Hash de senhas, proteção de rotas, RLS no Supabase e controle de funções (Admin, Revisor, Aluno)
+- 📄 **Gestão de Atestados** — Envio, aprovação, rejeição, justificativas e histórico completo
+- 🧩 **Gerenciamento de Usuários** — Administradores podem criar, editar e definir permissões
+- 📑 **Logs de Auditoria** — Rastreamento de toda ação sensível no sistema
+- 🛡️ **Validação Completa** — Zod com mensagens de erro detalhadas em português
+- 🗄️ **Banco de Dados Seguro (Supabase)** — Políticas RLS, queries protegidas e armazenamento seguro de arquivos
+- 🧭 **Arquitetura Moderna** — App Router, Server Actions, componentes desacoplados e tipagem abrangente
+- 💅 **UI Responsiva** — Interface moderna usando TailwindCSS + Shadcn/ui
+- ⚡ **Type Safety Total** — TypeScript do backend ao frontend
 
-### Installation
+---
 
-```bash
-# Install dependencies
+## 🚀 *Quick Start*
+
+### **Requisitos**
+- Node.js 18+
+- Projeto Supabase configurado
+- Variáveis de ambiente definidas
+
+---
+
+### **Instalação**
+
+
+# Instalar dependências
 bun install
 
-# Set up environment variables
+# Criar arquivo de variáveis de ambiente
 cp config/.env.example .env.local
-# Edit .env.local with your Firebase credentials
 
-# Run development server
+# Editar .env.local com suas credenciais do Supabase
+Rodar o servidor
+bash
+Copiar código
 bun dev
-```
+Abra http://localhost:3000 no navegador.
 
-Open [http://localhost:3000](http://localhost:3000) to see the application.
+📚 Documentação
+A documentação completa está disponível na pasta /docs:
 
-## 📚 **Documentation**
+🏗️ Estrutura do Projeto – Organização completa da aplicação
 
-Comprehensive documentation is available in the [`/docs`](./docs/) folder:
+🔐 Segurança Supabase – Configuração de RLS e políticas
 
-- **[🏗️ Project Structure](./docs/PROJECT_STRUCTURE.md)** - Complete codebase organization
-- **[🔒 Firebase Security](./docs/FIREBASE_SECURITY.md)** - Security implementation guide
-- **[✅ Validation Guide](./docs/ZOD_VALIDATION_GUIDE.md)** - API validation examples
+✅ Guia de Validações – Exemplos de validações no backend e frontend
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Este projeto utiliza next/font para otimizar o carregamento das fontes, incluindo Geist, desenvolvida pela Vercel.
 
-## Learn More
+📘 Saiba Mais
+Aprenda mais sobre Next.js nos links:
 
-To learn more about Next.js, take a look at the following resources:
+Documentação do Next.js
+https://nextjs.org/docs
+Curso Interativo de Next.js
+https://nextjs.org/learn
+Repositório oficial no GitHub
+https://github.com/vercel/next.js
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+▲ Deploy na Vercel
+A forma mais rápida de publicar seu projeto é usando a Vercel, criadora do Next.js:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+👉 https://vercel.com/new?utm_source=create-next-app
 
-## Deploy on Vercel
+Consulte também a documentação oficial:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Guia de Deploy do Next.js
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+👨‍💻 Desenvolvido por
+Pablo – Atestado Senai
+Sistema seguro, rápido e projetado para simplificar o gerenciamento de atestados.
