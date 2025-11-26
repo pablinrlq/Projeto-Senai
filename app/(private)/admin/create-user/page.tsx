@@ -286,13 +286,17 @@ const CreateAdmin = () => {
                   htmlFor="admin-ra"
                   className="text-sm font-semibold text-gray-700"
                 >
-                  RA/Matrícula *
+                  {cargo === "USUARIO" ? (
+                    <>RA/Matrícula *</>
+                  ) : (
+                    <>RE (Registro de Empregado) *</>
+                  )}
                 </Label>
                 <Input
                   id="admin-ra"
                   name="ra"
                   type="text"
-                  placeholder="ADM12345"
+                  placeholder={cargo === "USUARIO" ? "ADM12345" : "RE12345"}
                   required
                   disabled={loading}
                   className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
