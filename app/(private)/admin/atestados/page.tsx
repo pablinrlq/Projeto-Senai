@@ -497,16 +497,16 @@ export default function AdminAtestadosPage() {
                         {atestado.usuario?.nome}
                       </CardTitle>
                       <CardDescription className="space-y-1">
-                        <div>
+                        <span className="block">
                           RA: {atestado.usuario?.ra} • {atestado.usuario?.email}
-                        </div>
+                        </span>
                         {atestado.usuario?.turma && (
-                          <div className="flex items-center gap-1">
-                            <span>Turma:</span>
+                          <span className="inline-flex items-center gap-2">
+                            <span className="text-sm">Turma:</span>
                             <Badge variant="outline" className="font-mono">
                               {atestado.usuario.turma}
                             </Badge>
-                          </div>
+                          </span>
                         )}
                       </CardDescription>
                     </div>
