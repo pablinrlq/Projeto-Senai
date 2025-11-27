@@ -186,6 +186,7 @@ export default function AdminAtestadosPage() {
           a.usuario?.nome?.toLowerCase().includes(query) ||
           a.usuario?.email?.toLowerCase().includes(query) ||
           a.usuario?.ra?.toLowerCase().includes(query) ||
+          a.usuario?.turma?.toLowerCase().includes(query) ||
           a.motivo?.toLowerCase().includes(query)
       );
     }
@@ -376,7 +377,7 @@ export default function AdminAtestadosPage() {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Pesquisar por nome, email, RA ou motivo..."
+                  placeholder="Buscar atestados"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 h-11"
@@ -495,13 +496,17 @@ export default function AdminAtestadosPage() {
                         <User className="h-5 w-5" />
                         {atestado.usuario?.nome}
                       </CardTitle>
-                      <CardDescription>
-                        RA: {atestado.usuario?.ra} • {atestado.usuario?.email}
+                      <CardDescription className="space-y-1">
+                        <div>
+                          RA: {atestado.usuario?.ra} • {atestado.usuario?.email}
+                        </div>
                         {atestado.usuario?.turma && (
-                          <>
-                            {" "}
-                            • Turma: <strong>{atestado.usuario.turma}</strong>
-                          </>
+                          <div className="flex items-center gap-1">
+                            <span>Turma:</span>
+                            <Badge variant="outline" className="font-mono">
+                              {atestado.usuario.turma}
+                            </Badge>
+                          </div>
                         )}
                       </CardDescription>
                     </div>
