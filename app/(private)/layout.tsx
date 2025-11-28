@@ -132,7 +132,6 @@ export default function PrivateLayout({
 
   const isAdmin = user.tipo_usuario === "administrador";
 
-  // Renderizar sem sidebar para usuários não-admin em rotas não-admin
   if (!isAdminRoute && !isAdmin) {
     return <>{children}</>;
   }
@@ -145,7 +144,7 @@ export default function PrivateLayout({
         isAdmin={isAdmin}
       />
       <SidebarInset className="md:ml-45">
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-background sticky top-0 z-10">
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-background sticky top-0 z-50">
           <Link href="/dashboard" className="-ml-1">
             <Logo />
           </Link>
