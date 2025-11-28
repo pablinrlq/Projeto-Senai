@@ -21,6 +21,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarSeparator,
+  SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
@@ -82,7 +83,7 @@ export function AdminSidebar({ userName, userEmail }: AdminSidebarProps) {
   };
 
   return (
-    <Sidebar collapsible="offcanvas">
+    <Sidebar collapsible="offcanvas" variant="sidebar" side="left">
       <SidebarHeader className="border-b border-sidebar-border p-4">
         <div className="flex items-center gap-3">
           <Logo />
@@ -167,6 +168,7 @@ export function AdminSidebar({ userName, userEmail }: AdminSidebarProps) {
           </Button>
         )}
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   );
 }

@@ -3,21 +3,14 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { toast } from "sonner";
-import { AdminSidebar } from "@/components/AdminSidebar";
 import {
   SidebarProvider,
   SidebarInset,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { AppSidebar } from "./_components/app-sidebar";
+import { AppBreadcrumb } from "./_components/app-breadcrumb";
 
 interface User {
   nome: string;
@@ -120,31 +113,6 @@ export default function PrivateLayout({
     checkAuth();
   }, [router, pathname]);
 
-  const getBreadcrumbs = () => {
-    const paths = pathname.split("/").filter(Boolean);
-    const breadcrumbs = [{ label: "Home", href: "/dashboard" }];
-
-    const labels: Record<string, string> = {
-      admin: "Admin",
-      atestados: "Atestados",
-      usuarios: "Usuários",
-      "create-user": "Criar Usuário",
-      perfil: "Perfil",
-      dashboard: "Dashboard",
-    };
-
-    let currentPath = "";
-    paths.forEach((path) => {
-      currentPath += `/${path}`;
-      breadcrumbs.push({
-        label: labels[path] || path,
-        href: currentPath,
-      });
-    });
-
-    return breadcrumbs;
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -164,39 +132,27 @@ export default function PrivateLayout({
     user.tipo_usuario === "administrador" &&
     (pathname.startsWith("/admin") || pathname === "/dashboard");
 
-  if (!isAdminRoute) {
+  const isAdmin = user.tipo_usuario === "administrador";
+
+  // Renderizar sem sidebar para usuários não-admin em rotas não-admin
+  if (!isAdminRoute && !isAdmin) {
     return <>{children}</>;
   }
 
-  const breadcrumbs = getBreadcrumbs();
-
   return (
-    <SidebarProvider>
-      <AdminSidebar userName={user.nome} userEmail={user.email} />
+    <SidebarProvider defaultOpen={true}>
+      <AppSidebar
+        userName={user.nome}
+        userEmail={user.email}
+        isAdmin={isAdmin}
+      />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-white sticky top-0 z-10">
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-background sticky top-0 z-10">
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              {breadcrumbs.map((crumb, index) => (
-                <div key={crumb.href} className="flex items-center gap-2">
-                  {index > 0 && <BreadcrumbSeparator />}
-                  <BreadcrumbItem>
-                    {index === breadcrumbs.length - 1 ? (
-                      <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
-                    ) : (
-                      <BreadcrumbLink href={crumb.href}>
-                        {crumb.label}
-                      </BreadcrumbLink>
-                    )}
-                  </BreadcrumbItem>
-                </div>
-              ))}
-            </BreadcrumbList>
-          </Breadcrumb>
+          <AppBreadcrumb />
         </header>
-        <div className="flex-1">{children}</div>
+        <div className="flex-1 p-6">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );
