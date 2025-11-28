@@ -148,8 +148,8 @@ export default function PrivateLayout({
         userEmail={user.email}
         role={user.tipo_usuario}
       />
-      <SidebarInset className="md:ml-45">
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-background sticky top-0 z-50">
+      <SidebarInset className="md:ml-60">
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-background sticky top-0 z-40">
           <div className="md:hidden mr-2">
             <SidebarTrigger />
           </div>
