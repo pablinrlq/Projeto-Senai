@@ -151,13 +151,13 @@ export function AppSidebar({ userName, userEmail, isAdmin }: AppSidebarProps) {
                   </div>
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuContent align="end" className="w-40 py-1">
                 <DropdownMenuItem
                   onClick={handleSignOut}
-                  className="text-red-600 cursor-pointer"
+                  className="text-red-600 cursor-pointer text-sm px-3 py-1 flex items-center gap-2"
                 >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sair
+                  <LogOut className="h-4 w-4" />
+                  <span className="leading-4">Sair</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
