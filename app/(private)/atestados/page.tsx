@@ -41,7 +41,12 @@ interface AtestadoData {
   data_fim: string;
   periodo_afastamento?: number | null;
   motivo: string;
-  status: "pendente" | "aprovado_pedagogia" | "aprovado" | "rejeitado";
+  status:
+    | "pendente"
+    | "aprovado_pedagogia"
+    | "aprovado_secretaria"
+    | "aprovado"
+    | "rejeitado";
   imagem: string;
   createdAt: string;
   observacoes_admin?: string;
@@ -157,6 +162,16 @@ export default function AtestadosPage() {
           >
             <CheckCircle className="w-3 h-3 mr-1" />
             Aprovado - Pedagogia
+          </Badge>
+        );
+      case "aprovado_secretaria":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-teal-50 text-teal-700 border-teal-200"
+          >
+            <CheckCircle className="w-3 h-3 mr-1" />
+            Aprovado - Secretaria
           </Badge>
         );
       case "aprovado":
@@ -507,6 +522,23 @@ export default function AtestadosPage() {
                     {
                       atestados.filter((a) => a.status === "aprovado_pedagogia")
                         .length
+                    }
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-linear-to-br from-teal-50 to-cyan-50 border-teal-200 hover:shadow-lg transition-all duration-300">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-teal-600" />
+                <div>
+                  <p className="text-sm font-medium">Aprov. Secretaria</p>
+                  <p className="text-2xl font-bold">
+                    {
+                      atestados.filter(
+                        (a) => a.status === "aprovado_secretaria"
+                      ).length
                     }
                   </p>
                 </div>
