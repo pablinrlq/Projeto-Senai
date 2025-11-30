@@ -41,7 +41,7 @@ interface AtestadoData {
   data_fim: string;
   periodo_afastamento?: number | null;
   motivo: string;
-  status: "pendente" | "aprovado" | "rejeitado";
+  status: "pendente" | "aprovado_pedagogia" | "aprovado" | "rejeitado";
   imagem: string;
   createdAt: string;
   observacoes_admin?: string;
@@ -81,8 +81,11 @@ export default function AtestadosPage() {
 
       const data = await response.json();
 
-      if (data.user?.tipo_usuario === "administrador") {
-        router.push("/dashboard");
+      if (
+        data.user?.tipo_usuario === "administrador" ||
+        data.user?.tipo_usuario === "funcionario"
+      ) {
+        router.push("/admin/atestados");
         return;
       }
 
@@ -146,6 +149,16 @@ export default function AtestadosPage() {
             Pendente
           </Badge>
         );
+      case "aprovado_pedagogia":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-blue-50 text-blue-700 border-blue-200"
+          >
+            <CheckCircle className="w-3 h-3 mr-1" />
+            Aprovado - Pedagogia
+          </Badge>
+        );
       case "aprovado":
         return (
           <Badge
@@ -153,7 +166,7 @@ export default function AtestadosPage() {
             className="bg-green-50 text-green-700 border-green-200"
           >
             <CheckCircle className="w-3 h-3 mr-1" />
-            Aprovado
+            Aprovado - Completo
           </Badge>
         );
       case "rejeitado":
@@ -220,7 +233,11 @@ export default function AtestadosPage() {
     }
   };
 
-  if (!profile || profile.tipo_usuario === "administrador") {
+  if (
+    !profile ||
+    profile.tipo_usuario === "administrador" ||
+    profile.tipo_usuario === "funcionario"
+  ) {
     return null;
   }
 
@@ -466,7 +483,7 @@ export default function AtestadosPage() {
           </div>
         )}
 
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card className="bg-linear-to-br from-yellow-50 to-orange-50 border-yellow-200 hover:shadow-lg transition-all duration-300">
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
@@ -475,6 +492,22 @@ export default function AtestadosPage() {
                   <p className="text-sm font-medium">Pendentes</p>
                   <p className="text-2xl font-bold">
                     {atestados.filter((a) => a.status === "pendente").length}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-linear-to-br from-blue-50 to-cyan-50 border-blue-200 hover:shadow-lg transition-all duration-300">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-blue-600" />
+                <div>
+                  <p className="text-sm font-medium">Aprov. Pedagogia</p>
+                  <p className="text-2xl font-bold">
+                    {
+                      atestados.filter((a) => a.status === "aprovado_pedagogia")
+                        .length
+                    }
                   </p>
                 </div>
               </div>

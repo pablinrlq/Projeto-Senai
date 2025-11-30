@@ -51,7 +51,7 @@ interface AtestadoData {
   data_fim: string;
   periodo_afastamento?: number | null;
   motivo: string;
-  status: "pendente" | "aprovado" | "rejeitado";
+  status: "pendente" | "aprovado_pedagogia" | "aprovado" | "rejeitado";
   imagem: string;
   createdAt: string;
   observacoes_admin?: string;
@@ -79,7 +79,6 @@ export default function AdminAtestadosPage() {
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [accessChecked, setAccessChecked] = useState(false);
-  const [isFuncionario, setIsFuncionario] = useState(false);
   const [turmaFilter, setTurmaFilter] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -121,7 +120,6 @@ export default function AdminAtestadosPage() {
       }
 
       setProfile(data.user);
-      setIsFuncionario(data.user?.tipo_usuario === "funcionario");
       setAccessChecked(true);
     } catch (error) {
       console.error("Error checking admin access:", error);
@@ -176,38 +174,32 @@ export default function AdminAtestadosPage() {
   useEffect(() => {
     let filtered = atestados;
 
-    if (!isFuncionario) {
-      if (turmaFilter && turmaFilter !== "__all__") {
-        filtered = filtered.filter((a) => a.usuario?.turma === turmaFilter);
-      }
+    if (turmaFilter && turmaFilter !== "__all__") {
+      filtered = filtered.filter((a) => a.usuario?.turma === turmaFilter);
+    }
 
-      if (statusFilter && statusFilter !== "__all__") {
-        filtered = filtered.filter((a) => a.status === statusFilter);
-      }
+    if (statusFilter && statusFilter !== "__all__") {
+      filtered = filtered.filter((a) => a.status === statusFilter);
+    }
 
-      if (searchQuery.trim()) {
-        const query = searchQuery.toLowerCase().trim();
-        filtered = filtered.filter(
-          (a) =>
-            a.usuario?.nome?.toLowerCase().includes(query) ||
-            a.usuario?.email?.toLowerCase().includes(query) ||
-            a.usuario?.ra?.toLowerCase().includes(query) ||
-            a.usuario?.turma?.toLowerCase().includes(query) ||
-            a.motivo?.toLowerCase().includes(query)
-        );
-      }
-    } else {
-      setTurmaFilter("__all__");
-      setStatusFilter("__all__");
-      setSearchQuery("");
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(
+        (a) =>
+          a.usuario?.nome?.toLowerCase().includes(query) ||
+          a.usuario?.email?.toLowerCase().includes(query) ||
+          a.usuario?.ra?.toLowerCase().includes(query) ||
+          a.usuario?.turma?.toLowerCase().includes(query) ||
+          a.motivo?.toLowerCase().includes(query)
+      );
     }
 
     setFilteredAtestados(filtered);
-  }, [turmaFilter, statusFilter, searchQuery, atestados, isFuncionario]);
+  }, [turmaFilter, statusFilter, searchQuery, atestados]);
 
   const handleReviewAtestado = async (
     atestadoId: string,
-    novoStatus: "aprovado" | "rejeitado"
+    novoStatus: "aprovado_pedagogia" | "aprovado" | "rejeitado"
   ) => {
     try {
       const token = localStorage.getItem("token");
@@ -229,12 +221,19 @@ export default function AdminAtestadosPage() {
       );
 
       if (response.ok) {
-        toast.success(`Atestado ${novoStatus} com sucesso!`);
+        const statusLabels = {
+          aprovado_pedagogia: "aprovado pela pedagogia",
+          aprovado: "aprovado pela secretaria",
+          rejeitado: "rejeitado",
+        };
+        toast.success(`Atestado ${statusLabels[novoStatus]} com sucesso!`);
         setObservacoes("");
         fetchAtestados();
       } else {
         const error = await response.json();
-        toast.error(error.message || "Erro ao atualizar atestado");
+        toast.error(
+          error.error || error.message || "Erro ao atualizar atestado"
+        );
       }
     } catch (error) {
       console.error("Error reviewing atestado:", error);
@@ -254,6 +253,16 @@ export default function AdminAtestadosPage() {
             Pendente
           </Badge>
         );
+      case "aprovado_pedagogia":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-blue-50 text-blue-700 border-blue-200"
+          >
+            <CheckCircle className="w-3 h-3 mr-1" />
+            Aprovado - Pedagogia
+          </Badge>
+        );
       case "aprovado":
         return (
           <Badge
@@ -261,7 +270,7 @@ export default function AdminAtestadosPage() {
             className="bg-green-50 text-green-700 border-green-200"
           >
             <CheckCircle className="w-3 h-3 mr-1" />
-            Aprovado
+            Aprovado - Completo
           </Badge>
         );
       case "rejeitado":
@@ -372,109 +381,105 @@ export default function AdminAtestadosPage() {
           </p>
         </div>
 
-        {!isFuncionario && (
-          <Card className="mb-6">
-            <CardContent className="pt-6">
-              <div className="space-y-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Buscar atestados"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 h-11"
-                  />
+        <Card className="mb-6">
+          <CardContent className="pt-6">
+            <div className="space-y-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Buscar atestados"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 h-11"
+                />
+              </div>
+
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-1">
+                  <Label
+                    htmlFor="status-filter"
+                    className="text-sm font-medium mb-2 block"
+                  >
+                    Status
+                  </Label>
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger id="status-filter" className="w-full">
+                      <SelectValue placeholder="Todos os status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="__all__">Todos os status</SelectItem>
+                      <SelectItem value="pendente">
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-3 h-3 text-yellow-600" />
+                          Pendente
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="aprovado_pedagogia">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-3 h-3 text-blue-600" />
+                          Aprovado - Pedagogia
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="aprovado">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-3 h-3 text-green-600" />
+                          Aprovado - Completo
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="rejeitado">
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-3 h-3 text-red-600" />
+                          Rejeitado
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
-                <div className="flex flex-col md:flex-row gap-4">
+                {turmasDisponiveis.length > 0 && (
                   <div className="flex-1">
                     <Label
-                      htmlFor="status-filter"
+                      htmlFor="turma-filter"
                       className="text-sm font-medium mb-2 block"
                     >
-                      Status
+                      Turma
                     </Label>
-                    <Select
-                      value={statusFilter}
-                      onValueChange={setStatusFilter}
-                    >
-                      <SelectTrigger id="status-filter" className="w-full">
-                        <SelectValue placeholder="Todos os status" />
+                    <Select value={turmaFilter} onValueChange={setTurmaFilter}>
+                      <SelectTrigger id="turma-filter" className="w-full">
+                        <SelectValue placeholder="Todas as turmas" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="__all__">Todos os status</SelectItem>
-                        <SelectItem value="pendente">
-                          <div className="flex items-center gap-2">
-                            <Clock className="w-3 h-3 text-yellow-600" />
-                            Pendente
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="aprovado">
-                          <div className="flex items-center gap-2">
-                            <CheckCircle className="w-3 h-3 text-green-600" />
-                            Aprovado
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="rejeitado">
-                          <div className="flex items-center gap-2">
-                            <XCircle className="w-3 h-3 text-red-600" />
-                            Rejeitado
-                          </div>
-                        </SelectItem>
+                        <SelectItem value="__all__">Todas as turmas</SelectItem>
+                        {turmasDisponiveis.map((turma) => (
+                          <SelectItem key={turma} value={turma}>
+                            {turma}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
+                )}
 
-                  {turmasDisponiveis.length > 0 && (
-                    <div className="flex-1">
-                      <Label
-                        htmlFor="turma-filter"
-                        className="text-sm font-medium mb-2 block"
-                      >
-                        Turma
-                      </Label>
-                      <Select
-                        value={turmaFilter}
-                        onValueChange={setTurmaFilter}
-                      >
-                        <SelectTrigger id="turma-filter" className="w-full">
-                          <SelectValue placeholder="Todas as turmas" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="__all__">
-                            Todas as turmas
-                          </SelectItem>
-                          {turmasDisponiveis.map((turma) => (
-                            <SelectItem key={turma} value={turma}>
-                              {turma}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-
-                  {(searchQuery ||
-                    (turmaFilter && turmaFilter !== "__all__") ||
-                    (statusFilter && statusFilter !== "__all__")) && (
-                    <div className="flex items-end">
-                      <Button
-                        variant="outline"
-                        onClick={() => {
-                          setSearchQuery("");
-                          setTurmaFilter("__all__");
-                          setStatusFilter("__all__");
-                        }}
-                      >
-                        Limpar Filtros
-                      </Button>
-                    </div>
-                  )}
-                </div>
+                {(searchQuery ||
+                  (turmaFilter && turmaFilter !== "__all__") ||
+                  (statusFilter && statusFilter !== "__all__")) && (
+                  <div className="flex items-end">
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setSearchQuery("");
+                        setTurmaFilter("__all__");
+                        setStatusFilter("__all__");
+                      }}
+                    >
+                      Limpar Filtros
+                    </Button>
+                  </div>
+                )}
               </div>
-            </CardContent>
-          </Card>
-        )}
+            </div>
+          </CardContent>
+        </Card>
 
         {loading ? (
           <div className="flex justify-center">
@@ -666,28 +671,30 @@ export default function AdminAtestadosPage() {
                           <DialogTrigger asChild>
                             <Button
                               size="sm"
-                              className="bg-green-600 hover:bg-green-700"
+                              className="bg-blue-600 hover:bg-blue-700"
                             >
                               <CheckCircle className="h-4 w-4 mr-2" />
-                              Aprovar
+                              Aprovar (Pedagogia)
                             </Button>
                           </DialogTrigger>
                           <DialogContent>
                             <DialogHeader>
-                              <DialogTitle>Aprovar Atestado</DialogTitle>
+                              <DialogTitle>
+                                Aprovar Atestado - Pedagogia
+                              </DialogTitle>
                               <DialogDescription>
                                 Você está aprovando o atestado de{" "}
-                                {atestado.usuario?.nome}
+                                {atestado.usuario?.nome} pela pedagogia
                               </DialogDescription>
                             </DialogHeader>
                             <div className="space-y-4">
                               <div>
-                                <Label htmlFor="observacoes">
+                                <Label htmlFor="observacoes-pedagogia">
                                   Observações (opcional)
                                 </Label>
                                 <Textarea
-                                  id="observacoes"
-                                  placeholder="Adicione observações sobre a aprovação..."
+                                  id="observacoes-pedagogia"
+                                  placeholder="Adicione observações sobre a aprovação pela pedagogia..."
                                   value={observacoes}
                                   onChange={(e) =>
                                     setObservacoes(e.target.value)
@@ -706,11 +713,11 @@ export default function AdminAtestadosPage() {
                                   </Button>
                                 </DialogClose>
                                 <Button
-                                  className="bg-green-600 hover:bg-green-700"
+                                  className="bg-blue-600 hover:bg-blue-700"
                                   onClick={() =>
                                     handleReviewAtestado(
                                       atestado.id,
-                                      "aprovado"
+                                      "aprovado_pedagogia"
                                     )
                                   }
                                 >
@@ -743,6 +750,129 @@ export default function AdminAtestadosPage() {
                                 </Label>
                                 <Textarea
                                   id="observacoes-rejeicao"
+                                  placeholder="Explique o motivo da rejeição..."
+                                  value={observacoes}
+                                  onChange={(e) =>
+                                    setObservacoes(e.target.value)
+                                  }
+                                  required
+                                />
+                              </div>
+                              <div className="flex justify-end gap-2">
+                                <DialogClose asChild>
+                                  <Button
+                                    variant="outline"
+                                    onClick={() => {
+                                      setObservacoes("");
+                                    }}
+                                  >
+                                    Cancelar
+                                  </Button>
+                                </DialogClose>
+                                <Button
+                                  variant="destructive"
+                                  disabled={!observacoes.trim()}
+                                  onClick={() =>
+                                    handleReviewAtestado(
+                                      atestado.id,
+                                      "rejeitado"
+                                    )
+                                  }
+                                >
+                                  Confirmar Rejeição
+                                </Button>
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </>
+                    )}
+
+                    {atestado.status === "aprovado_pedagogia" && (
+                      <>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button
+                              size="sm"
+                              className="bg-green-600 hover:bg-green-700"
+                            >
+                              <CheckCircle className="h-4 w-4 mr-2" />
+                              Aprovar (Secretaria)
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>
+                                Aprovar Atestado - Secretaria
+                              </DialogTitle>
+                              <DialogDescription>
+                                Você está dando aprovação final pela secretaria
+                                ao atestado de {atestado.usuario?.nome}
+                              </DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              <div>
+                                <Label htmlFor="observacoes-secretaria">
+                                  Observações (opcional)
+                                </Label>
+                                <Textarea
+                                  id="observacoes-secretaria"
+                                  placeholder="Adicione observações sobre a aprovação pela secretaria..."
+                                  value={observacoes}
+                                  onChange={(e) =>
+                                    setObservacoes(e.target.value)
+                                  }
+                                />
+                              </div>
+                              <div className="flex justify-end gap-2">
+                                <DialogClose asChild>
+                                  <Button
+                                    variant="outline"
+                                    onClick={() => {
+                                      setObservacoes("");
+                                    }}
+                                  >
+                                    Cancelar
+                                  </Button>
+                                </DialogClose>
+                                <Button
+                                  className="bg-green-600 hover:bg-green-700"
+                                  onClick={() =>
+                                    handleReviewAtestado(
+                                      atestado.id,
+                                      "aprovado"
+                                    )
+                                  }
+                                >
+                                  Confirmar Aprovação Final
+                                </Button>
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="destructive" size="sm">
+                              <XCircle className="h-4 w-4 mr-2" />
+                              Rejeitar
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Rejeitar Atestado</DialogTitle>
+                              <DialogDescription>
+                                Você está rejeitando o atestado de{" "}
+                                {atestado.usuario?.nome}
+                              </DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              <div>
+                                <Label htmlFor="observacoes-rejeicao-sec">
+                                  Motivo da Rejeição *
+                                </Label>
+                                <Textarea
+                                  id="observacoes-rejeicao-sec"
                                   placeholder="Explique o motivo da rejeição..."
                                   value={observacoes}
                                   onChange={(e) =>
