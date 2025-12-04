@@ -11,7 +11,6 @@ import { toast } from "sonner";
 import { Logo } from "@/components/Logo";
 import { z } from "zod";
 import { Eye, EyeOff } from "lucide-react";
-import { setAuthToken } from "@/lib/utils/auth";
 
 const loginSchema = z.object({
   email: z.string().trim().email("Email inválido"),
@@ -54,10 +53,6 @@ const Auth = () => {
 
       if (!response.ok) {
         throw new Error(result.error || "Erro ao fazer login");
-      }
-
-      if (result.token) {
-        setAuthToken(result.token);
       }
 
       toast.success("Login realizado com sucesso!");

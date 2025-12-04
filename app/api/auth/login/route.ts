@@ -66,13 +66,23 @@ export async function POST(req: NextRequest) {
       if (typeof safeProfileObj.senha !== "undefined")
         delete safeProfileObj.senha;
 
-      return NextResponse.json({
+      const res = NextResponse.json({
         success: true,
         message: "Login realizado com sucesso",
         user: safeProfileObj,
         token,
         supabaseSession: signInData?.session ?? null,
       });
+
+      res.cookies.set("session", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+      });
+
+      return res;
     } catch (err) {
       console.error("Error during Supabase signIn:", err);
       return NextResponse.json(

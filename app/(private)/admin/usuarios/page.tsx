@@ -64,18 +64,8 @@ export default function Usuarios() {
   const [atestados, setAtestados] = useState<Atestado[]>([]);
 
   const checkUserType = useCallback(async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/auth/login");
-      return;
-    }
-
     try {
-      const response = await fetch("/api/profile", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch("/api/profile");
 
       if (!response.ok) {
         throw new Error("Failed to check user type");
@@ -105,15 +95,8 @@ export default function Usuarios() {
   }, [router]);
 
   const fetchUsuarios = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
     try {
-      const response = await fetch("/api/usuarios", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch("/api/usuarios");
 
       if (response.ok) {
         const data = await response.json();
@@ -132,15 +115,8 @@ export default function Usuarios() {
 
   const fetchAtestadosUsuario = async (usuarioId: string) => {
     setSelectedUserId(usuarioId);
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
     try {
-      const response = await fetch(`/api/atestados?userId=${usuarioId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(`/api/atestados?userId=${usuarioId}`);
 
       if (response.ok) {
         const data = await response.json();
@@ -195,12 +171,6 @@ export default function Usuarios() {
     usuarioId: string,
     currentStatus?: string
   ) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      toast.error("Não autorizado");
-      return;
-    }
-
     const newStatus = currentStatus === "inativo" ? "ativo" : "inativo";
 
     try {
@@ -208,7 +178,6 @@ export default function Usuarios() {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ status: newStatus }),
       });

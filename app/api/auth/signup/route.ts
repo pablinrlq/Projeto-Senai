@@ -6,6 +6,7 @@ import { supabase } from "@/lib/firebase/admin";
 import fs from "fs";
 import path from "path";
 import argon2 from "argon2";
+import { sanitizeString } from "@/lib/utils/sanitize";
 
 export async function POST(req: Request) {
   try {
@@ -162,7 +163,7 @@ export async function POST(req: Request) {
 
     const profile: Record<string, unknown> = {
       id: createdUser.user.id,
-      nome: validatedData.nome,
+      nome: sanitizeString(validatedData.nome),
       email: validatedData.email,
       cargo: validatedData.cargo || "USUARIO",
       ...(body.metadata && { metadata: body.metadata }),
@@ -175,22 +176,22 @@ export async function POST(req: Request) {
     }
 
     if (validatedData.telefone) {
-      profile.telefone = validatedData.telefone;
+      profile.telefone = sanitizeString(validatedData.telefone);
     }
 
     if ((validatedData as any).curso) {
-      profile.curso = (validatedData as any).curso;
+      profile.curso = sanitizeString((validatedData as any).curso);
     }
 
     if ((validatedData as any).periodo) {
-      profile.periodo = (validatedData as any).periodo;
+      profile.periodo = sanitizeString((validatedData as any).periodo);
     }
 
     if (
       (validatedData as any).turma &&
       String((validatedData as any).turma).trim() !== ""
     ) {
-      profile.turma = (validatedData as any).turma;
+      profile.turma = sanitizeString((validatedData as any).turma);
     }
 
     try {
