@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateAtestado } from "@/hooks/use-create-atestado";
+import { apiExternal } from "@/hooks/api-external/axios-api";
 
 interface Profile {
   nome: string;
@@ -55,7 +56,7 @@ const atestadoSchema = z
       message:
         "O atestado deve ser enviado no máximo 5 dias após a data de início",
       path: ["dataInicio"],
-    }
+    },
   );
 
 export default function CriarAtestadoPage() {
@@ -184,6 +185,27 @@ export default function CriarAtestadoPage() {
 
       await createAtestado(createData);
 
+      // Criar FormData para o upload
+      const uploadFormData = new FormData();
+      uploadFormData.append("file", uploadedFile); // ou o nome do campo que seu backend espera
+
+      await apiExternal
+        .post("/master-admin/upload", uploadFormData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(() => {
+          //Caso for lidar com a resposta
+          toast.success("Imagem enviada com sucesso!");
+        })
+        .catch(() => {
+          //Caso ocorra um erro
+          toast.success(
+            "Ocorreu um erro interno ao lidar com o arquivo enviado!",
+          );
+        });
+
       toast.success("Atestado enviado com sucesso!");
       router.push("/atestados");
     } catch (error: unknown) {
@@ -228,7 +250,11 @@ export default function CriarAtestadoPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form
+                onSubmit={handleSubmit}
+                encType="multipart/form-data"
+                className="space-y-6"
+              >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="dataInicio">Data de Início *</Label>
