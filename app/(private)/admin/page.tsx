@@ -462,17 +462,17 @@ export default function AdminDashboard() {
 
         <Tabs defaultValue="usuarios" className="space-y-6 w-full">
           <TabsList className="grid w-full grid-cols-3 gap-1 md:gap-2">
-            <TabsTrigger value="usuarios" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+            <TabsTrigger value="usuarios" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm border border-[#d8d9dd] bg-white text-[#005ca4] data-[state=active]:bg-[#005ca4] data-[state=active]:text-white data-[state=active]:border-[#005ca4]">
               <Users className="h-3 w-3 md:h-4 md:w-4" />
               <span className="hidden sm:inline">Usuários</span>
               <span className="sm:hidden">Usuários</span>
             </TabsTrigger>
-            <TabsTrigger value="atestados" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+            <TabsTrigger value="atestados" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm border border-[#d8d9dd] bg-white text-[#005ca4] data-[state=active]:bg-[#005ca4] data-[state=active]:text-white data-[state=active]:border-[#005ca4]">
               <FileText className="h-3 w-3 md:h-4 md:w-4" />
               <span className="hidden sm:inline">Atestados</span>
               <span className="sm:hidden">Ates.</span>
             </TabsTrigger>
-            <TabsTrigger value="overview" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+            <TabsTrigger value="overview" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm border border-[#d8d9dd] bg-white text-[#005ca4] data-[state=active]:bg-[#005ca4] data-[state=active]:text-white data-[state=active]:border-[#005ca4]">
               <BarChart3 className="h-3 w-3 md:h-4 md:w-4" />
               <span className="hidden sm:inline">Visão Geral</span>
               <span className="sm:hidden">Visão</span>
@@ -709,7 +709,7 @@ export default function AdminDashboard() {
                       <div className="flex gap-2 flex-wrap">
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button variant="outline" size="sm">
+                            <Button size="sm" className="bg-white border-2 border-[#005ca4] text-[#005ca4] hover:bg-[#f4f7fb]">
                               <Eye className="h-4 w-4 mr-2" />
                               Ver Imagem
                             </Button>
@@ -734,8 +734,8 @@ export default function AdminDashboard() {
 
                         {atestado.imagem && (
                           <Button
-                            variant="outline"
                             size="sm"
+                            className="bg-white border-2 border-[#005ca4] text-[#005ca4] hover:bg-[#f4f7fb]"
                             onClick={() => downloadAtestado(atestado)}
                           >
                             <Download className="h-4 w-4 mr-2" />
@@ -749,7 +749,7 @@ export default function AdminDashboard() {
                               <DialogTrigger asChild>
                                 <Button
                                   size="sm"
-                                  className="bg-green-600 hover:bg-green-700"
+                                  className="bg-[#4caf50] hover:bg-[#45a049] text-white"
                                 >
                                   <CheckCircle className="h-4 w-4 mr-2" />
                                   Aprovar
@@ -789,7 +789,7 @@ export default function AdminDashboard() {
                                       </Button>
                                     </DialogClose>
                                     <Button
-                                      className="bg-green-600 hover:bg-green-700"
+                                      className="bg-[#4caf50] hover:bg-[#45a049] text-white"
                                       onClick={() =>
                                         handleReviewAtestado(
                                           atestado.id,
@@ -806,7 +806,7 @@ export default function AdminDashboard() {
 
                             <Dialog>
                               <DialogTrigger asChild>
-                                <Button variant="destructive" size="sm">
+                                <Button size="sm" className="bg-[#c56266] hover:bg-[#b54f54] text-white">
                                   <XCircle className="h-4 w-4 mr-2" />
                                   Rejeitar
                                 </Button>
@@ -846,7 +846,7 @@ export default function AdminDashboard() {
                                       </Button>
                                     </DialogClose>
                                     <Button
-                                      variant="destructive"
+                                      className="bg-[#c56266] hover:bg-[#b54f54] text-white"
                                       disabled={!observacoes.trim()}
                                       onClick={() =>
                                         handleReviewAtestado(

@@ -683,7 +683,7 @@ export default function AdminAtestadosPage() {
                   <div className="flex flex-col sm:flex-row gap-2 md:gap-2 flex-wrap">
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button variant="outline" size="sm" className="text-xs md:text-sm h-8 md:h-10 w-full sm:w-auto">
+                        <Button size="sm" style={{ backgroundColor: "white !important", borderColor: "#005ca4 !important", borderWidth: "2px !important", color: "#005ca4 !important" }} className="text-xs md:text-sm h-8 md:h-10 w-full sm:w-auto">
                           <Eye className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
                           Ver Imagem
                         </Button>
@@ -714,9 +714,9 @@ export default function AdminAtestadosPage() {
 
                     {atestado.imagem && (
                       <Button
-                        variant="outline"
                         size="sm"
                         onClick={() => downloadAtestado(atestado)}
+                        style={{ backgroundColor: "white !important", borderColor: "#005ca4 !important", borderWidth: "2px !important", color: "#005ca4 !important" }}
                         className="text-xs md:text-sm h-8 md:h-10 w-full sm:w-auto"
                       >
                         <Download className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
@@ -732,7 +732,7 @@ export default function AdminAtestadosPage() {
                               <DialogTrigger asChild>
                                 <Button
                                   size="sm"
-                                  className="bg-blue-600 hover:bg-blue-700 text-white text-xs md:text-sm h-8 md:h-10 w-full sm:flex-1"
+                                  className="bg-[#4caf50] hover:bg-[#45a049] text-white text-xs md:text-sm h-8 md:h-10 w-full sm:flex-1"
                                 >
                                   <CheckCircle className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
                                   Aprovar (Pedagogia)
@@ -797,7 +797,7 @@ export default function AdminAtestadosPage() {
                               <DialogTrigger asChild>
                                 <Button
                                   size="sm"
-                                  className="bg-green-600 hover:bg-green-700 text-white text-xs md:text-sm h-8 md:h-10 w-full sm:flex-1"
+                                  className="bg-[#4caf50] hover:bg-[#45a049] text-white text-xs md:text-sm h-8 md:h-10 w-full sm:flex-1"
                                 >
                                   <CheckCircle className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
                                   Aprovar (Secretaria)
