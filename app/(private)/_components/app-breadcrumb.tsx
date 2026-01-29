@@ -50,7 +50,7 @@ export function AppBreadcrumb() {
 
         <BreadcrumbItem>
           <BreadcrumbPage
-            className={cn("text-blue-600 dark:text-blue-400 font-medium")}
+            className={cn("text-[#005ca4] font-medium")}
           >
             {currentLabel}
           </BreadcrumbPage>

@@ -1,14 +1,19 @@
-import Image from "next/image";
+type LogoProps = {
+  className?: string;
+  imgClassName?: string;
+};
 
-export const Logo = ({ className = "" }: { className?: string }) => {
+export const Logo = ({
+  className = "",
+  imgClassName = "h-9 w-auto object-contain mix-blend-multiply",
+}: LogoProps) => {
   return (
     <div className={className}>
-      <Image
-        src="/logo-senai.png"
+      <img
+        src="/branding/logo.png"
         alt="SENAI Gestão"
-        width={110}
-        height={36}
-        className="object-contain"
+        className={imgClassName}
+        loading="lazy"
       />
     </div>
   );

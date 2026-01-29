@@ -179,15 +179,20 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 to-white">
+    <div className="bg-white min-h-screen">
       <main className="container mx-auto p-4 md:p-8">
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2 bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-            Bem-vindo, {profile.nome.split(" ")[0]}!
-          </h1>
-          <p className="text-muted-foreground">
-            Visão geral do sistema de gerenciamento de atestados
-          </p>
+          <div className="flex items-start gap-4">
+            <div style={{ width: '6px', height: '60px', backgroundColor: '#005ca4', borderRadius: '10px' }} />
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: '#005ca4' }}>
+                Bem-vindo, {profile.nome.split(" ")[0]}!
+              </h1>
+              <p className="text-muted-foreground">
+                Visão geral do sistema de gerenciamento de atestados
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
@@ -221,28 +226,28 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow border-yellow-200 bg-yellow-50/50">
+          <Card className="hover:shadow-lg transition-shadow" style={{ borderColor: '#005ca4', backgroundColor: 'rgba(234, 202, 98, 0.12)' }}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
                 Atestados Pendentes
               </CardTitle>
-              <Clock className="h-4 w-4 text-yellow-600" />
+              <Clock className="h-4 w-4" style={{ color: 'rgb(234, 202, 98)' }} />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-yellow-700">
+              <div className="text-2xl font-bold" style={{ color: 'rgb(91, 91, 95)' }}>
                 {stats.atestadosPendentes}
               </div>
-              <p className="text-xs text-yellow-600">Aguardando sua revisão</p>
+              <p className="text-xs" style={{ color: 'rgb(91, 91, 95)' }}>Aguardando sua revisão</p>
               <div className="mt-3 flex gap-4">
                 <div className="text-xs">
                   <p className="text-muted-foreground">Aprov. Pedagogia</p>
-                  <p className="font-semibold text-sm text-blue-700">
+                  <p className="font-semibold text-sm" style={{ color: 'rgb(0, 92, 164)' }}>
                     {stats.atestadosAprovPedagogia}
                   </p>
                 </div>
                 <div className="text-xs">
                   <p className="text-muted-foreground">Aprov. Secretaria</p>
-                  <p className="font-semibold text-sm text-teal-700">
+                  <p className="font-semibold text-sm" style={{ color: 'rgb(135, 185, 188)' }}>
                     {stats.atestadosAprovSecretaria}
                   </p>
                 </div>
@@ -250,45 +255,45 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow border-green-200 bg-green-50/50">
+          <Card className="hover:shadow-lg transition-shadow" style={{ borderColor: '#005ca4', backgroundColor: 'rgba(168, 194, 113, 0.12)' }}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
                 Atestados Aprovados
               </CardTitle>
-              <CheckCircle className="h-4 w-4 text-green-600" />
+              <CheckCircle className="h-4 w-4" style={{ color: 'rgb(168, 194, 113)' }} />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-700">
+              <div className="text-2xl font-bold" style={{ color: 'rgb(91, 91, 95)' }}>
                 {stats.atestadosAprovados}
               </div>
-              <p className="text-xs text-green-600">Revisados e aprovados</p>
+              <p className="text-xs" style={{ color: 'rgb(91, 91, 95)' }}>Revisados e aprovados</p>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow border-red-200 bg-red-50/50">
+          <Card className="hover:shadow-lg transition-shadow" style={{ borderColor: '#005ca4', backgroundColor: 'rgba(197, 98, 102, 0.12)' }}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
                 Atestados Rejeitados
               </CardTitle>
-              <XCircle className="h-4 w-4 text-red-600" />
+              <XCircle className="h-4 w-4" style={{ color: 'rgb(197, 98, 102)' }} />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-red-700">
+              <div className="text-2xl font-bold" style={{ color: 'rgb(91, 91, 95)' }}>
                 {stats.atestadosRejeitados}
               </div>
-              <p className="text-xs text-red-600">Não atenderam critérios</p>
+              <p className="text-xs" style={{ color: 'rgb(91, 91, 95)' }}>Não atenderam critérios</p>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow border-blue-200 bg-blue-50/50">
+          <Card className="hover:shadow-lg transition-shadow" style={{ borderColor: '#005ca4', backgroundColor: 'rgba(127, 175, 211, 0.12)' }}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
                 Taxa de Aprovação
               </CardTitle>
-              <TrendingUp className="h-4 w-4 text-blue-600" />
+              <TrendingUp className="h-4 w-4" style={{ color: 'rgb(0, 92, 164)' }} />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-blue-700">
+              <div className="text-2xl font-bold" style={{ color: 'rgb(0, 92, 164)' }}>
                 {stats.totalAtestados > 0
                   ? Math.round(
                       (stats.atestadosAprovados / stats.totalAtestados) * 100
@@ -296,7 +301,7 @@ export default function Dashboard() {
                   : 0}
                 %
               </div>
-              <p className="text-xs text-blue-600">
+              <p className="text-xs" style={{ color: 'rgb(91, 91, 95)' }}>
                 Atestados aprovados do total
               </p>
             </CardContent>
@@ -307,7 +312,7 @@ export default function Dashboard() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Clock className="h-5 w-5 text-yellow-600" />
+                <Clock className="h-5 w-5" style={{ color: 'rgb(234, 202, 98)' }} />
                 Ações Pendentes
               </CardTitle>
               <CardDescription>
@@ -317,9 +322,9 @@ export default function Dashboard() {
             <CardContent>
               {stats.atestadosPendentes > 0 ? (
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                  <div className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: 'rgba(234, 202, 98, 0.12)', borderColor: 'rgb(234, 202, 98)', borderWidth: 1 }}>
                     <div className="flex items-center gap-3">
-                      <FileText className="h-5 w-5 text-yellow-600" />
+                      <FileText className="h-5 w-5" style={{ color: 'rgb(234, 202, 98)' }} />
                       <div>
                         <p className="font-medium text-sm">Revisar Atestados</p>
                         <p className="text-xs text-muted-foreground">
@@ -349,9 +354,12 @@ export default function Dashboard() {
               <div className="space-y-2">
                 <button
                   onClick={() => router.push("/admin/atestados")}
-                  className="w-full flex items-center gap-3 p-3 hover:bg-blue-50 rounded-lg border border-blue-200 transition-colors"
+                  className="w-full flex items-center gap-3 p-3 rounded-lg transition-colors cursor-pointer"
+                  style={{ borderColor: 'rgb(127, 175, 211)', borderWidth: 1 }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(127, 175, 211, 0.12)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                 >
-                  <FileText className="h-5 w-5 text-blue-600" />
+                  <FileText className="h-5 w-5" style={{ color: 'rgb(0, 92, 164)' }} />
                   <div className="text-left">
                     <p className="font-medium text-sm">Revisar Atestados</p>
                     <p className="text-xs text-muted-foreground">
@@ -362,9 +370,12 @@ export default function Dashboard() {
 
                 <button
                   onClick={() => router.push("/admin/usuarios")}
-                  className="w-full flex items-center gap-3 p-3 hover:bg-orange-50 rounded-lg border border-orange-200 transition-colors"
+                  className="w-full flex items-center gap-3 p-3 rounded-lg transition-colors cursor-pointer"
+                  style={{ borderColor: 'rgb(234, 202, 98)', borderWidth: 1 }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(234, 202, 98, 0.12)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                 >
-                  <Users className="h-5 w-5 text-orange-600" />
+                  <Users className="h-5 w-5" style={{ color: 'rgb(234, 202, 98)' }} />
                   <div className="text-left">
                     <p className="font-medium text-sm">Gerenciar Usuários</p>
                     <p className="text-xs text-muted-foreground">

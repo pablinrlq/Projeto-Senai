@@ -88,34 +88,34 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex">
-      <div className="hidden lg:flex lg:w-1/2 bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 p-12 flex-col justify-between relative overflow-hidden">
+    <div className="min-h-screen flex" style={{ background: "linear-gradient(to bottom right, #f4f7fb, #eef3f8)" }}>
+      <div className="hidden lg:flex lg:w-1/2 p-12 flex-col justify-between relative overflow-hidden" style={{ background: "linear-gradient(145deg, #eef4fb 0%, #f7faff 35%, #ffffff 100%)" }}>
         <div className="flex-1 flex flex-col justify-center max-w-md mx-auto">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
+          <h1 className="text-4xl font-bold mb-4" style={{ color: '#005ca4' }}>
             Quer descobrir algo novo?
           </h1>
-          <p className="text-lg text-gray-600 leading-relaxed">
+          <p className="text-lg text-[#3e5673] leading-relaxed">
             Acesse o sistema para gerenciar atestados, visualizar relatórios e
             explorar oportunidades de aprendizado e crescimento profissional.
           </p>
         </div>
 
-        <div className="absolute top-0 left-0 w-64 h-64 bg-linear-to-br from-blue-200/40 to-purple-200/40 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-linear-to-br from-pink-200/40 to-purple-200/40 rounded-full blur-3xl translate-x-1/3 translate-y-1/3"></div>
+        <div className="absolute top-0 left-0 w-64 h-64 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" style={{ background: "radial-gradient(circle at 30% 30%, rgba(0,92,164,0.18), rgba(0,92,164,0))" }}></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full blur-3xl translate-x-1/3 translate-y-1/3" style={{ background: "radial-gradient(circle at 60% 40%, rgba(0,125,210,0.16), rgba(0,92,164,0.05))" }}></div>
       </div>
 
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white relative">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 md:p-8 bg-white relative">
         <div className="w-full max-w-md">
-          <div className="absolute top-8 right-8">
-            <Logo />
+          <div className="absolute top-4 md:top-8 right-4 md:right-8">
+            <Logo imgClassName="h-8 md:h-10 w-auto object-contain mix-blend-multiply" />
           </div>
 
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <div className="mb-6 md:mb-8 mt-12">
+            <h2 className="text-2xl md:text-3xl font-bold text-[#12385f] mb-2">
               Seu próximo passo{" "}
-              <span className="text-[#E63946]">começa aqui</span>
+              <span style={{ color: '#005ca4' }}>começa aqui</span>
             </h2>
-            <p className="text-gray-600">
+            <p className="text-sm md:text-base text-[#4a5f77]">
               Acesse sua conta e continue sua jornada de aprendizado e
               descobertas.
             </p>
@@ -123,7 +123,7 @@ const Auth = () => {
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="login-email" className="text-gray-700">
+              <Label htmlFor="login-email" className="text-[#12385f]">
                 E-mail*
               </Label>
               <Input
@@ -138,7 +138,7 @@ const Auth = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="login-password" className="text-gray-700">
+              <Label htmlFor="login-password" className="text-[#12385f]">
                 Senha *
               </Label>
               <div className="relative">
@@ -154,7 +154,7 @@ const Auth = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5a708a] hover:text-[#12385f]"
                 >
                   {showPassword ? (
                     <EyeOff className="w-5 h-5" />
@@ -176,14 +176,14 @@ const Auth = () => {
                 />
                 <label
                   htmlFor="remember"
-                  className="text-sm text-gray-600 cursor-pointer"
+                  className="text-sm text-[#4a5f77] cursor-pointer"
                 >
                   Lembre-se de mim neste dispositivo!
                 </label>
               </div>
               <Link
                 href="/auth/forgot-password"
-                className="text-sm text-gray-600 hover:text-[#E63946] transition-colors"
+                className="text-sm transition-colors" style={{ color: '#12385f' }} onMouseEnter={(e) => e.currentTarget.style.color = '#005ca4'} onMouseLeave={(e) => e.currentTarget.style.color = '#12385f'}
               >
                 Esqueceu a senha?
               </Link>
@@ -191,18 +191,18 @@ const Auth = () => {
 
             <Button
               type="submit"
-              className="w-full h-12 bg-[#E63946] hover:bg-[#d32f2f] text-white text-base font-medium"
+              className="w-full h-12 text-white text-base font-medium" style={{ backgroundColor: '#005ca4' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#004b90'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#005ca4'}
               disabled={loading}
             >
               {loading ? "Entrando..." : "Entrar"}
             </Button>
 
             <div className="text-center">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-[#4a5f77]">
                 Não tem uma conta?{" "}
                 <Link
                   href="/auth/signup"
-                  className="text-[#E63946] hover:underline font-medium"
+                  className="font-medium hover:underline" style={{ color: '#005ca4' }}
                 >
                   Clique aqui
                 </Link>

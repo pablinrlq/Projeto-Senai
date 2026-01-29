@@ -262,11 +262,8 @@ export default function AtestadosPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-400/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
-
-      <header className="border-b bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+    <div className="bg-white min-h-screen">
+      <header className="bg-[hsl(210_20%_97%)] shadow-md sticky top-0 z-[9999]" style={{ borderBottom: '4px solid #005ca4' }}>
         <div className="container mx-auto flex items-center justify-between px-4 py-4">
           <Logo />
           <div className="flex items-center gap-4">
@@ -294,20 +291,23 @@ export default function AtestadosPage() {
         </div>
       </header>
 
-      <main className="container mx-auto p-4 md:p-8 relative z-10">
-        <div className="mb-8">
-          <div className="flex flex-col items-center text-center gap-3 md:flex-row md:items-center md:justify-between md:text-left">
-            <div>
-              <h1 className="text-3xl md:text-4xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">
-                Meus Atestados
-              </h1>
-              <p className="text-muted-foreground text-sm md:text-base">
-                Gerencie seus atestados médicos
-              </p>
+      <main className="container mx-auto p-2 sm:p-4 md:p-8">
+        <div className="mb-6 md:mb-8">
+          <div className="flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-start gap-3 md:gap-4">
+              <div style={{ width: '4px', height: '45px', backgroundColor: '#005ca4', borderRadius: '8px' }} />
+              <div>
+                <h1 className="text-2xl md:text-4xl font-bold mb-1 md:mb-2" style={{ color: '#005ca4' }}>
+                  Meus Atestados
+                </h1>
+                <p className="text-xs md:text-base text-muted-foreground">
+                  Gerencie seus atestados médicos
+                </p>
+              </div>
             </div>
             <Button
               onClick={() => router.push("/atestados/criar")}
-              className="gap-2 w-full md:w-auto bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all duration-300"
+              className="gap-2 w-full md:w-auto shadow-lg hover:shadow-xl transition-all duration-300 bg-[#005ca4] hover:bg-[#004b90] text-white text-sm md:text-base"
             >
               <Plus className="h-4 w-4" />
               Novo Atestado
@@ -319,40 +319,99 @@ export default function AtestadosPage() {
           <div className="flex justify-center">
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
           </div>
-        ) : atestados.length === 0 ? (
-          <div className="text-center py-12">
-            <Card className="max-w-md mx-auto bg-white/80 backdrop-blur-sm border-2 shadow-xl">
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <div className="mb-4 p-3 bg-primary/10 rounded-full">
-                  <Plus className="h-8 w-8 text-primary" />
-                </div>
-                <CardTitle className="mb-2">
-                  Nenhum atestado encontrado
-                </CardTitle>
-                <CardDescription className="mb-4">
-                  Você ainda não enviou nenhum atestado médico.
-                </CardDescription>
+        ) : (
+          <>
+            {/* Estatísticas */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
+              <Card className="border-l-4 border-l-[#f57c00] bg-white hover:shadow-lg transition-all duration-300">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-[#5b5b5f] mb-2">Pendentes</p>
+                      <p className="text-3xl font-bold text-[#f57c00]">
+                        {
+                          atestados.filter(
+                            (a) =>
+                              a.status === "pendente" ||
+                              a.status === "aprovado_pedagogia" ||
+                              a.status === "aprovado_secretaria"
+                          ).length
+                        }
+                      </p>
+                    </div>
+                    <Clock className="h-8 w-8 text-[#f57c00]" />
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-[#d8d9dd] flex gap-4 text-xs">
+                    <div>
+                      <p className="text-[#5b5b5f]">Pedagogia</p>
+                      <p className="font-bold text-[#005ca4]">
+                        {atestados.filter((a) => a.status === "aprovado_pedagogia").length}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-[#5b5b5f]">Secretaria</p>
+                      <p className="font-bold text-[#00897b]">
+                        {atestados.filter((a) => a.status === "aprovado_secretaria").length}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-l-4 border-l-[#4caf50] bg-white hover:shadow-lg transition-all duration-300">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-[#5b5b5f] mb-2">Aprovados</p>
+                      <p className="text-3xl font-bold text-[#4caf50]">
+                        {atestados.filter((a) => a.status === "aprovado").length}
+                      </p>
+                    </div>
+                    <CheckCircle className="h-8 w-8 text-[#4caf50]" />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-l-4 border-l-[#c56266] bg-white hover:shadow-lg transition-all duration-300">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-[#5b5b5f] mb-2">Rejeitados</p>
+                      <p className="text-3xl font-bold text-[#c56266]">
+                        {atestados.filter((a) => a.status === "rejeitado").length}
+                      </p>
+                    </div>
+                    <XCircle className="h-8 w-8 text-[#c56266]" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Conteúdo Principal */}
+            {atestados.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <Plus className="h-12 w-12 text-[#d8d9dd] mb-4" />
+                <h3 className="text-lg font-semibold text-[#12385f] mb-2">Nenhum atestado enviado</h3>
+                <p className="text-sm text-[#5b5b5f] mb-6">Comece enviando seu primeiro atestado médico.</p>
                 <Button
                   onClick={() => router.push("/atestados/criar")}
-                  className="gap-2"
+                  className="bg-[#005ca4] hover:bg-[#004b90] text-white gap-2"
                 >
                   <Plus className="h-4 w-4" />
-                  Enviar Primeiro Atestado
+                  Enviar Atestado
                 </Button>
-              </CardContent>
-            </Card>
-          </div>
-        ) : (
-          <div className="grid gap-6">
-            {atestados.map((atestado) => (
-              <Card
-                key={atestado.id}
-                className="hover:shadow-xl transition-all duration-300 hover:scale-[1.02] bg-white/80 backdrop-blur-sm border-l-4 border-l-blue-500"
-              >
+              </div>
+            ) : (
+              <div className="grid gap-6">
+                {atestados.map((atestado) => (
+                  <Card
+                    key={atestado.id}
+                    className="hover:shadow-xl transition-all duration-300 hover:scale-[1.02] bg-white/90 backdrop-blur-sm border-l-4 border-l-[#005ca4]"
+                  >
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between">
                     <div className="space-y-2">
-                      <CardTitle className="text-lg">Atestado Médico</CardTitle>
+                      <CardTitle className="text-lg text-[#005ca4]">Atestado Médico</CardTitle>
                       <CardDescription>
                         Enviado em {formatDate(atestado.createdAt)}
                       </CardDescription>
@@ -463,10 +522,10 @@ export default function AtestadosPage() {
                           Ver Atestado
                         </Button>
                       </DialogTrigger>
-                      <DialogContent className="max-w-4xl">
+                      <DialogContent className="max-w-4xl bg-white border-2 border-[#005ca4]">
                         <DialogHeader>
-                          <DialogTitle>Atestado Médico</DialogTitle>
-                          <DialogDescription>
+                          <DialogTitle className="text-[#005ca4]">Atestado Médico</DialogTitle>
+                          <DialogDescription className="text-[#5b5b5f]">
                             Atestado enviado em {formatDate(atestado.createdAt)}
                           </DialogDescription>
                         </DialogHeader>
@@ -500,80 +559,10 @@ export default function AtestadosPage() {
                 </CardContent>
               </Card>
             ))}
-          </div>
+            </div>
+            )}
+          </>
         )}
-
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="bg-linear-to-br from-yellow-50 to-orange-50 border-yellow-200 hover:shadow-lg transition-all duration-300">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-yellow-600" />
-                <div>
-                  <p className="text-sm font-medium">Pendentes</p>
-                  <p className="text-2xl font-bold">
-                    {
-                      atestados.filter(
-                        (a) =>
-                          a.status === "pendente" ||
-                          a.status === "aprovado_pedagogia" ||
-                          a.status === "aprovado_secretaria"
-                      ).length
-                    }
-                  </p>
-                  <div className="mt-2 flex gap-3">
-                    <div className="text-xs">
-                      <p className="text-muted-foreground">Aprov. Pedagogia</p>
-                      <p className="font-semibold text-sm text-blue-700">
-                        {
-                          atestados.filter(
-                            (a) => a.status === "aprovado_pedagogia"
-                          ).length
-                        }
-                      </p>
-                    </div>
-                    <div className="text-xs">
-                      <p className="text-muted-foreground">Aprov. Secretaria</p>
-                      <p className="font-semibold text-sm text-teal-700">
-                        {
-                          atestados.filter(
-                            (a) => a.status === "aprovado_secretaria"
-                          ).length
-                        }
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-linear-to-br from-green-50 to-emerald-50 border-green-200 hover:shadow-lg transition-all duration-300">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-green-600" />
-                <div>
-                  <p className="text-sm font-medium">Aprovados</p>
-                  <p className="text-2xl font-bold">
-                    {atestados.filter((a) => a.status === "aprovado").length}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="bg-linear-to-br from-red-50 to-rose-50 border-red-200 hover:shadow-lg transition-all duration-300">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2">
-                <XCircle className="h-4 w-4 text-red-600" />
-                <div>
-                  <p className="text-sm font-medium">Rejeitados</p>
-                  <p className="text-2xl font-bold">
-                    {atestados.filter((a) => a.status === "rejeitado").length}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
       </main>
     </div>
   );

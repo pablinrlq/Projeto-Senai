@@ -8,17 +8,27 @@ const Toaster = ({ ...props }: ToasterProps) => {
 
   return (
     <Sonner
-      theme={theme as ToasterProps["theme"]}
+      theme="light"
       className="toaster group"
       toastOptions={{
+        style: {
+          background: "#ffffff",
+          border: "2px solid #005ca4",
+          color: "#12385f",
+          fontSize: "14px",
+          fontWeight: "500",
+          padding: "16px",
+          borderRadius: "8px",
+        },
         classNames: {
-          toast:
-            "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
-          description: "group-[.toast]:text-muted-foreground",
-          actionButton:
-            "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
-          cancelButton:
-            "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
+          toast: "!bg-white !text-[#12385f] !border-2 !border-[#005ca4]",
+          description: "!text-[#5b5b5f]",
+          actionButton: "!bg-[#005ca4] !text-white hover:!bg-[#004b90]",
+          cancelButton: "!bg-[#f4f7fb] !text-[#005ca4]",
+          success: "!bg-white !text-[#12385f] !border-[#005ca4]",
+          error: "!bg-white !text-[#12385f] !border-[#c56266]",
+          warning: "!bg-white !text-[#12385f] !border-[#f57c00]",
+          info: "!bg-white !text-[#12385f] !border-[#005ca4]",
         },
       }}
       {...props}
@@ -27,3 +37,4 @@ const Toaster = ({ ...props }: ToasterProps) => {
 };
 
 export { Toaster, toast };
+

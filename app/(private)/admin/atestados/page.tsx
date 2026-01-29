@@ -272,9 +272,9 @@ export default function AdminAtestadosPage() {
         <Badge
           key="aprovado"
           variant="outline"
-          className="bg-green-50 text-green-700 border-green-200"
+          className="bg-[#e8f5e9] text-[#2e7d32] border-[#4caf50]"
         >
-          <CheckCircle className="w-3 h-3 mr-1" />
+          <CheckCircle className="w-3 h-3 mr-1 text-[#4caf50]" />
           Aprovado - Completo
         </Badge>
       );
@@ -283,9 +283,9 @@ export default function AdminAtestadosPage() {
         <Badge
           key="rejeitado"
           variant="outline"
-          className="bg-red-50 text-red-700 border-red-200"
+          className="bg-[#ffebee] text-[#c62828] border-[#c56266]"
         >
-          <XCircle className="w-3 h-3 mr-1" />
+          <XCircle className="w-3 h-3 mr-1 text-[#c56266]" />
           Rejeitado
         </Badge>
       );
@@ -294,9 +294,9 @@ export default function AdminAtestadosPage() {
         <Badge
           key="pendente"
           variant="outline"
-          className="bg-yellow-50 text-yellow-700 border-yellow-200"
+          className="bg-[#fff3e0] text-[#e65100] border-[#ffb74d]"
         >
-          <Clock className="w-3 h-3 mr-1" />
+          <Clock className="w-3 h-3 mr-1 text-[#f57c00]" />
           Pendente
         </Badge>
       );
@@ -306,9 +306,9 @@ export default function AdminAtestadosPage() {
           <Badge
             key="pedagogia"
             variant="outline"
-            className="bg-blue-50 text-blue-700 border-blue-200"
+            className="bg-[#e3f2fd] text-[#1565c0] border-[#005ca4]"
           >
-            <CheckCircle className="w-3 h-3 mr-1" />
+            <CheckCircle className="w-3 h-3 mr-1 text-[#005ca4]" />
             Aprovado - Pedagogia
           </Badge>
         );
@@ -319,9 +319,9 @@ export default function AdminAtestadosPage() {
           <Badge
             key="secretaria"
             variant="outline"
-            className="bg-teal-50 text-teal-700 border-teal-200"
+            className="bg-[#e0f2f1] text-[#00695c] border-[#4db8ac]"
           >
-            <CheckCircle className="w-3 h-3 mr-1" />
+            <CheckCircle className="w-3 h-3 mr-1 text-[#00897b]" />
             Aprovado - Secretaria
           </Badge>
         );
@@ -413,43 +413,48 @@ export default function AdminAtestadosPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <main className="container mx-auto p-4 md:p-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-primary mb-2">
-            Revisar Atestados
-          </h1>
-          <p className="text-muted-foreground">
-            Analise e aprove ou rejeite atestados enviados pelos alunos
-          </p>
+    <div className="bg-background">
+      <main className="container mx-auto p-2 sm:p-4 md:p-8 overflow-x-hidden">
+        <div className="mb-6 md:mb-8">
+          <div className="flex items-start gap-2 md:gap-4">
+            <div style={{ width: '4px', height: '45px', backgroundColor: '#005ca4', borderRadius: '8px' }} />
+            <div className="min-w-0">
+              <h1 className="text-xl md:text-3xl font-bold mb-1 md:mb-2 break-words" style={{ color: '#005ca4' }}>
+                Revisar Atestados
+              </h1>
+              <p className="text-xs md:text-base text-muted-foreground">
+                Analise e aprove ou rejeite atestados enviados pelos alunos
+              </p>
+            </div>
+          </div>
         </div>
 
-        <Card className="mb-6">
-          <CardContent className="pt-6">
-            <div className="space-y-4">
+        <Card className="mb-4 md:mb-6">
+          <CardContent className="pt-4 md:pt-6">
+            <div className="space-y-3 md:space-y-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Buscar atestados"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 h-11"
+                  className="pl-10 h-9 md:h-11 text-sm"
                 />
               </div>
 
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1">
+              <div className="flex flex-col gap-2 md:gap-4 md:flex-row">
+                <div className="flex-1 min-w-0">
                   <Label
                     htmlFor="status-filter"
-                    className="text-sm font-medium mb-2 block"
+                    className="text-xs md:text-sm font-medium mb-1 md:mb-2 block"
                   >
                     Status
                   </Label>
                   <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger id="status-filter" className="w-full">
+                    <SelectTrigger id="status-filter" className="w-full h-9 md:h-11 text-xs md:text-sm">
                       <SelectValue placeholder="Todos os status" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white border-2 border-[#005ca4]">
                       <SelectItem value="__all__">Todos os status</SelectItem>
                       <SelectItem value="pendente">
                         <div className="flex items-center gap-2">
@@ -459,7 +464,7 @@ export default function AdminAtestadosPage() {
                       </SelectItem>
                       <SelectItem value="aprovado_pedagogia">
                         <div className="flex items-center gap-2">
-                          <CheckCircle className="w-3 h-3 text-blue-600" />
+                          <CheckCircle className="w-3 h-3" style={{ color: '#005ca4' }} />
                           Aprovado - Pedagogia
                         </div>
                       </SelectItem>
@@ -486,18 +491,18 @@ export default function AdminAtestadosPage() {
                 </div>
 
                 {turmasDisponiveis.length > 0 && (
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <Label
                       htmlFor="turma-filter"
-                      className="text-sm font-medium mb-2 block"
+                      className="text-xs md:text-sm font-medium mb-1 md:mb-2 block"
                     >
                       Turma
                     </Label>
                     <Select value={turmaFilter} onValueChange={setTurmaFilter}>
-                      <SelectTrigger id="turma-filter" className="w-full">
+                      <SelectTrigger id="turma-filter" className="w-full h-9 md:h-11 text-xs md:text-sm">
                         <SelectValue placeholder="Todas as turmas" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white border-2 border-[#005ca4]">
                         <SelectItem value="__all__">Todas as turmas</SelectItem>
                         {turmasDisponiveis.map((turma) => (
                           <SelectItem key={turma} value={turma}>
@@ -515,11 +520,13 @@ export default function AdminAtestadosPage() {
                   <div className="flex items-end">
                     <Button
                       variant="outline"
+                      size="sm"
                       onClick={() => {
                         setSearchQuery("");
                         setTurmaFilter("__all__");
                         setStatusFilter("__all__");
                       }}
+                      className="text-xs md:text-sm h-9 md:h-11"
                     >
                       Limpar Filtros
                     </Button>
@@ -548,50 +555,52 @@ export default function AdminAtestadosPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid gap-6">
+          <div className="grid gap-3 md:gap-6">
             {filteredAtestados.map((atestado) => (
               <Card
                 key={atestado.id}
-                className="hover:shadow-lg transition-shadow"
+                className="hover:shadow-lg transition-shadow overflow-hidden"
               >
-                <CardHeader className="pb-4">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-2">
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <User className="h-5 w-5" />
-                        {atestado.usuario?.nome}
+                <CardHeader className="pb-3 md:pb-4">
+                  <div className="flex flex-col sm:flex-row items-start sm:justify-between gap-2 md:gap-4">
+                    <div className="space-y-1 md:space-y-2 min-w-0 flex-1">
+                      <CardTitle className="text-base md:text-lg flex items-center gap-2 break-words">
+                        <User className="h-4 w-4 md:h-5 md:w-5 text-[#005ca4] flex-shrink-0" />
+                        <span style={{ color: '#005ca4' }} className="truncate md:truncate-none">{atestado.usuario?.nome}</span>
                       </CardTitle>
-                      <CardDescription className="space-y-1">
-                        <span className="block">
-                          RA: {atestado.usuario?.ra} • {atestado.usuario?.email}
+                      <CardDescription className="space-y-0.5 md:space-y-1 text-xs md:text-sm">
+                        <span className="block break-words">
+                          RA: {atestado.usuario?.ra} • <span className="break-all">{atestado.usuario?.email}</span>
                         </span>
                         {atestado.usuario?.turma && (
-                          <span className="inline-flex items-center gap-2">
-                            <span className="text-sm">Turma:</span>
-                            <Badge variant="outline" className="font-mono">
+                          <span className="inline-flex items-center gap-1 md:gap-2">
+                            <span className="text-xs md:text-sm">Turma:</span>
+                            <Badge variant="outline" className="font-mono text-xs">
                               {atestado.usuario.turma}
                             </Badge>
                           </span>
                         )}
                       </CardDescription>
                     </div>
-                    {getStatusBadges(atestado)}
+                    <div className="flex-shrink-0">
+                      {getStatusBadges(atestado)}
+                    </div>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <CardContent className="space-y-3 md:space-y-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4 text-xs md:text-sm">
                     <div>
                       <p className="font-medium text-muted-foreground">
                         Data de Início
                       </p>
-                      <p>{formatDate(atestado.data_inicio)}</p>
+                      <p className="text-xs md:text-base">{formatDate(atestado.data_inicio)}</p>
                     </div>
                     <div>
                       <p className="font-medium text-muted-foreground">
                         Data de Fim
                       </p>
-                      <div className="flex items-center gap-3">
-                        <p>{formatDate(atestado.data_fim)}</p>
+                      <div className="flex flex-col md:flex-row md:items-center md:gap-3 gap-0.5">
+                        <p className="text-xs md:text-base">{formatDate(atestado.data_fim)}</p>
                         {(() => {
                           const raw =
                             (
@@ -631,7 +640,7 @@ export default function AdminAtestadosPage() {
 
                           if (period !== null) {
                             return (
-                              <p className="text-sm text-muted-foreground">
+                              <p className="text-xs md:text-sm text-muted-foreground">
                                 • Período: {period} dia{period > 1 ? "s" : ""}
                               </p>
                             );
@@ -645,48 +654,48 @@ export default function AdminAtestadosPage() {
                       <p className="font-medium text-muted-foreground">
                         Enviado em
                       </p>
-                      <p>{formatDate(atestado.createdAt)}</p>
+                      <p className="text-xs md:text-base">{formatDate(atestado.createdAt)}</p>
                     </div>
                   </div>
 
                   {atestado.motivo && (
-                    <div>
-                      <p className="font-medium text-muted-foreground mb-1">
+                    <div className="min-w-0">
+                      <p className="font-medium text-muted-foreground mb-1 text-xs md:text-sm">
                         Motivo
                       </p>
-                      <p className="text-sm bg-muted p-2 rounded">
+                      <p className="text-xs md:text-sm bg-muted p-2 rounded break-words">
                         {atestado.motivo}
                       </p>
                     </div>
                   )}
 
                   {atestado.observacoes_admin && (
-                    <div>
-                      <p className="font-medium text-muted-foreground mb-1">
+                    <div className="min-w-0">
+                      <p className="font-medium text-muted-foreground mb-1 text-xs md:text-sm">
                         Observações Administrativas
                       </p>
-                      <p className="text-sm bg-blue-50 border border-blue-200 p-2 rounded">
+                      <p className="text-xs md:text-sm p-2 rounded break-words" style={{ backgroundColor: '#f7f8fa', borderColor: '#d8d9dd', borderWidth: '1px', color: '#5b5b5f' }}>
                         {atestado.observacoes_admin}
                       </p>
                     </div>
                   )}
 
-                  <div className="flex gap-2 flex-wrap">
+                  <div className="flex flex-col sm:flex-row gap-2 md:gap-2 flex-wrap">
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button variant="outline" size="sm">
-                          <Eye className="h-4 w-4 mr-2" />
+                        <Button variant="outline" size="sm" className="text-xs md:text-sm h-8 md:h-10 w-full sm:w-auto">
+                          <Eye className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
                           Ver Imagem
                         </Button>
                       </DialogTrigger>
-                      <DialogContent className="max-w-4xl">
+                      <DialogContent className="max-w-4xl bg-white border-2 border-[#005ca4] max-h-[90vh]">
                         <DialogHeader>
-                          <DialogTitle>Atestado Médico</DialogTitle>
-                          <DialogDescription>
+                          <DialogTitle className="text-base md:text-lg">Atestado Médico</DialogTitle>
+                          <DialogDescription className="text-xs md:text-sm">
                             Atestado de {atestado.usuario?.nome}
                           </DialogDescription>
                         </DialogHeader>
-                        <div className="relative w-full h-96">
+                        <div className="relative w-full h-64 md:h-96">
                           {atestado.imagem ? (
                             <Image
                               src={atestado.imagem}
@@ -708,39 +717,40 @@ export default function AdminAtestadosPage() {
                         variant="outline"
                         size="sm"
                         onClick={() => downloadAtestado(atestado)}
+                        className="text-xs md:text-sm h-8 md:h-10 w-full sm:w-auto"
                       >
-                        <Download className="h-4 w-4 mr-2" />
+                        <Download className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
                         Baixar
                       </Button>
                     )}
 
                     {atestado.status !== "rejeitado" &&
                       atestado.status !== "aprovado" && (
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2 md:gap-2 w-full">
                           {!atestado.aprovado_pedagogia_por && (
                             <Dialog>
                               <DialogTrigger asChild>
                                 <Button
                                   size="sm"
-                                  className="bg-blue-600 hover:bg-blue-700"
+                                  className="bg-blue-600 hover:bg-blue-700 text-white text-xs md:text-sm h-8 md:h-10 w-full sm:flex-1"
                                 >
-                                  <CheckCircle className="h-4 w-4 mr-2" />
+                                  <CheckCircle className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
                                   Aprovar (Pedagogia)
                                 </Button>
                               </DialogTrigger>
-                              <DialogContent>
+                              <DialogContent className="bg-white border-2 border-[#005ca4]">
                                 <DialogHeader>
-                                  <DialogTitle>
+                                  <DialogTitle className="text-[#005ca4]">
                                     Aprovar Atestado - Pedagogia
                                   </DialogTitle>
-                                  <DialogDescription>
+                                  <DialogDescription className="text-[#5b5b5f]">
                                     Você está aprovando o atestado de{" "}
                                     {atestado.usuario?.nome} pela pedagogia
                                   </DialogDescription>
                                 </DialogHeader>
                                 <div className="space-y-4">
-                                  <div>
-                                    <Label htmlFor="observacoes-pedagogia">
+                                  <div className="space-y-3">
+                                    <Label htmlFor="observacoes-pedagogia" className="text-[#12385f] font-semibold block">
                                       Observações (opcional)
                                     </Label>
                                     <Textarea
@@ -750,12 +760,14 @@ export default function AdminAtestadosPage() {
                                       onChange={(e) =>
                                         setObservacoes(e.target.value)
                                       }
+                                      className="border-2 border-[#005ca4] focus:border-[#005ca4] focus:ring-[#005ca4]"
                                     />
                                   </div>
                                   <div className="flex justify-end gap-2">
                                     <DialogClose asChild>
                                       <Button
                                         variant="outline"
+                                        className="border-[#d8d9dd] text-[#005ca4] hover:bg-[#f4f7fb]"
                                         onClick={() => {
                                           setObservacoes("");
                                         }}
@@ -764,7 +776,7 @@ export default function AdminAtestadosPage() {
                                       </Button>
                                     </DialogClose>
                                     <Button
-                                      className="bg-blue-600 hover:bg-blue-700"
+                                      className="bg-[#005ca4] hover:bg-[#004b90] text-white"
                                       onClick={() =>
                                         handleReviewAtestado(
                                           atestado.id,
@@ -785,26 +797,26 @@ export default function AdminAtestadosPage() {
                               <DialogTrigger asChild>
                                 <Button
                                   size="sm"
-                                  className="bg-green-600 hover:bg-green-700"
+                                  className="bg-green-600 hover:bg-green-700 text-white text-xs md:text-sm h-8 md:h-10 w-full sm:flex-1"
                                 >
-                                  <CheckCircle className="h-4 w-4 mr-2" />
+                                  <CheckCircle className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
                                   Aprovar (Secretaria)
                                 </Button>
                               </DialogTrigger>
-                              <DialogContent>
+                              <DialogContent className="bg-white border-2 border-[#005ca4]">
                                 <DialogHeader>
-                                  <DialogTitle>
+                                  <DialogTitle className="text-[#005ca4]">
                                     Aprovar Atestado - Secretaria
                                   </DialogTitle>
-                                  <DialogDescription>
+                                  <DialogDescription className="text-[#5b5b5f]">
                                     Você está dando aprovação final pela
                                     secretaria ao atestado de{" "}
                                     {atestado.usuario?.nome}
                                   </DialogDescription>
                                 </DialogHeader>
                                 <div className="space-y-4">
-                                  <div>
-                                    <Label htmlFor="observacoes-secretaria">
+                                  <div className="space-y-3">
+                                    <Label htmlFor="observacoes-secretaria" className="text-[#12385f] font-semibold block">
                                       Observações (opcional)
                                     </Label>
                                     <Textarea
@@ -814,12 +826,14 @@ export default function AdminAtestadosPage() {
                                       onChange={(e) =>
                                         setObservacoes(e.target.value)
                                       }
+                                      className="border-2 border-[#005ca4] focus:border-[#005ca4] focus:ring-[#005ca4]"
                                     />
                                   </div>
                                   <div className="flex justify-end gap-2">
                                     <DialogClose asChild>
                                       <Button
                                         variant="outline"
+                                        className="border-[#d8d9dd] text-[#005ca4] hover:bg-[#f4f7fb]"
                                         onClick={() => {
                                           setObservacoes("");
                                         }}
@@ -828,7 +842,7 @@ export default function AdminAtestadosPage() {
                                       </Button>
                                     </DialogClose>
                                     <Button
-                                      className="bg-green-600 hover:bg-green-700"
+                                      className="bg-[#005ca4] hover:bg-[#004b90] text-white"
                                       onClick={() =>
                                         handleReviewAtestado(
                                           atestado.id,
@@ -847,22 +861,22 @@ export default function AdminAtestadosPage() {
                           {/* Rejeitar */}
                           <Dialog>
                             <DialogTrigger asChild>
-                              <Button variant="destructive" size="sm">
-                                <XCircle className="h-4 w-4 mr-2" />
+                              <Button size="sm" className="bg-[#c56266] hover:bg-[#b54f54] text-white text-xs md:text-sm h-8 md:h-10 w-full sm:flex-1">
+                                <XCircle className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
                                 Rejeitar
                               </Button>
                             </DialogTrigger>
-                            <DialogContent>
+                            <DialogContent className="bg-white border-2 border-[#005ca4]">
                               <DialogHeader>
-                                <DialogTitle>Rejeitar Atestado</DialogTitle>
-                                <DialogDescription>
+                                <DialogTitle className="text-[#005ca4]">Rejeitar Atestado</DialogTitle>
+                                <DialogDescription className="text-[#5b5b5f]">
                                   Você está rejeitando o atestado de{" "}
                                   {atestado.usuario?.nome}
                                 </DialogDescription>
                               </DialogHeader>
                               <div className="space-y-4">
-                                <div>
-                                  <Label htmlFor="observacoes-rejeicao">
+                                <div className="space-y-3">
+                                  <Label htmlFor="observacoes-rejeicao" className="text-[#12385f] font-semibold block">
                                     Motivo da Rejeição *
                                   </Label>
                                   <Textarea
@@ -872,6 +886,7 @@ export default function AdminAtestadosPage() {
                                     onChange={(e) =>
                                       setObservacoes(e.target.value)
                                     }
+                                    className="border-2 border-[#005ca4] focus:border-[#005ca4] focus:ring-[#005ca4]"
                                     required
                                   />
                                 </div>
@@ -879,6 +894,7 @@ export default function AdminAtestadosPage() {
                                   <DialogClose asChild>
                                     <Button
                                       variant="outline"
+                                      className="border-[#d8d9dd] text-[#005ca4] hover:bg-[#f4f7fb]"
                                       onClick={() => {
                                         setObservacoes("");
                                       }}
@@ -887,7 +903,7 @@ export default function AdminAtestadosPage() {
                                     </Button>
                                   </DialogClose>
                                   <Button
-                                    variant="destructive"
+                                    className="bg-[#c56266] hover:bg-[#b54f54] text-white"
                                     disabled={!observacoes.trim()}
                                     onClick={() =>
                                       handleReviewAtestado(

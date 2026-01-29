@@ -205,24 +205,24 @@ const CreateAdmin = () => {
 
   if (isCheckingAuth) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-linear-to-br from-blue-200/30 to-indigo-200/30 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-linear-to-br from-purple-200/30 to-pink-200/30 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+      <div className="min-h-screen bg-[#f4f7fb] flex items-center justify-center p-4 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-96 h-96 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" style={{ background: "radial-gradient(circle at 30% 30%, rgba(0,92,164,0.08), rgba(0,92,164,0))" }}></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" style={{ background: "radial-gradient(circle at 60% 40%, rgba(0,92,164,0.08), rgba(0,92,164,0))" }}></div>
 
-        <Card className="w-full max-w-md shadow-2xl backdrop-blur-sm bg-white/95 border-0 relative z-10">
+        <Card className="w-full max-w-md shadow-md bg-white border border-[#d8d9dd] relative z-10">
           <CardContent className="pt-8 pb-8">
             <div className="text-center space-y-4">
               <div className="relative">
-                <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary/20 border-t-primary mx-auto"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#d8d9dd] border-t-[#005ca4] mx-auto"></div>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <UserCog className="h-6 w-6 text-primary animate-pulse" />
+                  <UserCog className="h-6 w-6 text-[#005ca4] animate-pulse" />
                 </div>
               </div>
               <div>
-                <p className="text-base font-medium text-gray-900">
+                <p className="text-base font-medium text-[#12385f]">
                   Verificando permissões
                 </p>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-sm text-[#5b5b5f] mt-1">
                   Aguarde um momento...
                 </p>
               </div>
@@ -238,49 +238,30 @@ const CreateAdmin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4 py-8 relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-96 h-96 bg-linear-to-br from-blue-200/30 to-indigo-200/30 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-linear-to-br from-purple-200/30 to-pink-200/30 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
-      <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-linear-to-br from-indigo-200/20 to-purple-200/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-
-      <Card className="w-full max-w-3xl shadow-2xl backdrop-blur-sm bg-white/95 border-0 relative z-10">
-        <CardHeader className="space-y-6 text-center pb-8 pt-8">
-          <div className="flex justify-between items-start">
+    <div className="min-h-screen flex items-start justify-center p-4 pt-16 relative overflow-hidden">
+      <Card className="w-full max-w-lg shadow-md bg-white border border-[#d8d9dd] relative z-10">
+        <CardHeader className="space-y-3 text-center pb-6 pt-6 border-b border-[#d8d9dd]">
+          <div className="flex justify-between items-start gap-4">
             <Link href="/dashboard">
-              <Button variant="ghost" size="sm" className="-ml-2">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Voltar
+              <Button variant="ghost" size="sm" className="-ml-2 text-[#005ca4] hover:text-[#004b90] hover:bg-[#f4f7fb] h-8">
+                <ArrowLeft className="h-3 w-3 mr-1" />
               </Button>
             </Link>
-            <Image
-              src="/logo-senai.png"
-              alt="SENAI Gestão"
-              width={110}
-              height={36}
-              className="object-contain"
-            />
-          </div>
-
-          <div className="mx-auto w-20 h-20 bg-linear-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg rotate-3 hover:rotate-0 transition-transform">
-            <UserCog className="h-11 w-11 text-white" />
-          </div>
-
-          <div>
-            <CardTitle className="text-3xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Criar Novo Usuário
-            </CardTitle>
-            <CardDescription className="text-base mt-2">
-              Preencha os dados abaixo para adicionar um novo membro
-            </CardDescription>
+            <div className="flex-1 text-center">
+              <CardTitle className="text-xl font-bold text-[#005ca4]">
+                Novo Usuário
+              </CardTitle>
+            </div>
+            <img src="/branding/logo.png" alt="FIEMG" className="w-20 h-auto flex-shrink-0" />
           </div>
         </CardHeader>
-        <CardContent className="px-8 pb-8">
-          <form onSubmit={handleCreateAdmin} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <CardContent className="px-6 pb-6 pt-6">
+          <form onSubmit={handleCreateAdmin} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label
                   htmlFor="admin-nome"
-                  className="text-sm font-semibold text-gray-700"
+                  className="text-sm font-semibold text-[#12385f]"
                 >
                   Nome Completo *
                 </Label>
@@ -291,13 +272,13 @@ const CreateAdmin = () => {
                   placeholder="Maria Silva"
                   required
                   disabled={loading}
-                  className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                  className="h-9 text-sm border-[#d8d9dd] focus:border-[#005ca4] focus:ring-[#005ca4]"
                 />
               </div>
               <div className="space-y-2">
                 <Label
                   htmlFor="admin-ra"
-                  className="text-sm font-semibold text-gray-700"
+                  className="text-sm font-semibold text-[#12385f]"
                 >
                   {cargo === "USUARIO" ? (
                     <>RA/Matrícula *</>
@@ -312,16 +293,16 @@ const CreateAdmin = () => {
                   placeholder={cargo === "USUARIO" ? "ADM12345" : "RE12345"}
                   required
                   disabled={loading}
-                  className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                  className="h-9 text-sm border-[#d8d9dd] focus:border-[#005ca4] focus:ring-[#005ca4]"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label
                   htmlFor="admin-email"
-                  className="text-sm font-semibold text-gray-700"
+                  className="text-sm font-semibold text-[#12385f]"
                 >
                   Email *
                 </Label>
@@ -332,13 +313,13 @@ const CreateAdmin = () => {
                   placeholder="maria.silva@senai.br"
                   required
                   disabled={loading}
-                  className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                  className="h-9 text-sm border-[#d8d9dd] focus:border-[#005ca4] focus:ring-[#005ca4]"
                 />
               </div>
               <div className="space-y-2">
                 <Label
                   htmlFor="admin-telefone"
-                  className="text-sm font-semibold text-gray-700"
+                  className="text-sm font-semibold text-[#12385f]"
                 >
                   Telefone *
                 </Label>
@@ -349,16 +330,16 @@ const CreateAdmin = () => {
                   placeholder="(11) 99999-9999"
                   required
                   disabled={loading}
-                  className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                  className="h-9 text-sm border-[#d8d9dd] focus:border-[#005ca4] focus:ring-[#005ca4]"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label
                   htmlFor="admin-cargo"
-                  className="text-sm font-semibold text-gray-700"
+                  className="text-sm font-semibold text-[#12385f]"
                 >
                   Cargo *
                 </Label>
@@ -369,29 +350,26 @@ const CreateAdmin = () => {
                   required
                   disabled={loading}
                 >
-                  <SelectTrigger className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                  <SelectTrigger className="h-9 text-sm border-[#d8d9dd] focus:border-[#005ca4] focus:ring-[#005ca4]">
                     <SelectValue placeholder="Selecione o cargo" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white">
                     <SelectItem value="ADMINISTRADOR">
                       <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-red-500"></div>
-                        <Shield className="h-4 w-4 text-red-600" />
-                        <span className="font-medium">Administrador</span>
+                        <Shield className="h-4 w-4 text-[#005ca4]" />
+                        <span className="text-sm">Administrador</span>
                       </div>
                     </SelectItem>
                     <SelectItem value="FUNCIONARIO">
                       <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                        <UserCog className="h-4 w-4 text-blue-600" />
-                        <span className="font-medium">Funcionário</span>
+                        <UserCog className="h-4 w-4 text-[#005ca4]" />
+                        <span className="text-sm">Funcionário</span>
                       </div>
                     </SelectItem>
                     <SelectItem value="USUARIO">
                       <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                        <User className="h-4 w-4 text-green-600" />
-                        <span className="font-medium">Aluno</span>
+                        <User className="h-4 w-4 text-[#005ca4]" />
+                        <span className="text-sm">Aluno</span>
                       </div>
                     </SelectItem>
                   </SelectContent>
@@ -401,12 +379,9 @@ const CreateAdmin = () => {
               <div className="space-y-2">
                 <Label
                   htmlFor="admin-curso"
-                  className="text-sm font-semibold text-gray-700"
+                  className="text-sm font-semibold text-[#12385f]"
                 >
-                  Curso{" "}
-                  {cargo === "USUARIO" ? (
-                    <span className="text-red-500">*</span>
-                  ) : null}
+                  Curso {cargo === "USUARIO" ? <span className="text-[#c56266]">*</span> : null}
                 </Label>
                 <Select
                   value={curso}
@@ -416,62 +391,39 @@ const CreateAdmin = () => {
                   disabled={loading || cargo !== "USUARIO"}
                 >
                   <SelectTrigger
-                    className={`h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500 ${
-                      cargo !== "USUARIO" ? "opacity-50 bg-gray-50" : ""
+                    className={`h-9 text-sm border-[#d8d9dd] focus:border-[#005ca4] focus:ring-[#005ca4] ${
+                      cargo !== "USUARIO" ? "opacity-50 bg-[#f4f7fb]" : ""
                     }`}
                   >
                     <SelectValue
                       placeholder={
-                        cargo === "USUARIO"
-                          ? "Selecione o curso"
-                          : "Apenas para alunos"
+                        cargo === "USUARIO" ? "Selecione o curso" : "Apenas para alunos"
                       }
                     />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="tecnico-automacao">
-                      Técnico em Automação
-                    </SelectItem>
-                    <SelectItem value="tecnico-mecatronica">
-                      Técnico em Mecatrônica
-                    </SelectItem>
-                    <SelectItem value="tecnico-eletromecanica">
-                      Técnico em Eletromecânica
-                    </SelectItem>
-                    <SelectItem value="tecnico-mecanica">
-                      Técnico em Mecânica
-                    </SelectItem>
-                    <SelectItem value="tecnico-manutencao-maquinas">
-                      Técnico em Manutenção de Máquinas Industriais
-                    </SelectItem>
-                    <SelectItem value="tecnico-administracao">
-                      Técnico em Administração
-                    </SelectItem>
-                    <SelectItem value="tecnico-controle-qualidade">
-                      Técnico em Controle de Qualidade
-                    </SelectItem>
-                    <SelectItem value="tecnico-seguranca-trabalho">
-                      Técnico em Segurança do Trabalho
-                    </SelectItem>
-                    <SelectItem value="tecnico-cibersistemas-automacao">
-                      Técnico em Cibersistemas para Automação
-                    </SelectItem>
+                  <SelectContent className="bg-white">
+                    <SelectItem value="tecnico-automacao">Técnico em Automação</SelectItem>
+                    <SelectItem value="tecnico-mecatronica">Técnico em Mecatrônica</SelectItem>
+                    <SelectItem value="tecnico-eletromecanica">Técnico em Eletromecânica</SelectItem>
+                    <SelectItem value="tecnico-mecanica">Técnico em Mecânica</SelectItem>
+                    <SelectItem value="tecnico-manutencao-maquinas">Técnico em Manutenção de Máquinas Industriais</SelectItem>
+                    <SelectItem value="tecnico-administracao">Técnico em Administração</SelectItem>
+                    <SelectItem value="tecnico-controle-qualidade">Técnico em Controle de Qualidade</SelectItem>
+                    <SelectItem value="tecnico-seguranca-trabalho">Técnico em Segurança do Trabalho</SelectItem>
+                    <SelectItem value="tecnico-cibersistemas-automacao">Técnico em Cibersistemas para Automação</SelectItem>
                     <SelectItem value="outro">Outro</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label
                   htmlFor="admin-turma"
-                  className="text-sm font-semibold text-gray-700"
+                  className="text-sm font-semibold text-[#12385f]"
                 >
-                  Código da Turma{" "}
-                  {cargo === "USUARIO" ? (
-                    <span className="text-red-500">*</span>
-                  ) : null}
+                  Código da Turma {cargo === "USUARIO" ? <span className="text-[#c56266]">*</span> : null}
                 </Label>
                 <Input
                   id="admin-turma"
@@ -482,8 +434,8 @@ const CreateAdmin = () => {
                   onChange={(e) => setTurma(e.target.value)}
                   required={cargo === "USUARIO"}
                   disabled={loading || cargo !== "USUARIO"}
-                  className={`h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500 ${
-                    cargo !== "USUARIO" ? "opacity-50 bg-gray-50" : ""
+                  className={`h-9 text-sm border-[#d8d9dd] focus:border-[#005ca4] focus:ring-[#005ca4] ${
+                    cargo !== "USUARIO" ? "opacity-50 bg-[#f4f7fb]" : ""
                   }`}
                 />
               </div>
@@ -491,12 +443,9 @@ const CreateAdmin = () => {
               <div className="space-y-2">
                 <Label
                   htmlFor="admin-periodo"
-                  className="text-sm font-semibold text-gray-700"
+                  className="text-sm font-semibold text-[#12385f]"
                 >
-                  Período{" "}
-                  {cargo === "USUARIO" ? (
-                    <span className="text-red-500">*</span>
-                  ) : null}
+                  Período {cargo === "USUARIO" ? <span className="text-[#c56266]">*</span> : null}
                 </Label>
                 <Select
                   value={periodo}
@@ -506,19 +455,17 @@ const CreateAdmin = () => {
                   disabled={loading || cargo !== "USUARIO"}
                 >
                   <SelectTrigger
-                    className={`h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500 ${
-                      cargo !== "USUARIO" ? "opacity-50 bg-gray-50" : ""
+                    className={`h-9 text-sm border-[#d8d9dd] focus:border-[#005ca4] focus:ring-[#005ca4] ${
+                      cargo !== "USUARIO" ? "opacity-50 bg-[#f4f7fb]" : ""
                     }`}
                   >
                     <SelectValue
                       placeholder={
-                        cargo === "USUARIO"
-                          ? "Selecione um período"
-                          : "Apenas para alunos"
+                        cargo === "USUARIO" ? "Selecione um período" : "Apenas para alunos"
                       }
                     />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white">
                     <SelectItem value="matutino">Matutino</SelectItem>
                     <SelectItem value="vespertino">Vespertino</SelectItem>
                     <SelectItem value="noturno">Noturno</SelectItem>
@@ -528,9 +475,9 @@ const CreateAdmin = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div className="space-y-2">
-                <Label htmlFor="admin-senha">Senha *</Label>
+                <Label htmlFor="admin-senha" className="text-sm font-semibold text-[#12385f]">Senha *</Label>
                 <div className="relative">
                   <Input
                     id="admin-senha"
@@ -541,22 +488,23 @@ const CreateAdmin = () => {
                     disabled={loading}
                     value={passwordValue}
                     onChange={(e) => setPasswordValue(e.target.value)}
+                    className="h-9 text-sm border-[#d8d9dd] focus:border-[#005ca4] focus:ring-[#005ca4] pr-8"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-[#5b5b5f] hover:text-[#12385f]"
                   >
                     {showPassword ? (
-                      <EyeOff className="w-5 h-5" />
+                      <EyeOff className="w-4 h-4" />
                     ) : (
-                      <Eye className="w-5 h-5" />
+                      <Eye className="w-4 h-4" />
                     )}
                   </button>
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="admin-confirmar-senha">Confirmar Senha *</Label>
+                <Label htmlFor="admin-confirmar-senha" className="text-sm font-semibold text-[#12385f]">Confirmar Senha *</Label>
                 <div className="relative">
                   <Input
                     id="admin-confirmar-senha"
@@ -565,45 +513,36 @@ const CreateAdmin = () => {
                     placeholder="••••••••"
                     required
                     disabled={loading}
+                    className="h-9 text-sm border-[#d8d9dd] focus:border-[#005ca4] focus:ring-[#005ca4] pr-8"
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-[#5b5b5f] hover:text-[#12385f]"
                   >
                     {showConfirmPassword ? (
-                      <EyeOff className="w-5 h-5" />
+                      <EyeOff className="w-4 h-4" />
                     ) : (
-                      <Eye className="w-5 h-5" />
+                      <Eye className="w-4 h-4" />
                     )}
                   </button>
                 </div>
               </div>
             </div>
 
-            <div className="bg-linear-to-br from-blue-50 to-indigo-50 p-5 rounded-xl space-y-3 border-2 border-blue-100 shadow-sm">
-              <div className="flex items-center gap-2">
-                <div className="w-1 h-5 bg-linear-to-b from-blue-500 to-indigo-500 rounded-full"></div>
-                <p className="text-sm font-bold text-gray-800">
-                  Requisitos da senha
-                </p>
-              </div>
-              <div className="space-y-2 pl-3">
+            <div className="bg-[#f4f7fb] p-3 rounded-lg space-y-2 border border-[#d8d9dd]">
+              <p className="text-xs font-bold text-[#12385f]">Requisitos da senha</p>
+              <div className="space-y-1.5">
                 {passwordRequirements.map((req, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center space-x-3 transition-all"
-                  >
+                  <div key={index} className="flex items-center space-x-2">
                     <div
-                      className={`w-5 h-5 rounded-full flex items-center justify-center ${
-                        req.met
-                          ? "bg-green-500 shadow-sm shadow-green-200"
-                          : "bg-gray-200"
+                      className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        req.met ? "bg-[#7fafd3]" : "bg-[#d8d9dd]"
                       }`}
                     >
                       {req.met && (
                         <svg
-                          className="w-3 h-3 text-white"
+                          className="w-2.5 h-2.5 text-white"
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
@@ -616,10 +555,8 @@ const CreateAdmin = () => {
                       )}
                     </div>
                     <span
-                      className={`text-sm transition-colors ${
-                        req.met
-                          ? "text-green-700 font-semibold"
-                          : "text-gray-600"
+                      className={`text-xs ${
+                        req.met ? "text-[#12385f] font-semibold" : "text-[#5b5b5f]"
                       }`}
                     >
                       {req.text}
@@ -629,25 +566,13 @@ const CreateAdmin = () => {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <Button
-                type="submit"
-                className="flex-1 h-12 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all"
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-white mr-2"></div>
-                    Criando usuário...
-                  </>
-                ) : (
-                  <>
-                    <UserCog className="h-5 w-5 mr-2" />
-                    Criar Usuário
-                  </>
-                )}
-              </Button>
-            </div>
+            <Button
+              type="submit"
+              className="w-full h-9 text-sm bg-[#005ca4] hover:bg-[#004b90] text-white font-semibold shadow-md transition-all mt-2"
+              disabled={loading}
+            >
+              {loading ? "Criando..." : "Criar Usuário"}
+            </Button>
           </form>
         </CardContent>
       </Card>

@@ -130,14 +130,14 @@ export default function PrivateLayout({
   }
 
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider defaultOpen={true} className="bg-white">
       <AppSidebar
         userName={user.nome}
         userEmail={user.email}
         role={user.tipo_usuario}
       />
-      <SidebarInset className="md:ml-60">
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-background sticky top-0 z-40">
+      <SidebarInset className="md:ml-70 bg-white overflow-x-hidden flex flex-col h-[100vh]">
+        <header className="sticky top-0 h-20 flex items-center gap-2 border-b-4 border-[rgb(0,92,164)] px-4 bg-white z-[9999] flex-shrink-0">
           <div className="md:hidden mr-2">
             <SidebarTrigger />
           </div>
@@ -147,7 +147,7 @@ export default function PrivateLayout({
           </Link>
           <Separator orientation="vertical" className="mr-2 h-4" />
 
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <div className="hidden md:block">
               <AppBreadcrumb />
             </div>
@@ -158,7 +158,7 @@ export default function PrivateLayout({
             </div>
           </div>
         </header>
-        <div className="flex-1 p-0">{children}</div>
+        <div className="flex-1 overflow-y-auto overflow-x-hidden w-full">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

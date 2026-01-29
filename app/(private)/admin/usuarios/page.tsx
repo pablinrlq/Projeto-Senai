@@ -158,15 +158,27 @@ export default function Usuarios() {
     const t = (tipo || "").toString().toLowerCase();
 
     if (t === "administrador" || t === "admin") {
-      return <Badge variant="destructive">Administrador</Badge>;
+      return (
+        <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium" style={{ backgroundColor: '#ffebee', color: '#c62828', border: '1px solid #ef5350' }}>
+          Administrador
+        </div>
+      );
     }
 
     if (t === "funcionario" || t === "funcionário" || t === "func") {
-      return <Badge variant="secondary">Funcionário</Badge>;
+      return (
+        <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium" style={{ backgroundColor: '#e3f2fd', color: '#1565c0', border: '1px solid #005ca4' }}>
+          Funcionário
+        </div>
+      );
     }
 
     // default mapping: 'usuario' or missing -> Aluno
-    return <Badge variant="default">Aluno</Badge>;
+    return (
+      <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium" style={{ backgroundColor: '#e0f2f1', color: '#00695c', border: '1px solid #4db8ac' }}>
+        Aluno
+      </div>
+    );
   };
 
   const performToggleUserStatus = async (
@@ -242,23 +254,28 @@ export default function Usuarios() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background">
       <main className="container mx-auto p-4 md:p-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-primary mb-2">
-            Gerenciar Usuários
-          </h1>
-          <p className="text-muted-foreground">
-            Busque usuários e visualize seus atestados
-          </p>
+          <div className="flex items-start gap-4">
+            <div style={{ width: '6px', height: '60px', backgroundColor: '#005ca4', borderRadius: '10px' }} />
+            <div>
+              <h1 className="text-3xl font-bold mb-2" style={{ color: '#005ca4' }}>
+                Gerenciar Usuários
+              </h1>
+              <p className="text-muted-foreground">
+                Busque usuários e visualize seus atestados
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Users list */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5" />
+              <CardTitle className="flex items-center gap-2" style={{ color: '#005ca4' }}>
+                <User className="h-5 w-5 text-[#005ca4]" />
                 Lista de Usuários
               </CardTitle>
               <CardDescription>
@@ -295,7 +312,7 @@ export default function Usuarios() {
                       >
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="font-medium">{usuario.nome}</p>
+                            <p className="font-medium" style={{ color: '#005ca4' }}>{usuario.nome}</p>
                             <p className="text-sm text-muted-foreground">
                               {usuario.email}
                             </p>
@@ -345,14 +362,14 @@ export default function Usuarios() {
                                     </Button>
                                   )}
                                 </DialogTrigger>
-                                <DialogContent>
+                                <DialogContent className="bg-white border-2 border-[#005ca4]">
                                   <DialogHeader>
-                                    <DialogTitle>
+                                    <DialogTitle className="text-[#005ca4]">
                                       {usuario.status === "inativo"
                                         ? "Ativar usuário"
                                         : "Inativar usuário"}
                                     </DialogTitle>
-                                    <DialogDescription>{`Confirma ${
+                                    <DialogDescription className="text-[#5b5b5f]">{`Confirma ${
                                       usuario.status === "inativo"
                                         ? "ativar"
                                         : "inativar"
@@ -362,24 +379,37 @@ export default function Usuarios() {
                                   </DialogHeader>
                                   <div className="flex justify-end gap-2 mt-4">
                                     <DialogClose asChild>
-                                      <Button variant="outline">
+                                      <Button variant="outline" className="border-[#d8d9dd] text-[#005ca4] hover:bg-[#f4f7fb]">
                                         Cancelar
                                       </Button>
                                     </DialogClose>
-                                    <DialogClose asChild>
-                                      <Button
-                                        onClick={() =>
-                                          performToggleUserStatus(
-                                            usuario.id,
-                                            usuario.status
-                                          )
-                                        }
-                                      >
-                                        {usuario.status === "inativo"
-                                          ? "Confirmar Ativação"
-                                          : "Confirmar Inativação"}
-                                      </Button>
-                                    </DialogClose>
+                                    <Button
+                                      onClick={() => {
+                                        performToggleUserStatus(
+                                          usuario.id,
+                                          usuario.status
+                                        );
+                                      }}
+                                      style={{
+                                        backgroundColor: usuario.status === "inativo" ? "#4caf50" : "#c56266",
+                                        color: "white",
+                                        borderRadius: "6px",
+                                        padding: "8px 16px",
+                                        fontWeight: "500",
+                                        cursor: "pointer",
+                                        border: "none"
+                                      }}
+                                      onMouseEnter={(e) => {
+                                        e.currentTarget.style.backgroundColor = usuario.status === "inativo" ? "#45a049" : "#b54f54";
+                                      }}
+                                      onMouseLeave={(e) => {
+                                        e.currentTarget.style.backgroundColor = usuario.status === "inativo" ? "#4caf50" : "#c56266";
+                                      }}
+                                    >
+                                      {usuario.status === "inativo"
+                                        ? "Confirmar Ativação"
+                                        : "Confirmar Inativação"}
+                                    </Button>
                                   </div>
                                 </DialogContent>
                               </Dialog>
@@ -397,8 +427,8 @@ export default function Usuarios() {
           {/* User atestados */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
+              <CardTitle className="flex items-center gap-2" style={{ color: '#005ca4' }}>
+                <FileText className="h-5 w-5 text-[#005ca4]" />
                 Atestados do Usuário
               </CardTitle>
               <CardDescription>

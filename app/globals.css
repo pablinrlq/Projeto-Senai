@@ -1,107 +1,173 @@
 @import "tailwindcss";
 
-@theme {
-  --color-border: hsl(210 20% 88%);
-  --color-input: hsl(210 20% 88%);
-  --color-ring: hsl(210 100% 24%);
-  --color-background: hsl(0 0% 98%);
-  --color-foreground: hsl(210 100% 15%);
+/* Scrollbar Personalizado - Desktop Only */
+@media (min-width: 1024px) {
+  html {
+    padding-right: 0px;
+    padding-left: 0px;
+  }
 
-  /* SENAI Brand Colors */
-  --color-primary: hsl(210 100% 24%);
+  body {
+    padding-right: 0;
+  }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f5f5f5;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #005ca4;
+    border-radius: 6px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #004b90;
+  }
+}
+
+:root {
+  --color-border: hsl(220 5% 84%);
+  --color-input: hsl(220 5% 84%);
+  --color-ring: hsl(207 100% 35%);
+  --color-background: hsl(210 20% 97%);
+  --color-foreground: hsl(225 6% 34%);
+
+  --color-primary: hsl(207 100% 35%);
   --color-primary-foreground: hsl(0 0% 100%);
 
-  --color-secondary: hsl(18 100% 60%);
-  --color-secondary-foreground: hsl(0 0% 100%);
+  --color-secondary: hsl(205 53% 66%);
+  --color-secondary-foreground: hsl(0 0% 0%);
 
-  --color-destructive: hsl(0 84% 60%);
+  --color-destructive: hsl(356 43% 58%);
   --color-destructive-foreground: hsl(0 0% 100%);
 
-  --color-muted: hsl(210 20% 95%);
-  --color-muted-foreground: hsl(210 10% 45%);
+  --color-muted: hsl(210 10% 93%);
+  --color-muted-foreground: hsl(225 6% 34%);
 
-  --color-accent: hsl(18 100% 60%);
-  --color-accent-foreground: hsl(0 0% 100%);
+  --color-accent: hsl(183 28% 63%);
+  --color-accent-foreground: hsl(222 8% 28%);
 
-  --color-popover: hsl(0 0% 100%);
-  --color-popover-foreground: hsl(210 100% 15%);
+  --color-popover: hsl(0, 0%, 100%);
+  --color-popover-foreground: hsl(225 6% 34%);
 
   --color-card: hsl(0 0% 100%);
-  --color-card-foreground: hsl(210 100% 15%);
+  --color-card-foreground: hsl(225 6% 34%);
 
-  /* Sidebar Colors */
-  --color-sidebar: hsl(210 100% 24%);
-  --color-sidebar-foreground: hsl(0 0% 100%);
-  --color-sidebar-primary: hsl(18 100% 60%);
-  --color-sidebar-primary-foreground: hsl(0 0% 100%);
-  --color-sidebar-accent: hsl(210 100% 20%);
-  --color-sidebar-accent-foreground: hsl(0 0% 100%);
-  --color-sidebar-border: hsl(210 100% 20%);
-  --color-sidebar-ring: hsl(18 100% 60%);
+  --color-sidebar: 0 92 164;
+  --color-sidebar-foreground: 0 0% 100%;
 
-  /* SENAI Color Palette */
-  --color-senai-blue-50: hsl(210 100% 95%);
-  --color-senai-blue-100: hsl(210 100% 90%);
-  --color-senai-blue-200: hsl(210 100% 80%);
-  --color-senai-blue-300: hsl(210 100% 70%);
-  --color-senai-blue-400: hsl(210 100% 50%);
-  --color-senai-blue-500: hsl(210 100% 35%);
-  --color-senai-blue-600: hsl(210 100% 24%);
-  --color-senai-blue-700: hsl(210 100% 20%);
-  --color-senai-blue-800: hsl(210 100% 15%);
-  --color-senai-blue-900: hsl(210 100% 10%);
+  --color-sidebar-primary: 0 92 164;
+  --color-sidebar-primary-foreground: 0 0% 100%;
+  --color-sidebar-accent: 127 175 211;
+  --color-sidebar-accent-foreground: hsl(225 6% 34%);
+  --color-sidebar-border: 127 175 211;
+  --color-sidebar-ring: 0 92 164;
 
-  --color-senai-orange-50: hsl(18 100% 95%);
-  --color-senai-orange-100: hsl(18 100% 90%);
-  --color-senai-orange-200: hsl(18 100% 80%);
-  --color-senai-orange-300: hsl(18 100% 70%);
-  --color-senai-orange-400: hsl(18 100% 65%);
-  --color-senai-orange-500: hsl(18 100% 60%);
-  --color-senai-orange-600: hsl(18 100% 55%);
-  --color-senai-orange-700: hsl(18 100% 50%);
-  --color-senai-orange-800: hsl(18 100% 45%);
-  --color-senai-orange-900: hsl(18 100% 40%);
-
-  /* Border Radius */
-  --radius-lg: 0.75rem;
-  --radius-md: 0.5rem;
-  --radius-sm: 0.25rem;
-
-  /* Background Images */
-  --gradient-primary: linear-gradient(
-    135deg,
-    hsl(210 100% 24%),
-    hsl(210 100% 35%)
-  );
-  --gradient-secondary: linear-gradient(
-    135deg,
-    hsl(18 100% 60%),
-    hsl(18 100% 70%)
-  );
-  --gradient-hero: linear-gradient(
-    135deg,
-    hsl(210 100% 24%) 0%,
-    hsl(210 100% 35%) 50%,
-    hsl(18 100% 60%) 100%
-  );
-
-  /* Box Shadow */
-  --shadow-senai-sm: 0 2px 4px hsl(210 100% 24% / 0.1);
-  --shadow-senai-md: 0 4px 12px hsl(210 100% 24% / 0.15);
-  --shadow-senai-lg: 0 8px 24px hsl(210 100% 24% / 0.2);
-
-  /* Container */
+  --color-support-red: rgb(197 98 102);
+  --color-support-yellow: rgb(234 202 98);
+  --color-support-green: rgb(168 194 113);
+  --color-support-green-alt: rgb(135 185 188);
+  --color-support-purple: rgb(206 147 216);
+  --color-support-purple-alt: rgb(171 71 188);
   --container-2xl: 1400px;
 }
 
 body {
-  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: "Gibson", var(--font-primary), var(--font-secondary), Calibri, "Segoe UI", system-ui, sans-serif;
+  background-color: hsl(210 20% 97%);
+  color: hsl(225 6% 34%);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Gibson", var(--font-primary), var(--font-secondary), Calibri, "Segoe UI", system-ui, sans-serif;
+  color: hsl(225 6% 34%);
+}
+
+h1,
+h2 {
+  font-weight: 700;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+}
+
+p,
+span,
+button,
+input,
+textarea,
+label,
+small {
+  font-family: "Gibson", var(--font-primary), var(--font-secondary), Calibri, "Segoe UI", system-ui, sans-serif;
 }
 
 @media (max-width: 425px) {
   .profilepill-hide-text {
     display: none;
   }
+}
+
+/* Toast/Sonner Personalizado - Padrão FIEMG */
+[data-sonner-toast] {
+  background: #ffffff !important;
+  border: 2px solid #005ca4 !important;
+  color: #12385f !important;
+  font-weight: 500 !important;
+  padding: 16px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 92, 164, 0.15) !important;
+}
+
+[data-sonner-toast][data-type="success"] {
+  border-color: #005ca4 !important;
+}
+
+[data-sonner-toast][data-type="error"] {
+  border-color: #c56266 !important;
+}
+
+[data-sonner-toast][data-type="warning"] {
+  border-color: #f57c00 !important;
+}
+
+[data-sonner-toast][data-type="info"] {
+  border-color: #005ca4 !important;
+}
+
+[data-sonner-toast] [data-content] {
+  color: #12385f !important;
+}
+
+[data-sonner-toast] [data-description] {
+  color: #5b5b5f !important;
+}
+
+[data-sonner-toast] [data-button] {
+  background-color: #005ca4 !important;
+  color: #ffffff !important;
+  border-radius: 6px !important;
+  padding: 8px 16px !important;
+  font-weight: 500 !important;
+}
+
+[data-sonner-toast] [data-button]:hover {
+  background-color: #004b90 !important;
+}
+
+[data-sonner-toast] [data-cancel-button] {
+  background-color: #f4f7fb !important;
+  color: #005ca4 !important;
 }

@@ -103,17 +103,33 @@ export function AppSidebar({ userName, userEmail, role }: AppSidebarProps) {
   );
 
   return (
-    <Sidebar>
-      <SidebarHeader className="p-2" />
+    <Sidebar className="border-r border-white/10 bg-[#005ca4] text-white">
+      <SidebarHeader className="border-b border-white/10 px-4 py-6">
+        <div className="flex items-center gap-3">
+          <div className="rounded-lg bg-white/15 px-3 py-2 text-sm font-bold">
+            SG
+          </div>
+          <div>
+            <p className="text-xs text-white/70">Sistema</p>
+            <p className="font-semibold">Gestão Atestados</p>
+          </div>
+        </div>
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Menu Principal</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-xs uppercase text-white/70">
+            Menu Principal
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={pathname === item.url}>
-                    <Link href={item.url}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname === item.url}
+                    className="rounded-lg border border-white/10 text-white/80 transition hover:border-white/30 hover:bg-white/10 hover:text-white data-[active=true]:border-white/40 data-[active=true]:bg-white/20 data-[active=true]:text-white"
+                  >
+                    <Link href={item.url} className="flex items-center gap-3">
                       <item.icon />
                       <span>{item.title}</span>
                     </Link>
@@ -125,13 +141,19 @@ export function AppSidebar({ userName, userEmail, role }: AppSidebarProps) {
         </SidebarGroup>
         {showAdminGroup && (
           <SidebarGroup>
-            <SidebarGroupLabel>Administração</SidebarGroupLabel>
+            <SidebarGroupLabel className="text-xs uppercase text-white/70">
+              Administração
+            </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {displayedAdminItems.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={pathname === item.url}>
-                      <Link href={item.url}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname === item.url}
+                      className="rounded-lg border border-white/10 text-white/80 transition hover:border-white/30 hover:bg-white/10 hover:text-white data-[active=true]:border-white/40 data-[active=true]:bg-white/20 data-[active=true]:text-white"
+                    >
+                      <Link href={item.url} className="flex items-center gap-3">
                         <item.icon />
                         <span>{item.title}</span>
                       </Link>
@@ -143,31 +165,31 @@ export function AppSidebar({ userName, userEmail, role }: AppSidebarProps) {
           </SidebarGroup>
         )}
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="border-t border-white/10">
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuButton size="lg">
+                <SidebarMenuButton size="lg" className="border border-white/10 hover:border-white/30 hover:bg-white/10">
                   <Avatar>
-                    <AvatarFallback className="bg-primary text-primary-foreground">
+                    <AvatarFallback className="bg-white/20 text-white">
                       {getInitials(userName)}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="flex flex-col items-start overflow-hidden">
+                  <div className="flex flex-col items-start overflow-hidden text-left">
                     <p className="text-sm font-medium truncate w-full">
                       {userName || "Usuário"}
                     </p>
-                    <p className="text-muted-foreground text-xs truncate w-full">
+                    <p className="text-xs text-white/70 truncate w-full">
                       {userEmail || ""}
                     </p>
                   </div>
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-40 py-1">
+              <DropdownMenuContent align="end" className="w-40 py-1 border border-white/20 bg-[#001f3f]">
                 <DropdownMenuItem
                   onClick={handleSignOut}
-                  className="text-red-600 cursor-pointer text-sm px-3 py-1 flex items-center gap-2"
+                  className="cursor-pointer text-sm px-3 py-2 flex items-center gap-2 text-white/90 hover:bg-white/10 hover:text-white"
                 >
                   <LogOut className="h-4 w-4" />
                   <span className="leading-4">Sair</span>

@@ -232,21 +232,33 @@ export default function CriarAtestadoPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <main className="container mx-auto p-4 md:p-8">
-        <div className="max-w-2xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-primary mb-2">
-              Novo Atestado
-            </h1>
-            <p className="text-muted-foreground">
-              Envie um novo atestado médico para análise
-            </p>
+      <main className="container mx-auto p-2 sm:p-4 md:p-8">
+        <div className="max-w-3xl mx-auto">
+          <div className="mb-6 md:mb-8">
+            <div className="flex items-start gap-3 md:gap-4">
+              <div
+                style={{
+                  width: "4px",
+                  height: "45px",
+                  backgroundColor: "#005ca4",
+                  borderRadius: "8px",
+                }}
+              />
+              <div>
+                <h1 className="text-2xl md:text-3xl font-bold mb-1" style={{ color: "#005ca4" }}>
+                  Novo Atestado
+                </h1>
+                <p className="text-xs md:text-base" style={{ color: "#5b5b5f" }}>
+                  Envie um novo atestado médico para análise
+                </p>
+              </div>
+            </div>
           </div>
 
-          <Card>
+          <Card className="border-2 border-[#005ca4]">
             <CardHeader>
-              <CardTitle>Informações do Atestado</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-[#12385f]">Informações do Atestado</CardTitle>
+              <CardDescription className="text-[#5b5b5f]">
                 Preencha as informações do seu atestado médico
               </CardDescription>
             </CardHeader>
@@ -258,20 +270,21 @@ export default function CriarAtestadoPage() {
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="dataInicio">Data de Início *</Label>
+                    <Label htmlFor="dataInicio" className="text-[#12385f] font-semibold">Data de Início *</Label>
                     <Input
                       id="dataInicio"
                       name="dataInicio"
                       type="date"
                       required
+                      style={{ backgroundColor: "#ffffff", borderColor: "#d8d9dd" }}
                       className="w-full"
                     />
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs" style={{ color: "#5b5b5f" }}>
                       Máximo 5 dias de tolerância para envio
                     </p>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="periodoAfastamento">
+                    <Label htmlFor="periodoAfastamento" className="text-[#12385f] font-semibold">
                       Período de Afastamento (dias) *
                     </Label>
                     <Input
@@ -282,36 +295,38 @@ export default function CriarAtestadoPage() {
                       max="365"
                       required
                       placeholder="Ex: 3"
+                      style={{ backgroundColor: "#ffffff", borderColor: "#d8d9dd" }}
                       className="w-full"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="motivo">Motivo (opcional)</Label>
+                  <Label htmlFor="motivo" className="text-[#12385f] font-semibold">Motivo (opcional)</Label>
                   <Textarea
                     id="motivo"
                     name="motivo"
                     placeholder="Descreva brevemente o motivo do atestado..."
                     maxLength={500}
+                    style={{ backgroundColor: "#ffffff", borderColor: "#d8d9dd" }}
                     className="min-h-[100px]"
                   />
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs" style={{ color: "#5b5b5f" }}>
                     Máximo 500 caracteres
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="imagem">Imagem do Atestado *</Label>
-                  <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6">
+                  <Label htmlFor="imagem" className="text-[#12385f] font-semibold">Imagem do Atestado *</Label>
+                  <div className="border-2 border-dashed rounded-lg p-6" style={{ borderColor: "#005ca4" }}>
                     {!uploadedFile ? (
                       <div className="text-center">
                         <Upload className="mx-auto h-12 w-12 text-muted-foreground/50 mb-4" />
                         <div className="space-y-2">
-                          <p className="text-sm font-medium">
+                          <p className="text-sm font-medium" style={{ color: "#12385f" }}>
                             Clique para fazer upload ou arraste uma imagem
                           </p>
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-xs" style={{ color: "#5b5b5f" }}>
                             PNG, JPG até 10MB
                           </p>
                         </div>
@@ -320,6 +335,7 @@ export default function CriarAtestadoPage() {
                           type="file"
                           accept="image/*"
                           onChange={handleFileChange}
+                          style={{ backgroundColor: "#ffffff", borderColor: "#d8d9dd" }}
                           className="mt-4"
                         />
                       </div>
@@ -327,9 +343,9 @@ export default function CriarAtestadoPage() {
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2">
-                            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: "#e0f2f1" }}>
                               <svg
-                                className="w-4 h-4 text-green-600"
+                                className="w-4 h-4"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -343,10 +359,10 @@ export default function CriarAtestadoPage() {
                               </svg>
                             </div>
                             <div>
-                              <p className="text-sm font-medium">
+                              <p className="text-sm font-medium" style={{ color: "#12385f" }}>
                                 {uploadedFile.name}
                               </p>
-                              <p className="text-xs text-muted-foreground">
+                              <p className="text-xs" style={{ color: "#5b5b5f" }}>
                                 {(uploadedFile.size / 1024 / 1024).toFixed(2)}{" "}
                                 MB
                               </p>
@@ -357,12 +373,13 @@ export default function CriarAtestadoPage() {
                             variant="ghost"
                             size="sm"
                             onClick={removeFile}
+                            className="text-[#005ca4] hover:bg-[#f4f7fb]"
                           >
                             <X className="h-4 w-4" />
                           </Button>
                         </div>
                         {previewUrl && (
-                          <div className="relative w-full h-48 bg-muted rounded-lg overflow-hidden">
+                          <div className="relative w-full h-48 rounded-lg overflow-hidden" style={{ backgroundColor: "#f4f7fb" }}>
                             <Image
                               src={previewUrl}
                               alt="Preview do atestado"
@@ -376,19 +393,20 @@ export default function CriarAtestadoPage() {
                   </div>
                 </div>
 
-                <div className="flex gap-4 pt-4">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => router.push("/atestados")}
-                    className="flex-1"
+                    className="flex-1 border-[#005ca4] text-[#005ca4] hover:bg-[#f4f7fb]"
                   >
                     Cancelar
                   </Button>
                   <Button
                     type="submit"
                     disabled={createLoading || !uploadedFile}
-                    className="flex-1"
+                    className="flex-1 text-white"
+                    style={{ backgroundColor: "#005ca4" }}
                   >
                     {createLoading ? "Enviando..." : "Enviar Atestado"}
                   </Button>

@@ -340,7 +340,7 @@ export default function AdminDashboard() {
         return (
           <Badge
             variant="outline"
-            className="bg-yellow-50 text-yellow-700 border-yellow-200"
+            className="bg-[#f8f2e1] text-[#cda44f] border-[#eac262]"
           >
             <Clock className="w-3 h-3 mr-1" />
             Pendente
@@ -350,7 +350,7 @@ export default function AdminDashboard() {
         return (
           <Badge
             variant="outline"
-            className="bg-green-50 text-green-700 border-green-200"
+            className="bg-[#eef4ea] text-[#86b281] border-[#86b281]"
           >
             <CheckCircle className="w-3 h-3 mr-1" />
             Aprovado
@@ -360,7 +360,7 @@ export default function AdminDashboard() {
         return (
           <Badge
             variant="outline"
-            className="bg-red-50 text-red-700 border-red-200"
+            className="bg-[#f7eaea] text-[#c56266] border-[#c56266]"
           >
             <XCircle className="w-3 h-3 mr-1" />
             Rejeitado
@@ -449,30 +449,33 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <main className="container mx-auto p-4 md:p-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-primary mb-2">
+    <div className="w-full overflow-x-hidden bg-white">
+      <main className="w-full max-w-full p-2 sm:p-4 md:p-6 mx-auto">
+        <div className="mb-3 md:mb-4">
+          <h1 className="text-2xl md:text-3xl font-bold text-[#005ca4] mb-1">
             Painel Administrativo
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-xs md:text-sm text-muted-foreground">
             Gerencie usuários e aprove atestados
           </p>
         </div>
 
-        <Tabs defaultValue="usuarios" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="usuarios" className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              Usuários
+        <Tabs defaultValue="usuarios" className="space-y-6 w-full">
+          <TabsList className="grid w-full grid-cols-3 gap-1 md:gap-2">
+            <TabsTrigger value="usuarios" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+              <Users className="h-3 w-3 md:h-4 md:w-4" />
+              <span className="hidden sm:inline">Usuários</span>
+              <span className="sm:hidden">Usuários</span>
             </TabsTrigger>
-            <TabsTrigger value="atestados" className="flex items-center gap-2">
-              <FileText className="h-4 w-4" />
-              Atestados
+            <TabsTrigger value="atestados" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+              <FileText className="h-3 w-3 md:h-4 md:w-4" />
+              <span className="hidden sm:inline">Atestados</span>
+              <span className="sm:hidden">Ates.</span>
             </TabsTrigger>
-            <TabsTrigger value="overview" className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
-              Visão Geral
+            <TabsTrigger value="overview" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+              <BarChart3 className="h-3 w-3 md:h-4 md:w-4" />
+              <span className="hidden sm:inline">Visão Geral</span>
+              <span className="sm:hidden">Visão</span>
             </TabsTrigger>
           </TabsList>
 
@@ -558,14 +561,14 @@ export default function AdminDashboard() {
                                     </Button>
                                   )}
                                 </DialogTrigger>
-                                <DialogContent>
+                                <DialogContent className="bg-white border-2 border-[#005ca4]">
                                   <DialogHeader>
-                                    <DialogTitle>
+                                    <DialogTitle className="text-[#005ca4]">
                                       {usuario.status === "inativo"
                                         ? "Ativar usuário"
                                         : "Inativar usuário"}
                                     </DialogTitle>
-                                    <DialogDescription>{`Confirma ${
+                                    <DialogDescription className="text-[#5b5b5f]">{`Confirma ${
                                       usuario.status === "inativo"
                                         ? "ativar"
                                         : "inativar"
@@ -575,24 +578,37 @@ export default function AdminDashboard() {
                                   </DialogHeader>
                                   <div className="flex justify-end gap-2 mt-4">
                                     <DialogClose asChild>
-                                      <Button variant="outline">
+                                      <Button variant="outline" className="border-[#d8d9dd] text-[#005ca4] hover:bg-[#f4f7fb]">
                                         Cancelar
                                       </Button>
                                     </DialogClose>
-                                    <DialogClose asChild>
-                                      <Button
-                                        onClick={() =>
-                                          performToggleUserStatus(
-                                            usuario.id,
-                                            usuario.status
-                                          )
-                                        }
-                                      >
-                                        {usuario.status === "inativo"
-                                          ? "Confirmar Ativação"
-                                          : "Confirmar Inativação"}
-                                      </Button>
-                                    </DialogClose>
+                                    <Button
+                                      onClick={() => {
+                                        performToggleUserStatus(
+                                          usuario.id,
+                                          usuario.status
+                                        );
+                                      }}
+                                      style={{
+                                        backgroundColor: usuario.status === "inativo" ? "#4caf50" : "#c56266",
+                                        color: "white",
+                                        borderRadius: "6px",
+                                        padding: "8px 16px",
+                                        fontWeight: "500",
+                                        cursor: "pointer",
+                                        border: "none"
+                                      }}
+                                      onMouseEnter={(e) => {
+                                        e.currentTarget.style.backgroundColor = usuario.status === "inativo" ? "#45a049" : "#b54f54";
+                                      }}
+                                      onMouseLeave={(e) => {
+                                        e.currentTarget.style.backgroundColor = usuario.status === "inativo" ? "#4caf50" : "#c56266";
+                                      }}
+                                    >
+                                      {usuario.status === "inativo"
+                                        ? "Confirmar Ativação"
+                                        : "Confirmar Inativação"}
+                                    </Button>
                                   </div>
                                 </DialogContent>
                               </Dialog>
@@ -623,6 +639,13 @@ export default function AdminDashboard() {
                   <Card
                     key={atestado.id}
                     className="hover:shadow-lg transition-shadow"
+                    style={
+                      atestado.status === "aprovado"
+                        ? { borderColor: "rgb(168, 194, 113)", backgroundColor: "rgba(168, 194, 113, 0.12)" }
+                        : atestado.status === "rejeitado"
+                        ? { borderColor: "rgb(197, 98, 102)", backgroundColor: "rgba(197, 98, 102, 0.12)" }
+                        : { borderColor: "rgb(234, 202, 98)", backgroundColor: "rgba(234, 202, 98, 0.12)" }
+                    }
                   >
                     <CardHeader className="pb-4">
                       <div className="flex items-start justify-between">
@@ -677,7 +700,7 @@ export default function AdminDashboard() {
                           <p className="font-medium text-muted-foreground mb-1">
                             Observações Administrativas
                           </p>
-                          <p className="text-sm bg-blue-50 border border-blue-200 p-2 rounded">
+                          <p className="text-sm p-2 rounded" style={{ backgroundColor: '#f7f8fa', borderColor: '#d8d9dd', borderWidth: '1px', color: '#5b5b5f' }}>
                             {atestado.observacoes_admin}
                           </p>
                         </div>
@@ -691,10 +714,10 @@ export default function AdminDashboard() {
                               Ver Imagem
                             </Button>
                           </DialogTrigger>
-                          <DialogContent className="max-w-4xl">
+                          <DialogContent className="max-w-4xl bg-white border-2 border-[#005ca4]">
                             <DialogHeader>
-                              <DialogTitle>Atestado Médico</DialogTitle>
-                              <DialogDescription>
+                              <DialogTitle className="text-[#005ca4]">Atestado Médico</DialogTitle>
+                              <DialogDescription className="text-[#5b5b5f]">
                                 Atestado de {atestado.usuario?.nome}
                               </DialogDescription>
                             </DialogHeader>
@@ -732,10 +755,10 @@ export default function AdminDashboard() {
                                   Aprovar
                                 </Button>
                               </DialogTrigger>
-                              <DialogContent>
+                              <DialogContent className="bg-white border-2 border-[#005ca4]">
                                 <DialogHeader>
-                                  <DialogTitle>Aprovar Atestado</DialogTitle>
-                                  <DialogDescription>
+                                  <DialogTitle className="text-[#005ca4]">Aprovar Atestado</DialogTitle>
+                                  <DialogDescription className="text-[#5b5b5f]">
                                     Você está aprovando o atestado de{" "}
                                     {atestado.usuario?.nome}
                                   </DialogDescription>
@@ -788,10 +811,10 @@ export default function AdminDashboard() {
                                   Rejeitar
                                 </Button>
                               </DialogTrigger>
-                              <DialogContent>
+                              <DialogContent className="bg-white border-2 border-[#005ca4]">
                                 <DialogHeader>
-                                  <DialogTitle>Rejeitar Atestado</DialogTitle>
-                                  <DialogDescription>
+                                  <DialogTitle className="text-[#005ca4]">Rejeitar Atestado</DialogTitle>
+                                  <DialogDescription className="text-[#5b5b5f]">
                                     Você está rejeitando o atestado de{" "}
                                     {atestado.usuario?.nome}
                                   </DialogDescription>

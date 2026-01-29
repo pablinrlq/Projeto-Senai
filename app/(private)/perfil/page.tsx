@@ -62,78 +62,93 @@ export default function Perfil() {
   }
 
   const getTipoBadge = (tipo: string) => {
-    const key = (tipo || "").toString().toLowerCase();
-    const variants: Record<
-      string,
-      { variant: "default" | "secondary" | "destructive"; label: string }
-    > = {
-      aluno: { variant: "default", label: "Aluno" },
-      professor: { variant: "secondary", label: "Professor" },
-      administrador: { variant: "destructive", label: "Administrador" },
-      funcionario: { variant: "secondary", label: "Funcionário" },
+    const typeMap: Record<string, { bg: string; text: string; border: string }> = {
+      administrador: { bg: "#ffebee", text: "#c62828", border: "#ef5350" },
+      funcionario: { bg: "#e3f2fd", text: "#1565c0", border: "#005ca4" },
+      aluno: { bg: "#e0f2f1", text: "#00695c", border: "#4db8ac" },
     };
 
-    const { variant, label } = variants[key] || variants.aluno;
-    return <Badge variant={variant}>{label}</Badge>;
+    const type = (tipo || "").toLowerCase();
+    const colors = typeMap[type] || typeMap.aluno;
+
+    return (
+      <div
+        style={{
+          backgroundColor: colors.bg,
+          color: colors.text,
+          border: `1px solid ${colors.border}`,
+        }}
+        className="px-2 py-0.5 rounded-full text-xs font-medium"
+      >
+        {tipo}
+      </div>
+    );
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <main className="px-4 py-6 sm:px-6 md:px-8">
-        <div className="mb-8  ml-10">
-          <h1 className="text-2xl sm:text-3xl font-bold text-primary mb-2">
-            Meu Perfil
-          </h1>
-          <p className="text-muted-foreground">Suas informações pessoais</p>
+    <div className="bg-background">
+      <main className="px-2 sm:px-4 md:px-8 py-4 md:py-6">
+        <div className="mb-6 md:mb-8 w-full max-w-4xl mx-auto">
+          <div className="flex items-start gap-3 md:gap-4">
+            <div style={{ width: '4px', height: '45px', backgroundColor: '#005ca4', borderRadius: '8px' }} />
+            <div>
+              <h1 className="text-xl md:text-3xl font-bold mb-1 md:mb-2" style={{ color: '#005ca4' }}>
+                Meu Perfil
+              </h1>
+              <p className="text-xs md:text-base text-muted-foreground">Suas informações pessoais</p>
+            </div>
+          </div>
         </div>
-        <div className="w-full sm:max-w-xl md:max-w-2xl mx-auto">
-          <Card>
+        <div className="w-full max-w-4xl mx-auto">
+          <Card className="border-2 border-[#005ca4]">
             <CardHeader className="p-4 sm:p-6">
-              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
-                <UserCircle className="h-12 w-12 sm:h-16 sm:w-16 text-primary" />
-                <div className="flex-1 text-center sm:text-left">
-                  <CardTitle className="text-xl sm:text-2xl">
-                    {profile?.nome}
-                  </CardTitle>
-                  <CardDescription className="text-sm">
-                    {profile?.created_at
-                      ? `Membro desde ${formatDate(profile.created_at)}`
-                      : "Perfil do sistema"}
-                  </CardDescription>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <UserCircle className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 text-[#005ca4] flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <CardTitle className="text-lg md:text-2xl text-[#12385f]">
+                      {profile?.nome}
+                    </CardTitle>
+                    <CardDescription className="text-xs md:text-sm text-[#5b5b5f]">
+                      {profile?.created_at
+                        ? `Membro desde ${formatDate(profile.created_at)}`
+                        : "Perfil do sistema"}
+                    </CardDescription>
+                  </div>
                 </div>
-                <div className="mt-3 sm:mt-0 sm:ml-4">
+                <div className="mt-1">
                   {profile && getTipoBadge(profile.tipo_usuario)}
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4 px-4 sm:px-6 pb-6">
-              <div className="grid gap-4">
-                <div className="flex items-start gap-3">
-                  <Mail className="h-5 w-5 text-muted-foreground mt-1" />
-                  <div>
-                    <p className="text-sm font-medium">Email</p>
-                    <p className="text-sm text-muted-foreground">
+            <CardContent className="space-y-3 md:space-y-4 px-4 sm:px-6 pb-4 md:pb-6">
+              <div className="grid gap-3 md:gap-4">
+                <div className="flex items-start gap-2 md:gap-3">
+                  <Mail className="h-4 w-4 md:h-5 md:w-5 text-[#005ca4] mt-0.5 md:mt-1 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-xs md:text-sm font-medium text-[#12385f]">Email</p>
+                    <p className="text-xs md:text-sm text-[#5b5b5f] break-all">
                       {profile?.email}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3">
-                  <Shield className="h-5 w-5 text-muted-foreground mt-1" />
+                <div className="flex items-start gap-2 md:gap-3">
+                  <Shield className="h-4 w-4 text-[#005ca4] mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="text-sm font-medium">Tipo de Usuário</p>
-                    <p className="text-sm text-muted-foreground capitalize">
+                    <p className="text-xs md:text-sm font-medium text-[#12385f]">Tipo de Usuário</p>
+                    <p className="text-xs md:text-sm text-[#5b5b5f] capitalize">
                       {profile?.tipo_usuario}
                     </p>
                   </div>
                 </div>
 
                 {profile?.ra_aluno && (
-                  <div className="flex items-start gap-3">
-                    <IdCard className="h-5 w-5 text-muted-foreground mt-1" />
+                  <div className="flex items-start gap-2 md:gap-3">
+                    <IdCard className="h-4 w-4 text-[#005ca4] mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="text-sm font-medium">RA</p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs md:text-sm font-medium text-[#12385f]">RA</p>
+                      <p className="text-xs md:text-sm text-muted-foreground">
                         {profile.ra_aluno}
                       </p>
                     </div>
@@ -141,11 +156,11 @@ export default function Perfil() {
                 )}
               </div>
 
-              <div className="pt-4 border-t">
+              <div className="pt-4 border-t border-[#d8d9dd]">
                 <Button
-                  variant="outline"
                   onClick={() => router.push("/dashboard")}
-                  className="w-full sm:w-auto"
+                  className="w-full sm:w-auto border-[#005ca4] text-[#005ca4] hover:bg-[#f4f7fb]"
+                  variant="outline"
                 >
                   Voltar ao Dashboard
                 </Button>

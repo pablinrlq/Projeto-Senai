@@ -129,32 +129,50 @@ const StudentSignup = () => {
 
   return (
     <div className="min-h-screen flex">
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white relative overflow-y-auto">
-        <div className="w-full max-w-md">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 md:p-6 bg-white relative overflow-y-auto">
+        <div className="w-full max-w-md sm:max-w-sm">
+          <div className="flex md:hidden items-center justify-between mb-8">
+            <button
+              onClick={() => router.back()}
+              className="w-10 h-10 rounded-full hover:bg-[#f4f7fb] flex items-center justify-center transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5" style={{ color: '#005ca4' }} />
+            </button>
+
+            <div>
+              <Logo />
+            </div>
+          </div>
+
           <button
             onClick={() => router.back()}
-            className="absolute top-8 left-8 w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+            className="hidden md:flex absolute top-4 left-4 w-10 h-10 rounded-full hover:bg-[#f4f7fb] items-center justify-center transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-gray-700" />
+            <ArrowLeft className="w-5 h-5" style={{ color: '#005ca4' }} />
           </button>
 
-          <div className="absolute top-8 right-8">
+          <div className="hidden md:block absolute top-6 right-6">
             <Logo />
           </div>
 
-          <div className="mb-8 mt-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">
-              Pronto para <span className="text-gray-700">começar?</span>
-            </h2>
-            <p className="text-gray-600">
-              Cadastre-se agora para explorar, aprender e crescer com a gente.
-            </p>
+          <div className="mb-6">
+            <div className="flex items-start gap-3">
+              <div style={{ width: '4px', height: '45px', backgroundColor: '#005ca4', borderRadius: '8px' }} />
+              <div>
+                <h2 className="text-2xl font-bold mb-1" style={{ color: '#005ca4' }}>
+                  Criar conta
+                </h2>
+                <p className="text-sm" style={{ color: '#5b5b5f' }}>
+                  Cadastre-se para explorar e aprender.
+                </p>
+              </div>
+            </div>
           </div>
 
-          <form onSubmit={handleSignup} className="space-y-5">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="signup-nome" className="text-gray-700">
+          <form onSubmit={handleSignup} className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label htmlFor="signup-nome" style={{ color: '#12385f' }} className="font-semibold text-sm">
                   Nome completo *
                 </Label>
                 <Input
@@ -164,12 +182,13 @@ const StudentSignup = () => {
                   placeholder="Digite seu nome"
                   required
                   disabled={loading}
-                  className="h-11"
+                  style={{ backgroundColor: '#ffffff', borderColor: '#d8d9dd' }}
+                  className="h-9 text-sm border"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="signup-ra" className="text-gray-700">
+              <div className="space-y-1">
+                <Label htmlFor="signup-ra" style={{ color: '#12385f' }} className="font-semibold text-sm">
                   RA *
                 </Label>
                 <Input
@@ -179,13 +198,14 @@ const StudentSignup = () => {
                   placeholder="Digite seu RA"
                   required
                   disabled={loading}
-                  className="h-11"
+                  style={{ backgroundColor: '#ffffff', borderColor: '#d8d9dd' }}
+                  className="h-9 text-sm border"
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="signup-email" className="text-gray-700">
+            <div className="space-y-1">
+              <Label htmlFor="signup-email" style={{ color: '#12385f' }} className="font-semibold text-sm">
                 E-mail *
               </Label>
               <Input
@@ -195,11 +215,12 @@ const StudentSignup = () => {
                 placeholder="Digite seu e-mail"
                 required
                 disabled={loading}
-                className="h-11"
+                style={{ backgroundColor: '#ffffff', borderColor: '#d8d9dd' }}
+                className="h-9 text-sm border"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="signup-telefone" className="text-gray-700">
+            <div className="space-y-1">
+              <Label htmlFor="signup-telefone" style={{ color: '#12385f' }} className="font-semibold text-sm">
                 Telefone *
               </Label>
               <Input
@@ -209,14 +230,15 @@ const StudentSignup = () => {
                 placeholder="(11) 99999-9999"
                 required
                 disabled={loading}
-                className="h-11"
+                style={{ backgroundColor: '#ffffff', borderColor: '#d8d9dd' }}
+                className="h-9 text-sm border"
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="signup-curso" className="text-gray-700">
-                  Curso <span className="text-red-500">*</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label htmlFor="signup-curso" style={{ color: '#12385f' }} className="font-semibold text-sm">
+                  Curso <span style={{ color: '#c56266' }}>*</span>
                 </Label>
                 <Select
                   value={curso}
@@ -224,7 +246,7 @@ const StudentSignup = () => {
                   required
                   disabled={loading}
                 >
-                  <SelectTrigger className="h-11">
+                  <SelectTrigger style={{ backgroundColor: '#ffffff', borderColor: '#d8d9dd' }} className="h-9 text-sm border">
                     <SelectValue placeholder="Selecione o curso" />
                   </SelectTrigger>
                   <SelectContent>
@@ -260,9 +282,9 @@ const StudentSignup = () => {
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="signup-periodo" className="text-gray-700">
-                  Período <span className="text-red-500">*</span>
+              <div className="space-y-1">
+                <Label htmlFor="signup-periodo" style={{ color: '#12385f' }} className="font-semibold text-sm">
+                  Período <span style={{ color: '#c56266' }}>*</span>
                 </Label>
                 <Select
                   value={periodo}
@@ -270,7 +292,7 @@ const StudentSignup = () => {
                   required
                   disabled={loading}
                 >
-                  <SelectTrigger className="h-11">
+                  <SelectTrigger style={{ backgroundColor: '#ffffff', borderColor: '#d8d9dd' }} className="h-9 text-sm border">
                     <SelectValue placeholder="Selecione o período" />
                   </SelectTrigger>
                   <SelectContent>
@@ -283,9 +305,9 @@ const StudentSignup = () => {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="signup-turma" className="text-gray-700">
-                Código da Turma <span className="text-red-500">*</span>
+            <div className="space-y-1">
+              <Label htmlFor="signup-turma" style={{ color: '#12385f' }} className="font-semibold text-sm">
+                Código da Turma <span style={{ color: '#c56266' }}>*</span>
               </Label>
               <Input
                 id="signup-turma"
@@ -296,16 +318,17 @@ const StudentSignup = () => {
                 disabled={loading}
                 value={turma}
                 onChange={(e) => setTurma(e.target.value)}
-                className="h-11"
+                style={{ backgroundColor: '#ffffff', borderColor: '#d8d9dd' }}
+                className="h-9 text-sm border"
               />
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs" style={{ color: '#5b5b5f' }}>
                 Campo obrigatório para alunos
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="signup-senha" className="text-gray-700">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label htmlFor="signup-senha" style={{ color: '#12385f' }} className="font-semibold text-sm">
                   Senha *
                 </Label>
                 <div className="relative">
@@ -316,28 +339,31 @@ const StudentSignup = () => {
                     placeholder="Digite sua senha"
                     required
                     disabled={loading}
-                    className="h-11 pr-10"
                     value={passwordValue}
                     onChange={(e) => setPasswordValue(e.target.value)}
+                    style={{ backgroundColor: '#ffffff', borderColor: '#d8d9dd' }}
+                    className="h-9 pr-10 text-sm border"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="absolute right-3 top-1/2 -translate-y-1/2"
+                    style={{ color: '#5b5b5f' }}
                   >
                     {showPassword ? (
-                      <EyeOff className="w-5 h-5" />
+                      <EyeOff className="w-4 h-4" />
                     ) : (
-                      <Eye className="w-5 h-5" />
+                      <Eye className="w-4 h-4" />
                     )}
                   </button>
                 </div>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <Label
                   htmlFor="signup-confirmar-senha"
-                  className="text-gray-700"
+                  style={{ color: '#12385f' }}
+                  className="font-semibold text-sm"
                 >
                   Confirmar senha *
                 </Label>
@@ -349,25 +375,27 @@ const StudentSignup = () => {
                     placeholder="Confirme sua senha"
                     required
                     disabled={loading}
-                    className="h-11 pr-10"
+                    style={{ backgroundColor: '#ffffff', borderColor: '#d8d9dd' }}
+                    className="h-9 pr-10 text-sm border"
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="absolute right-3 top-1/2 -translate-y-1/2"
+                    style={{ color: '#5b5b5f' }}
                   >
                     {showConfirmPassword ? (
-                      <EyeOff className="w-5 h-5" />
+                      <EyeOff className="w-4 h-4" />
                     ) : (
-                      <Eye className="w-5 h-5" />
+                      <Eye className="w-4 h-4" />
                     )}
                   </button>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gray-50 p-4 rounded-lg space-y-2">
-              <p className="text-sm font-medium text-gray-700">
+            <div className="p-4 rounded-lg space-y-2" style={{ backgroundColor: '#f4f7fb' }}>
+              <p className="text-sm font-medium" style={{ color: '#12385f' }}>
                 A <span className="font-bold">senha</span> deve conter
               </p>
               <div className="space-y-1">
@@ -379,9 +407,8 @@ const StudentSignup = () => {
                       className="pointer-events-none"
                     />
                     <span
-                      className={`text-sm ${
-                        req.met ? "text-green-600" : "text-gray-600"
-                      }`}
+                      className="text-sm"
+                      style={{ color: req.met ? "#4caf50" : "#5b5b5f" }}
                     >
                       {req.text}
                     </span>
@@ -392,7 +419,7 @@ const StudentSignup = () => {
 
             <Button
               type="submit"
-              className="w-full h-12 bg-[#E63946] hover:bg-[#d32f2f] text-white text-base font-medium"
+              className="w-full h-12 text-white text-base font-medium" style={{ backgroundColor: '#005ca4' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#004b90'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#005ca4'}
               disabled={loading}
             >
               {loading ? "Criando conta..." : "Criar conta"}
@@ -401,7 +428,7 @@ const StudentSignup = () => {
             <div className="text-center">
               <Link
                 href="/auth/login"
-                className="text-sm text-[#E63946] hover:underline font-medium"
+                className="text-sm font-medium hover:underline" style={{ color: '#005ca4' }}
               >
                 Cancelar
               </Link>
@@ -410,27 +437,27 @@ const StudentSignup = () => {
         </div>
       </div>
 
-      <div className="hidden lg:flex lg:w-1/2 bg-linear-to-br from-purple-50 via-pink-50 to-blue-50 p-12 flex-col justify-center relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 p-12 flex-col justify-center relative overflow-hidden bg-white">
         <div className="flex-1 flex flex-col justify-center max-w-md mx-auto">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
+          <h1 className="text-4xl font-bold mb-4" style={{ color: '#005ca4' }}>
             Já tem conta?
           </h1>
-          <p className="text-lg text-gray-600 leading-relaxed mb-8">
+          <p className="text-lg leading-relaxed mb-8" style={{ color: '#5b5b5f' }}>
             Descubra no seu tempo, construa seu aprendizado e explore novas
             oportunidades de conhecimento.
           </p>
           <Link href="/auth/login">
             <Button
               variant="outline"
-              className="bg-white hover:bg-gray-50 text-[#E63946] border-2 border-[#E63946] px-8 h-12 text-base font-medium"
+              className="bg-white px-8 h-12 text-base font-medium" style={{ color: '#005ca4', borderColor: '#005ca4', borderWidth: '2px' }}
             >
               Acessar conta
             </Button>
           </Link>
         </div>
 
-        <div className="absolute top-0 right-0 w-64 h-64 bg-linear-to-br from-purple-200/40 to-pink-200/40 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-linear-to-br from-blue-200/40 to-purple-200/40 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" style={{ background: 'linear-gradient(135deg, #c56266 0%, rgba(197, 98, 102, 0.3) 100%)' }}></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3" style={{ background: 'linear-gradient(to bottom right, rgba(127, 175, 211, 0.3), rgba(170, 200, 220, 0.2))' }}></div>
       </div>
     </div>
   );
