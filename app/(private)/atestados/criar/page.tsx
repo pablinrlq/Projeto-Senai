@@ -186,7 +186,7 @@ export default function CriarAtestadoPage() {
 
       // Criar FormData para o upload
       const uploadFormData = new FormData();
-      uploadFormData.append("file", uploadedFile); // ou o nome do campo que seu backend espera
+      uploadFormData.append("file", uploadedFile);
 
       await apiExternal
         .post("/master-admin/upload", uploadFormData, {
@@ -245,10 +245,16 @@ export default function CriarAtestadoPage() {
                 }}
               />
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold mb-1" style={{ color: "#005ca4" }}>
+                <h1
+                  className="text-2xl md:text-3xl font-bold mb-1"
+                  style={{ color: "#005ca4" }}
+                >
                   Novo Atestado
                 </h1>
-                <p className="text-xs md:text-base" style={{ color: "#5b5b5f" }}>
+                <p
+                  className="text-xs md:text-base"
+                  style={{ color: "#5b5b5f" }}
+                >
                   Envie um novo atestado médico para análise
                 </p>
               </div>
@@ -257,7 +263,9 @@ export default function CriarAtestadoPage() {
 
           <Card className="border-2 border-[#005ca4]">
             <CardHeader>
-              <CardTitle className="text-[#12385f]">Informações do Atestado</CardTitle>
+              <CardTitle className="text-[#12385f]">
+                Informações do Atestado
+              </CardTitle>
               <CardDescription className="text-[#5b5b5f]">
                 Preencha as informações do seu atestado médico
               </CardDescription>
@@ -270,13 +278,21 @@ export default function CriarAtestadoPage() {
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="dataInicio" className="text-[#12385f] font-semibold">Data de Início *</Label>
+                    <Label
+                      htmlFor="dataInicio"
+                      className="text-[#12385f] font-semibold"
+                    >
+                      Data de Início *
+                    </Label>
                     <Input
                       id="dataInicio"
                       name="dataInicio"
                       type="date"
                       required
-                      style={{ backgroundColor: "#ffffff", borderColor: "#d8d9dd" }}
+                      style={{
+                        backgroundColor: "#ffffff",
+                        borderColor: "#d8d9dd",
+                      }}
                       className="w-full"
                     />
                     <p className="text-xs" style={{ color: "#5b5b5f" }}>
@@ -284,7 +300,10 @@ export default function CriarAtestadoPage() {
                     </p>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="periodoAfastamento" className="text-[#12385f] font-semibold">
+                    <Label
+                      htmlFor="periodoAfastamento"
+                      className="text-[#12385f] font-semibold"
+                    >
                       Período de Afastamento (dias) *
                     </Label>
                     <Input
@@ -295,20 +314,31 @@ export default function CriarAtestadoPage() {
                       max="365"
                       required
                       placeholder="Ex: 3"
-                      style={{ backgroundColor: "#ffffff", borderColor: "#d8d9dd" }}
+                      style={{
+                        backgroundColor: "#ffffff",
+                        borderColor: "#d8d9dd",
+                      }}
                       className="w-full"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="motivo" className="text-[#12385f] font-semibold">Motivo (opcional)</Label>
+                  <Label
+                    htmlFor="motivo"
+                    className="text-[#12385f] font-semibold"
+                  >
+                    Motivo (opcional)
+                  </Label>
                   <Textarea
                     id="motivo"
                     name="motivo"
                     placeholder="Descreva brevemente o motivo do atestado..."
                     maxLength={500}
-                    style={{ backgroundColor: "#ffffff", borderColor: "#d8d9dd" }}
+                    style={{
+                      backgroundColor: "#ffffff",
+                      borderColor: "#d8d9dd",
+                    }}
                     className="min-h-[100px]"
                   />
                   <p className="text-xs" style={{ color: "#5b5b5f" }}>
@@ -317,13 +347,24 @@ export default function CriarAtestadoPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="imagem" className="text-[#12385f] font-semibold">Imagem do Atestado *</Label>
-                  <div className="border-2 border-dashed rounded-lg p-6" style={{ borderColor: "#005ca4" }}>
+                  <Label
+                    htmlFor="imagem"
+                    className="text-[#12385f] font-semibold"
+                  >
+                    Imagem do Atestado *
+                  </Label>
+                  <div
+                    className="border-2 border-dashed rounded-lg p-6"
+                    style={{ borderColor: "#005ca4" }}
+                  >
                     {!uploadedFile ? (
                       <div className="text-center">
                         <Upload className="mx-auto h-12 w-12 text-muted-foreground/50 mb-4" />
                         <div className="space-y-2">
-                          <p className="text-sm font-medium" style={{ color: "#12385f" }}>
+                          <p
+                            className="text-sm font-medium"
+                            style={{ color: "#12385f" }}
+                          >
                             Clique para fazer upload ou arraste uma imagem
                           </p>
                           <p className="text-xs" style={{ color: "#5b5b5f" }}>
@@ -335,7 +376,10 @@ export default function CriarAtestadoPage() {
                           type="file"
                           accept="image/*"
                           onChange={handleFileChange}
-                          style={{ backgroundColor: "#ffffff", borderColor: "#d8d9dd" }}
+                          style={{
+                            backgroundColor: "#ffffff",
+                            borderColor: "#d8d9dd",
+                          }}
                           className="mt-4"
                         />
                       </div>
@@ -343,7 +387,10 @@ export default function CriarAtestadoPage() {
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2">
-                            <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: "#e0f2f1" }}>
+                            <div
+                              className="w-8 h-8 rounded-full flex items-center justify-center"
+                              style={{ backgroundColor: "#e0f2f1" }}
+                            >
                               <svg
                                 className="w-4 h-4"
                                 fill="none"
@@ -359,10 +406,16 @@ export default function CriarAtestadoPage() {
                               </svg>
                             </div>
                             <div>
-                              <p className="text-sm font-medium" style={{ color: "#12385f" }}>
+                              <p
+                                className="text-sm font-medium"
+                                style={{ color: "#12385f" }}
+                              >
                                 {uploadedFile.name}
                               </p>
-                              <p className="text-xs" style={{ color: "#5b5b5f" }}>
+                              <p
+                                className="text-xs"
+                                style={{ color: "#5b5b5f" }}
+                              >
                                 {(uploadedFile.size / 1024 / 1024).toFixed(2)}{" "}
                                 MB
                               </p>
@@ -379,7 +432,10 @@ export default function CriarAtestadoPage() {
                           </Button>
                         </div>
                         {previewUrl && (
-                          <div className="relative w-full h-48 rounded-lg overflow-hidden" style={{ backgroundColor: "#f4f7fb" }}>
+                          <div
+                            className="relative w-full h-48 rounded-lg overflow-hidden"
+                            style={{ backgroundColor: "#f4f7fb" }}
+                          >
                             <Image
                               src={previewUrl}
                               alt="Preview do atestado"
