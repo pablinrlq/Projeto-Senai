@@ -186,6 +186,9 @@ export const GET = withFirebaseAdmin(async (req, db) => {
             }
           };
 
+          const criadoTardio =
+            data.criado_tardio === true || data.criadoTardio === true;
+
           return {
             id: doc.id,
             motivo: data.motivo,
@@ -203,6 +206,7 @@ export const GET = withFirebaseAdmin(async (req, db) => {
                 : null,
             usuario: usuario ?? null,
             createdAt: toDateOrString(data.created_at ?? data.createdAt),
+            criado_tardio: criadoTardio,
           };
         }
       )
@@ -370,6 +374,13 @@ export const POST = withFirebaseAdmin(async (req, db) => {
         );
         const dataFim = endDate.toISOString().split("T")[0];
 
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        startDate.setHours(0, 0, 0, 0);
+        const diffTime = today.getTime() - startDate.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        const criado_tardio = diffDays > 5;
+
         const payload: Record<string, unknown> = {
           id_usuario: authResult.uid,
           owner_id: authResult.uid,
@@ -380,6 +391,7 @@ export const POST = withFirebaseAdmin(async (req, db) => {
           imagem_path: imagePath,
           status: validatedData.status,
           created_at: new Date().toISOString(),
+          criado_tardio,
         };
 
         // Include periodo_afastamento only if present to avoid DB errors when column doesn't exist

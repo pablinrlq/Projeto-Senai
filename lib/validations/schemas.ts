@@ -135,6 +135,7 @@ const CreateAtestadoBaseSchema = z.object({
     .optional(),
 });
 
+// Permite criação a qualquer momento; atestados após 5 dias da data de início são marcados como criado_tardio na API
 export const CreateAtestadoSchema = CreateAtestadoBaseSchema.refine(
   (data) => {
     const startDate = new Date(data.data_inicio);
@@ -145,11 +146,11 @@ export const CreateAtestadoSchema = CreateAtestadoBaseSchema.refine(
     const diffTime = today.getTime() - startDate.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    return diffDays <= 5 && diffDays >= -365;
+    return diffDays >= -365;
   },
   {
     message:
-      "O atestado deve ser enviado no máximo 5 dias após a data de início",
+      "A data de início não pode ser mais de 365 dias no futuro",
     path: ["data_inicio"],
   }
 );
@@ -166,11 +167,11 @@ export const CreateAtestadoWithUserSchema = CreateAtestadoBaseSchema.extend({
     const diffTime = today.getTime() - startDate.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    return diffDays <= 5 && diffDays >= -365;
+    return diffDays >= -365;
   },
   {
     message:
-      "O atestado deve ser enviado no máximo 5 dias após a data de início",
+      "A data de início não pode ser mais de 365 dias no futuro",
     path: ["data_inicio"],
   }
 );

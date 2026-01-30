@@ -60,6 +60,7 @@ interface AtestadoData {
   imagem: string;
   createdAt: string;
   observacoes_admin?: string;
+  criado_tardio?: boolean;
   aprovado_pedagogia_por?: string | null;
   aprovado_pedagogia_em?: string | null;
   aprovado_secretaria_por?: string | null;
@@ -83,7 +84,7 @@ export default function AdminAtestadosPage() {
   const router = useRouter();
   const [atestados, setAtestados] = useState<AtestadoData[]>([]);
   const [filteredAtestados, setFilteredAtestados] = useState<AtestadoData[]>(
-    []
+    [],
   );
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -160,8 +161,8 @@ export default function AdminAtestadosPage() {
           new Set(
             atestadosData
               .map((a: AtestadoData) => a.usuario?.turma)
-              .filter((t: string | undefined): t is string => !!t)
-          )
+              .filter((t: string | undefined): t is string => !!t),
+          ),
         ).sort() as string[];
         setTurmasDisponiveis(turmas);
       } else {
@@ -208,7 +209,7 @@ export default function AdminAtestadosPage() {
           a.usuario?.email?.toLowerCase().includes(query) ||
           a.usuario?.ra?.toLowerCase().includes(query) ||
           a.usuario?.turma?.toLowerCase().includes(query) ||
-          a.motivo?.toLowerCase().includes(query)
+          a.motivo?.toLowerCase().includes(query),
       );
     }
 
@@ -221,7 +222,7 @@ export default function AdminAtestadosPage() {
       | "aprovado_pedagogia"
       | "aprovado_secretaria"
       | "aprovado"
-      | "rejeitado"
+      | "rejeitado",
   ) => {
     try {
       const token = localStorage.getItem("token");
@@ -239,7 +240,7 @@ export default function AdminAtestadosPage() {
             status: novoStatus,
             observacoes_admin: observacoes || undefined,
           }),
-        }
+        },
       );
 
       if (response.ok) {
@@ -255,7 +256,7 @@ export default function AdminAtestadosPage() {
       } else {
         const error = await response.json();
         toast.error(
-          error.error || error.message || "Erro ao atualizar atestado"
+          error.error || error.message || "Erro ao atualizar atestado",
         );
       }
     } catch (error) {
@@ -276,7 +277,7 @@ export default function AdminAtestadosPage() {
         >
           <CheckCircle className="w-3 h-3 mr-1 text-[#4caf50]" />
           Aprovado - Completo
-        </Badge>
+        </Badge>,
       );
     } else if (atestado.status === "rejeitado") {
       badges.push(
@@ -287,7 +288,7 @@ export default function AdminAtestadosPage() {
         >
           <XCircle className="w-3 h-3 mr-1 text-[#c56266]" />
           Rejeitado
-        </Badge>
+        </Badge>,
       );
     } else {
       badges.push(
@@ -298,7 +299,7 @@ export default function AdminAtestadosPage() {
         >
           <Clock className="w-3 h-3 mr-1 text-[#f57c00]" />
           Pendente
-        </Badge>
+        </Badge>,
       );
 
       if (atestado.aprovado_pedagogia_por) {
@@ -310,7 +311,7 @@ export default function AdminAtestadosPage() {
           >
             <CheckCircle className="w-3 h-3 mr-1 text-[#005ca4]" />
             Aprovado - Pedagogia
-          </Badge>
+          </Badge>,
         );
       }
 
@@ -323,7 +324,7 @@ export default function AdminAtestadosPage() {
           >
             <CheckCircle className="w-3 h-3 mr-1 text-[#00897b]" />
             Aprovado - Secretaria
-          </Badge>
+          </Badge>,
         );
       }
     }
@@ -417,9 +418,19 @@ export default function AdminAtestadosPage() {
       <main className="container mx-auto p-2 sm:p-4 md:p-8 overflow-x-hidden">
         <div className="mb-6 md:mb-8">
           <div className="flex items-start gap-2 md:gap-4">
-            <div style={{ width: '4px', height: '45px', backgroundColor: '#005ca4', borderRadius: '8px' }} />
+            <div
+              style={{
+                width: "4px",
+                height: "45px",
+                backgroundColor: "#005ca4",
+                borderRadius: "8px",
+              }}
+            />
             <div className="min-w-0">
-              <h1 className="text-xl md:text-3xl font-bold mb-1 md:mb-2 break-words" style={{ color: '#005ca4' }}>
+              <h1
+                className="text-xl md:text-3xl font-bold mb-1 md:mb-2 break-words"
+                style={{ color: "#005ca4" }}
+              >
                 Revisar Atestados
               </h1>
               <p className="text-xs md:text-base text-muted-foreground">
@@ -451,7 +462,10 @@ export default function AdminAtestadosPage() {
                     Status
                   </Label>
                   <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger id="status-filter" className="w-full h-9 md:h-11 text-xs md:text-sm">
+                    <SelectTrigger
+                      id="status-filter"
+                      className="w-full h-9 md:h-11 text-xs md:text-sm"
+                    >
                       <SelectValue placeholder="Todos os status" />
                     </SelectTrigger>
                     <SelectContent className="bg-white border-2 border-[#005ca4]">
@@ -464,7 +478,10 @@ export default function AdminAtestadosPage() {
                       </SelectItem>
                       <SelectItem value="aprovado_pedagogia">
                         <div className="flex items-center gap-2">
-                          <CheckCircle className="w-3 h-3" style={{ color: '#005ca4' }} />
+                          <CheckCircle
+                            className="w-3 h-3"
+                            style={{ color: "#005ca4" }}
+                          />
                           Aprovado - Pedagogia
                         </div>
                       </SelectItem>
@@ -499,7 +516,10 @@ export default function AdminAtestadosPage() {
                       Turma
                     </Label>
                     <Select value={turmaFilter} onValueChange={setTurmaFilter}>
-                      <SelectTrigger id="turma-filter" className="w-full h-9 md:h-11 text-xs md:text-sm">
+                      <SelectTrigger
+                        id="turma-filter"
+                        className="w-full h-9 md:h-11 text-xs md:text-sm"
+                      >
                         <SelectValue placeholder="Todas as turmas" />
                       </SelectTrigger>
                       <SelectContent className="bg-white border-2 border-[#005ca4]">
@@ -566,21 +586,40 @@ export default function AdminAtestadosPage() {
                     <div className="space-y-1 md:space-y-2 min-w-0 flex-1">
                       <CardTitle className="text-base md:text-lg flex items-center gap-2 break-words">
                         <User className="h-4 w-4 md:h-5 md:w-5 text-[#005ca4] flex-shrink-0" />
-                        <span style={{ color: '#005ca4' }} className="truncate md:truncate-none">{atestado.usuario?.nome}</span>
+                        <span
+                          style={{ color: "#005ca4" }}
+                          className="truncate md:truncate-none"
+                        >
+                          {atestado.usuario?.nome}
+                        </span>
                       </CardTitle>
                       <CardDescription className="space-y-0.5 md:space-y-1 text-xs md:text-sm">
                         <span className="block break-words">
-                          RA: {atestado.usuario?.ra} • <span className="break-all">{atestado.usuario?.email}</span>
+                          RA: {atestado.usuario?.ra} •{" "}
+                          <span className="break-all">
+                            {atestado.usuario?.email}
+                          </span>
                         </span>
                         {atestado.usuario?.turma && (
                           <span className="inline-flex items-center gap-1 md:gap-2">
                             <span className="text-xs md:text-sm">Turma:</span>
-                            <Badge variant="outline" className="font-mono text-xs">
+                            <Badge
+                              variant="outline"
+                              className="font-mono text-xs"
+                            >
                               {atestado.usuario.turma}
                             </Badge>
                           </span>
                         )}
                       </CardDescription>
+                      {atestado.criado_tardio && (
+                        <Badge
+                          variant="outline"
+                          className="mt-2 bg-amber-50 text-amber-800 border-amber-300 text-xs"
+                        >
+                          Envio Pós Prazo de tolerancia ( 5 Dias )
+                        </Badge>
+                      )}
                     </div>
                     <div className="flex-shrink-0">
                       {getStatusBadges(atestado)}
@@ -593,14 +632,18 @@ export default function AdminAtestadosPage() {
                       <p className="font-medium text-muted-foreground">
                         Data de Início
                       </p>
-                      <p className="text-xs md:text-base">{formatDate(atestado.data_inicio)}</p>
+                      <p className="text-xs md:text-base">
+                        {formatDate(atestado.data_inicio)}
+                      </p>
                     </div>
                     <div>
                       <p className="font-medium text-muted-foreground">
                         Data de Fim
                       </p>
                       <div className="flex flex-col md:flex-row md:items-center md:gap-3 gap-0.5">
-                        <p className="text-xs md:text-base">{formatDate(atestado.data_fim)}</p>
+                        <p className="text-xs md:text-base">
+                          {formatDate(atestado.data_fim)}
+                        </p>
                         {(() => {
                           const raw =
                             (
@@ -629,7 +672,7 @@ export default function AdminAtestadosPage() {
                                 const diffDays = Math.round(
                                   (e.setHours(0, 0, 0, 0) -
                                     s.setHours(0, 0, 0, 0)) /
-                                    (1000 * 60 * 60 * 24)
+                                    (1000 * 60 * 60 * 24),
                                 );
                                 period = diffDays + 1;
                               }
@@ -654,7 +697,9 @@ export default function AdminAtestadosPage() {
                       <p className="font-medium text-muted-foreground">
                         Enviado em
                       </p>
-                      <p className="text-xs md:text-base">{formatDate(atestado.createdAt)}</p>
+                      <p className="text-xs md:text-base">
+                        {formatDate(atestado.createdAt)}
+                      </p>
                     </div>
                   </div>
 
@@ -674,7 +719,15 @@ export default function AdminAtestadosPage() {
                       <p className="font-medium text-muted-foreground mb-1 text-xs md:text-sm">
                         Observações Administrativas
                       </p>
-                      <p className="text-xs md:text-sm p-2 rounded break-words" style={{ backgroundColor: '#f7f8fa', borderColor: '#d8d9dd', borderWidth: '1px', color: '#5b5b5f' }}>
+                      <p
+                        className="text-xs md:text-sm p-2 rounded break-words"
+                        style={{
+                          backgroundColor: "#f7f8fa",
+                          borderColor: "#d8d9dd",
+                          borderWidth: "1px",
+                          color: "#5b5b5f",
+                        }}
+                      >
                         {atestado.observacoes_admin}
                       </p>
                     </div>
@@ -683,14 +736,25 @@ export default function AdminAtestadosPage() {
                   <div className="flex flex-col sm:flex-row gap-2 md:gap-2 flex-wrap">
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button size="sm" style={{ backgroundColor: "white !important", borderColor: "#005ca4 !important", borderWidth: "2px !important", color: "#005ca4 !important" }} className="text-xs md:text-sm h-8 md:h-10 w-full sm:w-auto">
+                        <Button
+                          size="sm"
+                          style={{
+                            backgroundColor: "white !important",
+                            borderColor: "#005ca4 !important",
+                            borderWidth: "2px !important",
+                            color: "#005ca4 !important",
+                          }}
+                          className="text-xs md:text-sm h-8 md:h-10 w-full sm:w-auto"
+                        >
                           <Eye className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
                           Ver Imagem
                         </Button>
                       </DialogTrigger>
                       <DialogContent className="max-w-4xl bg-white border-2 border-[#005ca4] max-h-[90vh]">
                         <DialogHeader>
-                          <DialogTitle className="text-base md:text-lg">Atestado Médico</DialogTitle>
+                          <DialogTitle className="text-base md:text-lg">
+                            Atestado Médico
+                          </DialogTitle>
                           <DialogDescription className="text-xs md:text-sm">
                             Atestado de {atestado.usuario?.nome}
                           </DialogDescription>
@@ -716,7 +780,12 @@ export default function AdminAtestadosPage() {
                       <Button
                         size="sm"
                         onClick={() => downloadAtestado(atestado)}
-                        style={{ backgroundColor: "white !important", borderColor: "#005ca4 !important", borderWidth: "2px !important", color: "#005ca4 !important" }}
+                        style={{
+                          backgroundColor: "white !important",
+                          borderColor: "#005ca4 !important",
+                          borderWidth: "2px !important",
+                          color: "#005ca4 !important",
+                        }}
                         className="text-xs md:text-sm h-8 md:h-10 w-full sm:w-auto"
                       >
                         <Download className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
@@ -750,7 +819,10 @@ export default function AdminAtestadosPage() {
                                 </DialogHeader>
                                 <div className="space-y-4">
                                   <div className="space-y-3">
-                                    <Label htmlFor="observacoes-pedagogia" className="text-[#12385f] font-semibold block">
+                                    <Label
+                                      htmlFor="observacoes-pedagogia"
+                                      className="text-[#12385f] font-semibold block"
+                                    >
                                       Observações (opcional)
                                     </Label>
                                     <Textarea
@@ -780,7 +852,7 @@ export default function AdminAtestadosPage() {
                                       onClick={() =>
                                         handleReviewAtestado(
                                           atestado.id,
-                                          "aprovado_pedagogia"
+                                          "aprovado_pedagogia",
                                         )
                                       }
                                     >
@@ -816,7 +888,10 @@ export default function AdminAtestadosPage() {
                                 </DialogHeader>
                                 <div className="space-y-4">
                                   <div className="space-y-3">
-                                    <Label htmlFor="observacoes-secretaria" className="text-[#12385f] font-semibold block">
+                                    <Label
+                                      htmlFor="observacoes-secretaria"
+                                      className="text-[#12385f] font-semibold block"
+                                    >
                                       Observações (opcional)
                                     </Label>
                                     <Textarea
@@ -846,7 +921,7 @@ export default function AdminAtestadosPage() {
                                       onClick={() =>
                                         handleReviewAtestado(
                                           atestado.id,
-                                          "aprovado_secretaria"
+                                          "aprovado_secretaria",
                                         )
                                       }
                                     >
@@ -861,14 +936,19 @@ export default function AdminAtestadosPage() {
                           {/* Rejeitar */}
                           <Dialog>
                             <DialogTrigger asChild>
-                              <Button size="sm" className="bg-[#c56266] hover:bg-[#b54f54] text-white text-xs md:text-sm h-8 md:h-10 w-full sm:flex-1">
+                              <Button
+                                size="sm"
+                                className="bg-[#c56266] hover:bg-[#b54f54] text-white text-xs md:text-sm h-8 md:h-10 w-full sm:flex-1"
+                              >
                                 <XCircle className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
                                 Rejeitar
                               </Button>
                             </DialogTrigger>
                             <DialogContent className="bg-white border-2 border-[#005ca4]">
                               <DialogHeader>
-                                <DialogTitle className="text-[#005ca4]">Rejeitar Atestado</DialogTitle>
+                                <DialogTitle className="text-[#005ca4]">
+                                  Rejeitar Atestado
+                                </DialogTitle>
                                 <DialogDescription className="text-[#5b5b5f]">
                                   Você está rejeitando o atestado de{" "}
                                   {atestado.usuario?.nome}
@@ -876,7 +956,10 @@ export default function AdminAtestadosPage() {
                               </DialogHeader>
                               <div className="space-y-4">
                                 <div className="space-y-3">
-                                  <Label htmlFor="observacoes-rejeicao" className="text-[#12385f] font-semibold block">
+                                  <Label
+                                    htmlFor="observacoes-rejeicao"
+                                    className="text-[#12385f] font-semibold block"
+                                  >
                                     Motivo da Rejeição *
                                   </Label>
                                   <Textarea
@@ -908,7 +991,7 @@ export default function AdminAtestadosPage() {
                                     onClick={() =>
                                       handleReviewAtestado(
                                         atestado.id,
-                                        "rejeitado"
+                                        "rejeitado",
                                       )
                                     }
                                   >

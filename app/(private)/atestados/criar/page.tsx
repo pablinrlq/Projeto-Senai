@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Upload, X } from "lucide-react";
+import { Upload, X, AlertTriangle } from "lucide-react";
 
 import {
   Card,
@@ -14,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,36 +30,18 @@ interface Profile {
   ra_aluno: string | null;
 }
 
-const atestadoSchema = z
-  .object({
-    dataInicio: z.string().min(1, "Data de início é obrigatória"),
-    periodoAfastamento: z
-      .number()
-      .min(1, "Período de afastamento deve ser de pelo menos 1 dia")
-      .max(365, "Período de afastamento não pode exceder 365 dias"),
-    motivo: z
-      .string()
-      .max(500, "Motivo deve ter no máximo 500 caracteres")
-      .optional(),
-  })
-  .refine(
-    (data) => {
-      const startDate = new Date(data.dataInicio);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      startDate.setHours(0, 0, 0, 0);
-
-      const diffTime = today.getTime() - startDate.getTime();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-      return diffDays <= 5;
-    },
-    {
-      message:
-        "O atestado deve ser enviado no máximo 5 dias após a data de início",
-      path: ["dataInicio"],
-    },
-  );
+// Permite criação a qualquer momento; atestados enviados após 5 dias da data de início são exibidos como "criado atrasado"
+const atestadoSchema = z.object({
+  dataInicio: z.string().min(1, "Data de início é obrigatória"),
+  periodoAfastamento: z
+    .number()
+    .min(1, "Período de afastamento deve ser de pelo menos 1 dia")
+    .max(365, "Período de afastamento não pode exceder 365 dias"),
+  motivo: z
+    .string()
+    .max(500, "Motivo deve ter no máximo 500 caracteres")
+    .optional(),
+});
 
 export default function CriarAtestadoPage() {
   const router = useRouter();
@@ -66,6 +49,20 @@ export default function CriarAtestadoPage() {
   const [loading, setLoading] = useState(true);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [dataInicio, setDataInicio] = useState<string>("");
+
+  const criadoTardio =
+    dataInicio &&
+    (() => {
+      const start = new Date(dataInicio);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      start.setHours(0, 0, 0, 0);
+      const diffDays = Math.ceil(
+        (today.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
+      );
+      return diffDays > 5;
+    })();
 
   const { createAtestado, loading: createLoading } = useCreateAtestado();
 
@@ -276,6 +273,19 @@ export default function CriarAtestadoPage() {
                 encType="multipart/form-data"
                 className="space-y-6"
               >
+                {criadoTardio && (
+                  <Alert
+                    variant="default"
+                    className="border-amber-300 bg-amber-50 text-amber-900"
+                  >
+                    <AlertTriangle className="h-4 w-4 text-amber-600" />
+                    <AlertTitle>Atestado será registrado como enviado atrasado</AlertTitle>
+                    <AlertDescription>
+                      A data de início informada é anterior a mais de 5 dias. O atestado poderá ser criado, mas será marcado como &quot;criado atrasado&quot; na sua lista e na análise da administração.
+                    </AlertDescription>
+                  </Alert>
+                )}
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label
@@ -289,6 +299,8 @@ export default function CriarAtestadoPage() {
                       name="dataInicio"
                       type="date"
                       required
+                      value={dataInicio}
+                      onChange={(e) => setDataInicio(e.target.value)}
                       style={{
                         backgroundColor: "#ffffff",
                         borderColor: "#d8d9dd",
@@ -296,7 +308,7 @@ export default function CriarAtestadoPage() {
                       className="w-full"
                     />
                     <p className="text-xs" style={{ color: "#5b5b5f" }}>
-                      Máximo 5 dias de tolerância para envio
+                      Se enviar após 5 dias da data de início, o atestado será marcado como enviado atrasado.
                     </p>
                   </div>
                   <div className="space-y-2">

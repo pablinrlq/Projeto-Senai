@@ -50,6 +50,7 @@ interface AtestadoData {
   imagem: string;
   createdAt: string;
   observacoes_admin?: string;
+  criado_tardio?: boolean;
 }
 
 interface Profile {
@@ -263,7 +264,10 @@ export default function AtestadosPage() {
 
   return (
     <div className="bg-white min-h-screen">
-      <header className="bg-[hsl(210_20%_97%)] shadow-md sticky top-0 z-[9999]" style={{ borderBottom: '4px solid #005ca4' }}>
+      <header
+        className="bg-[hsl(210_20%_97%)] shadow-md sticky top-0 z-[9999]"
+        style={{ borderBottom: "4px solid #005ca4" }}
+      >
         <div className="container mx-auto flex items-center justify-between px-4 py-4">
           <Logo />
           <div className="flex items-center gap-4">
@@ -295,9 +299,19 @@ export default function AtestadosPage() {
         <div className="mb-6 md:mb-8">
           <div className="flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between">
             <div className="flex items-start gap-3 md:gap-4">
-              <div style={{ width: '4px', height: '45px', backgroundColor: '#005ca4', borderRadius: '8px' }} />
+              <div
+                style={{
+                  width: "4px",
+                  height: "45px",
+                  backgroundColor: "#005ca4",
+                  borderRadius: "8px",
+                }}
+              />
               <div>
-                <h1 className="text-2xl md:text-4xl font-bold mb-1 md:mb-2" style={{ color: '#005ca4' }}>
+                <h1
+                  className="text-2xl md:text-4xl font-bold mb-1 md:mb-2"
+                  style={{ color: "#005ca4" }}
+                >
                   Meus Atestados
                 </h1>
                 <p className="text-xs md:text-base text-muted-foreground">
@@ -327,14 +341,16 @@ export default function AtestadosPage() {
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="text-sm font-medium text-[#5b5b5f] mb-2">Pendentes</p>
+                      <p className="text-sm font-medium text-[#5b5b5f] mb-2">
+                        Pendentes
+                      </p>
                       <p className="text-3xl font-bold text-[#f57c00]">
                         {
                           atestados.filter(
                             (a) =>
                               a.status === "pendente" ||
                               a.status === "aprovado_pedagogia" ||
-                              a.status === "aprovado_secretaria"
+                              a.status === "aprovado_secretaria",
                           ).length
                         }
                       </p>
@@ -345,13 +361,21 @@ export default function AtestadosPage() {
                     <div>
                       <p className="text-[#5b5b5f]">Pedagogia</p>
                       <p className="font-bold text-[#005ca4]">
-                        {atestados.filter((a) => a.status === "aprovado_pedagogia").length}
+                        {
+                          atestados.filter(
+                            (a) => a.status === "aprovado_pedagogia",
+                          ).length
+                        }
                       </p>
                     </div>
                     <div>
                       <p className="text-[#5b5b5f]">Secretaria</p>
                       <p className="font-bold text-[#00897b]">
-                        {atestados.filter((a) => a.status === "aprovado_secretaria").length}
+                        {
+                          atestados.filter(
+                            (a) => a.status === "aprovado_secretaria",
+                          ).length
+                        }
                       </p>
                     </div>
                   </div>
@@ -362,9 +386,14 @@ export default function AtestadosPage() {
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="text-sm font-medium text-[#5b5b5f] mb-2">Aprovados</p>
+                      <p className="text-sm font-medium text-[#5b5b5f] mb-2">
+                        Aprovados
+                      </p>
                       <p className="text-3xl font-bold text-[#4caf50]">
-                        {atestados.filter((a) => a.status === "aprovado").length}
+                        {
+                          atestados.filter((a) => a.status === "aprovado")
+                            .length
+                        }
                       </p>
                     </div>
                     <CheckCircle className="h-8 w-8 text-[#4caf50]" />
@@ -376,9 +405,14 @@ export default function AtestadosPage() {
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="text-sm font-medium text-[#5b5b5f] mb-2">Rejeitados</p>
+                      <p className="text-sm font-medium text-[#5b5b5f] mb-2">
+                        Rejeitados
+                      </p>
                       <p className="text-3xl font-bold text-[#c56266]">
-                        {atestados.filter((a) => a.status === "rejeitado").length}
+                        {
+                          atestados.filter((a) => a.status === "rejeitado")
+                            .length
+                        }
                       </p>
                     </div>
                     <XCircle className="h-8 w-8 text-[#c56266]" />
@@ -391,8 +425,12 @@ export default function AtestadosPage() {
             {atestados.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-center">
                 <Plus className="h-12 w-12 text-[#d8d9dd] mb-4" />
-                <h3 className="text-lg font-semibold text-[#12385f] mb-2">Nenhum atestado enviado</h3>
-                <p className="text-sm text-[#5b5b5f] mb-6">Comece enviando seu primeiro atestado médico.</p>
+                <h3 className="text-lg font-semibold text-[#12385f] mb-2">
+                  Nenhum atestado enviado
+                </h3>
+                <p className="text-sm text-[#5b5b5f] mb-6">
+                  Comece enviando seu primeiro atestado médico.
+                </p>
                 <Button
                   onClick={() => router.push("/atestados/criar")}
                   className="bg-[#005ca4] hover:bg-[#004b90] text-white gap-2"
@@ -408,158 +446,175 @@ export default function AtestadosPage() {
                     key={atestado.id}
                     className="hover:shadow-xl transition-all duration-300 hover:scale-[1.02] bg-white/90 backdrop-blur-sm border-l-4 border-l-[#005ca4]"
                   >
-                <CardHeader className="pb-4">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-2">
-                      <CardTitle className="text-lg text-[#005ca4]">Atestado Médico</CardTitle>
-                      <CardDescription>
-                        Enviado em {formatDate(atestado.createdAt)}
-                      </CardDescription>
-                    </div>
-                    {getStatusBadge(atestado.status)}
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <p className="font-medium text-muted-foreground">
-                        Data de Início
-                      </p>
-                      <p>{formatDate(atestado.data_inicio)}</p>
-                    </div>
-                    <div>
-                      <p className="font-medium text-muted-foreground">
-                        Data de Fim
-                      </p>
-                      <div className="flex items-center gap-3">
-                        <p>{formatDate(atestado.data_fim)}</p>
-                        {(() => {
-                          const raw =
-                            (
-                              atestado as unknown as {
-                                periodo_afastamento?: unknown;
-                              }
-                            ).periodo_afastamento ?? null;
-                          let period: number | null = null;
-
-                          if (raw !== null && typeof raw !== "undefined") {
-                            const n = Number(raw);
-                            if (
-                              !Number.isNaN(n) &&
-                              Number.isFinite(n) &&
-                              n > 0
-                            ) {
-                              period = Math.trunc(n);
-                            }
-                          }
-
-                          if (period === null) {
-                            try {
-                              const s = new Date(atestado.data_inicio);
-                              const e = new Date(atestado.data_fim);
-                              if (!isNaN(s.getTime()) && !isNaN(e.getTime())) {
-                                const diffDays = Math.round(
-                                  (e.setHours(0, 0, 0, 0) -
-                                    s.setHours(0, 0, 0, 0)) /
-                                    (1000 * 60 * 60 * 24)
-                                );
-                                period = diffDays + 1;
-                              }
-                            } catch {
-                              period = null;
-                            }
-                          }
-
-                          if (period !== null) {
-                            return (
-                              <p className="text-sm text-muted-foreground">
-                                • Período: {period} dia{period > 1 ? "s" : ""}
-                              </p>
-                            );
-                          }
-
-                          return null;
-                        })()}
-                      </div>
-                    </div>
-                  </div>
-
-                  {atestado.motivo && (
-                    <div>
-                      <p className="font-medium text-muted-foreground mb-1">
-                        Motivo
-                      </p>
-                      <p className="text-sm bg-muted p-2 rounded">
-                        {atestado.motivo}
-                      </p>
-                    </div>
-                  )}
-
-                  {atestado.observacoes_admin && (
-                    <div>
-                      <p className="font-medium text-muted-foreground mb-1">
-                        {atestado.status === "rejeitado"
-                          ? "Motivo da Rejeição"
-                          : "Observações"}
-                      </p>
-                      <p
-                        className={`text-sm p-2 rounded ${
-                          atestado.status === "rejeitado"
-                            ? "bg-red-50 border border-red-200 text-red-700"
-                            : "bg-blue-50 border border-blue-200 text-blue-700"
-                        }`}
-                      >
-                        {atestado.observacoes_admin}
-                      </p>
-                    </div>
-                  )}
-
-                  <div className="flex gap-2">
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant="outline" size="sm">
-                          <Eye className="h-4 w-4 mr-2" />
-                          Ver Atestado
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-4xl bg-white border-2 border-[#005ca4]">
-                        <DialogHeader>
-                          <DialogTitle className="text-[#005ca4]">Atestado Médico</DialogTitle>
-                          <DialogDescription className="text-[#5b5b5f]">
-                            Atestado enviado em {formatDate(atestado.createdAt)}
-                          </DialogDescription>
-                        </DialogHeader>
-                        <div className="relative w-full h-96">
-                          {atestado.imagem ? (
-                            <Image
-                              src={atestado.imagem}
-                              alt="Atestado médico"
-                              fill
-                              className="object-contain"
-                            />
-                          ) : (
-                            <div className="flex items-center justify-center h-full text-muted-foreground">
-                              Sem imagem disponível
-                            </div>
+                    <CardHeader className="pb-4">
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-2">
+                          <CardTitle className="text-lg text-[#005ca4]">
+                            Atestado Médico
+                          </CardTitle>
+                          <CardDescription>
+                            Enviado em {formatDate(atestado.createdAt)}
+                          </CardDescription>
+                          {atestado.criado_tardio && (
+                            <Badge
+                              variant="outline"
+                              className="mt-2 bg-amber-50 text-amber-800 border-amber-300"
+                            >
+                              Envio Pós Prazo de tolerancia ( 5 Dias )
+                            </Badge>
                           )}
                         </div>
-                      </DialogContent>
-                    </Dialog>
-                    {atestado.imagem && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => downloadAtestado(atestado)}
-                      >
-                        <Download className="h-4 w-4 mr-2" />
-                        Baixar
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-            </div>
+                        {getStatusBadge(atestado.status)}
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <p className="font-medium text-muted-foreground">
+                            Data de Início
+                          </p>
+                          <p>{formatDate(atestado.data_inicio)}</p>
+                        </div>
+                        <div>
+                          <p className="font-medium text-muted-foreground">
+                            Data de Fim
+                          </p>
+                          <div className="flex items-center gap-3">
+                            <p>{formatDate(atestado.data_fim)}</p>
+                            {(() => {
+                              const raw =
+                                (
+                                  atestado as unknown as {
+                                    periodo_afastamento?: unknown;
+                                  }
+                                ).periodo_afastamento ?? null;
+                              let period: number | null = null;
+
+                              if (raw !== null && typeof raw !== "undefined") {
+                                const n = Number(raw);
+                                if (
+                                  !Number.isNaN(n) &&
+                                  Number.isFinite(n) &&
+                                  n > 0
+                                ) {
+                                  period = Math.trunc(n);
+                                }
+                              }
+
+                              if (period === null) {
+                                try {
+                                  const s = new Date(atestado.data_inicio);
+                                  const e = new Date(atestado.data_fim);
+                                  if (
+                                    !isNaN(s.getTime()) &&
+                                    !isNaN(e.getTime())
+                                  ) {
+                                    const diffDays = Math.round(
+                                      (e.setHours(0, 0, 0, 0) -
+                                        s.setHours(0, 0, 0, 0)) /
+                                        (1000 * 60 * 60 * 24),
+                                    );
+                                    period = diffDays + 1;
+                                  }
+                                } catch {
+                                  period = null;
+                                }
+                              }
+
+                              if (period !== null) {
+                                return (
+                                  <p className="text-sm text-muted-foreground">
+                                    • Período: {period} dia
+                                    {period > 1 ? "s" : ""}
+                                  </p>
+                                );
+                              }
+
+                              return null;
+                            })()}
+                          </div>
+                        </div>
+                      </div>
+
+                      {atestado.motivo && (
+                        <div>
+                          <p className="font-medium text-muted-foreground mb-1">
+                            Motivo
+                          </p>
+                          <p className="text-sm bg-muted p-2 rounded">
+                            {atestado.motivo}
+                          </p>
+                        </div>
+                      )}
+
+                      {atestado.observacoes_admin && (
+                        <div>
+                          <p className="font-medium text-muted-foreground mb-1">
+                            {atestado.status === "rejeitado"
+                              ? "Motivo da Rejeição"
+                              : "Observações"}
+                          </p>
+                          <p
+                            className={`text-sm p-2 rounded ${
+                              atestado.status === "rejeitado"
+                                ? "bg-red-50 border border-red-200 text-red-700"
+                                : "bg-blue-50 border border-blue-200 text-blue-700"
+                            }`}
+                          >
+                            {atestado.observacoes_admin}
+                          </p>
+                        </div>
+                      )}
+
+                      <div className="flex gap-2">
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="outline" size="sm">
+                              <Eye className="h-4 w-4 mr-2" />
+                              Ver Atestado
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-4xl bg-white border-2 border-[#005ca4]">
+                            <DialogHeader>
+                              <DialogTitle className="text-[#005ca4]">
+                                Atestado Médico
+                              </DialogTitle>
+                              <DialogDescription className="text-[#5b5b5f]">
+                                Atestado enviado em{" "}
+                                {formatDate(atestado.createdAt)}
+                              </DialogDescription>
+                            </DialogHeader>
+                            <div className="relative w-full h-96">
+                              {atestado.imagem ? (
+                                <Image
+                                  src={atestado.imagem}
+                                  alt="Atestado médico"
+                                  fill
+                                  className="object-contain"
+                                />
+                              ) : (
+                                <div className="flex items-center justify-center h-full text-muted-foreground">
+                                  Sem imagem disponível
+                                </div>
+                              )}
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                        {atestado.imagem && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => downloadAtestado(atestado)}
+                          >
+                            <Download className="h-4 w-4 mr-2" />
+                            Baixar
+                          </Button>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             )}
           </>
         )}

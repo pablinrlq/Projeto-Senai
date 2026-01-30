@@ -110,6 +110,10 @@ export async function GET(req: NextRequest) {
           getString(atestadoData.aprovadoSecretariaEm) ||
           null;
 
+        const criado_tardio =
+          atestadoData.criado_tardio === true ||
+          atestadoData.criadoTardio === true;
+
         return {
           id: doc.id,
           data_inicio: dataInicio,
@@ -123,6 +127,7 @@ export async function GET(req: NextRequest) {
           aprovado_pedagogia_em,
           aprovado_secretaria_por,
           aprovado_secretaria_em,
+          criado_tardio,
           usuario,
         };
       })
