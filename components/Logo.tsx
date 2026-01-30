@@ -10,7 +10,7 @@ export const Logo = ({
   return (
     <div className={className}>
       <img
-        src="/branding/logo.png"
+        src="/branding/logo-senai.png"
         alt="SENAI Gestão"
         className={imgClassName}
         loading="lazy"
